@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html layout:decorate="~{admin/fragments/_layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Payment Method</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <h3>Edit Payment Method</h3>
+  <form th:action="@{/admin/paymentmethods/edit/{id}(id=${paymentMethod.paymentMethodId})}" th:object="${paymentMethod}" method="POST">
+    <div class="form-group">
+      <label for="methodName">Method Name</label>
+      <input type="text" id="methodName" class="form-control" th:field="*{methodName}" placeholder="Enter method name" required>
+    </div>
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" class="form-control" th:field="*{description}" placeholder="Enter description" required></textarea>
+    </div>
+    <div class="form-group form-check">
+      <input type="checkbox" id="isActive" class="form-check-input" th:field="*{isActive}">
+      <label for="isActive" class="form-check-label">Is Active</label>
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">Update Payment Method</button>
+    <a th:href="@{/admin/paymentmethods}" class="btn btn-secondary mt-3">Cancel</a>
+  </form>
+</div>
+</body>
+</html>

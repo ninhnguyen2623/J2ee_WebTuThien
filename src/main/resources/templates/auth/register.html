@@ -1,0 +1,139 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--  <title>Register</title>-->
+<!--  &lt;!&ndash; Bootstrap CSS &ndash;&gt;-->
+<!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="container mt-5">-->
+<!--  <div class="row justify-content-center">-->
+<!--    <div class="col-md-6">-->
+<!--      <div class="card">-->
+<!--        <div class="card-header text-center">-->
+<!--          <h3>Register</h3>-->
+<!--        </div>-->
+<!--        <div class="card-body">-->
+<!--          <form th:action="@{/register}" th:object="${register}" method="post">-->
+<!--            &lt;!&ndash; Name &ndash;&gt;-->
+<!--            <div class="mb-3">-->
+<!--              <label for="name" class="form-label">Name</label>-->
+<!--              <input type="text" class="form-control" id="name" th:field="*{name}" required>-->
+<!--              <div class="validate text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Email &ndash;&gt;-->
+<!--            <div class="mb-3">-->
+<!--              <label for="email" class="form-label">Email</label>-->
+<!--              <input type="email" class="form-control" id="email" th:field="*{email}" required>-->
+<!--              <div class="validate text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>-->
+<!--              <div class="validate text-danger" th:if="${existEmail}" th:errors="*{email}">-->
+<!--                <span th:text="${existEmail}"></span>-->
+<!--              </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Password &ndash;&gt;-->
+<!--            <div class="mb-3">-->
+<!--              <label for="password" class="form-label">Password</label>-->
+<!--              <input type="password" class="form-control" id="password" th:field="*{password}" required>-->
+<!--              <div class="validate text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Address &ndash;&gt;-->
+<!--            <div class="mb-3">-->
+<!--              <label for="address" class="form-label">Address</label>-->
+<!--              <input type="text" class="form-control" id="address" th:field="*{address}" required>-->
+<!--              <div class="validate text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>-->
+<!--            </div>-->
+
+<!--            <div class="mb-3">-->
+<!--              <label for="address" class="form-label">Number Phone</label>-->
+<!--              <input type="text" class="form-control" id="number-phone" th:field="*{phoneNumber}" required>-->
+<!--              <div class="validate text-danger" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>-->
+<!--            </div>-->
+<!--            &lt;!&ndash; Submit Button &ndash;&gt;-->
+<!--            <div class="d-grid">-->
+<!--              <button type="submit" class="btn btn-primary">Register</button>-->
+<!--            </div>-->
+<!--          </form>-->
+<!--        </div>-->
+<!--        <div class="card-footer text-center">-->
+<!--          <small>Already have an account? <a href="/login">Login here</a></small>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Bootstrap JS &ndash;&gt;-->
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Đăng ký</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="Login Form Template" name="keywords">
+  <meta content="Login Form Template" name="description">
+
+  <!-- Favicon -->
+  <link th:href="@{img/favicon.ico}" rel="icon">
+
+  <!-- Stylesheet -->
+  <link th:href="@{css/styleLogin.css}" rel="stylesheet">
+</head>
+<body>
+<div class="wrapper login-3">
+  <div class="container">
+    <div class="col-left">
+      <div class="login-text">
+        <h2><img th:src="@{img/logo.png}" alt="Logo"></h2>
+        <p>
+          Đăng ký tài khoản để có thể xem lịch sử quyên góp!
+        </p>
+
+      </div>
+    </div>
+    <div class="col-right">
+      <div class="login-form">
+        <h2>Đăng ký</h2>
+        <form th:action="@{/register}" th:object="${register}" method="post">
+          <p>
+            <input type="text"  placeholder="Tên đầy đủ" class="form-control" id="name" th:field="*{name}" required>
+            <div class="validate text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+
+          </p>
+          <p>
+            <input type="email" placeholder="Email" class="form-control" id="email" th:field="*{email}" required>
+            <div class="validate text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+          </p>
+          <p>
+            <input type="password" class="form-control" placeholder="Password" th:field="*{password}" required>
+            <div class="validate text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+          </p>
+          <p>
+            <input type="text" class="form-control" placeholder="Adress" th:field="*{address}" required>
+           <div class="validate text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+          </p>
+          <p>
+            <input type="text" class="form-control" placeholder="Số điện thoại" th:field="*{phoneNumber}" required>
+            <div class="validate text-danger" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
+          </p>
+          <button type="submit" class="btn btn-primary">Register</button>
+          <p>
+            <a href="login.html">Đăng nhập</a>
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
+

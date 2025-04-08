@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{fragments/_layout}" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title>Payment</title>
+    <style>
+        .payment-method-badge {
+            background: #0066cc;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        
+        .amount-badge {
+            padding: 10px 20px;
+            border: 2px solid #0066cc;
+            border-radius: 8px;
+            margin: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .amount-badge:hover {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .amount-badge.active {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .form-control:focus {
+            border-color: #0066cc;
+            box-shadow: 0 0 0 0.2rem rgba(0,102,204,0.25);
+        }
+        
+        .invalid-feedback {
+            display: none;
+            color: #dc3545;
+            font-size: 0.875em;
+        }
+
+        .was-validated .form-control:invalid ~ .invalid-feedback {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <main layout:fragment="content">
+        <div class="container-fluid page-header mb-5 wow fadeIn" data-wow-delay="0.1s">
+            <div class="container text-center">
+                <h1 class="display-4 text-white animated slideInDown mb-4">Payment</h1>
+                <nav aria-label="breadcrumb animated slideInDown">
+                    <ol class="breadcrumb justify-content-center mb-0">
+                        <li class="breadcrumb-item"><a class="text-white" href="/">Home</a></li>
+                        <li class="breadcrumb-item text-primary active">Payment</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card shadow-sm">
+                        <div class="card-body p-5">
+                            <div class="payment-method-badge mb-4">
+                                <i class="fas fa-credit-card me-2"></i>Payment Method: VNPay
+                            </div>
+
+                            <form th:action="@{/payment/submitOrder}" method="post" class="needs-validation" novalidate>
+                                <input type="hidden" name="programId" th:value="${programId}" />
+                                
+                                <div class="mb-4">
+                                    <label class="form-label">Quick Amount Selection</label>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <div class="amount-badge" data-amount="50000">50,000đ</div>
+                                        <div class="amount-badge" data-amount="100000">100,000đ</div>
+                                        <div class="amount-badge" data-amount="200000">200,000đ</div>
+                                        <div class="amount-badge" data-amount="500000">500,000đ</div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="amount" class="form-label">Amount (VND)</label>
+                                    <input type="number" 
+                                           class="form-control form-control-lg" 
+                                           id="amount" 
+                                           name="amount" 
+                                           required 
+                                           min="10000"
+                                           placeholder="Enter amount">
+                                    <div class="invalid-feedback">
+                                        Please enter an amount of at least 10,000 VND
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="orderInfo" class="form-label">Note</label>
+                                    <textarea class="form-control" 
+                                              id="orderInfo" 
+                                              name="orderInfo" 
+                                              rows="3"
+                                              placeholder="Leave a message..."></textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    Proceed to Payment
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

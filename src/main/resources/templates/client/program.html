@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>SGU Heart</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <div th:replace="~{fragments/_link}"></div>
+
+    <style>
+        .program-card {
+            border: none;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
+        .program-card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .program-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .program-card .card-img-top {
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .program-card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+        
+        .program-card .card-body {
+            padding: 1.5rem;
+        }
+        
+        .program-card .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+        
+        .progress {
+            height: 10px;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+            margin: 1rem 0;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(to right, #3498db, #2980b9); /* Changed color to blue gradient */
+            border-radius: 5px;
+            transition: width 0.6s ease;
+        }
+        
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            margin: 1rem 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+        }
+        
+        .btn-donate {
+            background: linear-gradient(45deg, #e74c3c, #c0392b); /* Changed color to red gradient */
+            border: none;
+            border-radius: 25px;
+            color: white;
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-donate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        
+        .remaining-days {
+            background: rgba(241, 196, 15, 0.1);
+            color: #f39c12 !important;
+            font-weight: 600;
+            border-radius: 20px;
+        }
+
+        .breadcrumb-item a {
+            color: #f39c12;
+        }
+
+        .breadcrumb-item a:hover {
+            color: #e67e22;
+        }
+
+        .container-xxl {
+            padding-top: 50px;
+            padding-bottom: 50px;
+        }
+
+        .container-xxl h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .container-xxl h6 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .container-xxl .text-primary {
+            color: #e67e22 !important;
+        }
+
+        .see-more-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .see-more-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar Start -->
+    <div th:replace="~{fragments/_header}" th:with="category=${category}"></div>
+    <!-- Navbar End -->
+
+    <!-- Page Header Start -->
+    <div class="container-fluid page-header mb-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container text-center">
+            <h1 class="display-4 text-white animated slideInDown mb-4">Program</h1>
+            <nav aria-label="breadcrumb animated slideInDown">
+                <ol class="breadcrumb justify-content-center mb-0">
+                    <li class="breadcrumb-item"><a class="text-white" href="#">Home</a></li>
+                    <li class="breadcrumb-item text-primary active" aria-current="page">Chương trình từ thiện</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+    <!-- Causes Start -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+                <h1 class="display-6 mb-5">Tất cả học sinh đều có cơ hội được học</h1>
+            </div>
+            <div class="row d-flex justify-content-center" style="width: 100%;">
+             
+                <div th:each="item, iterStat : ${program}" class="col-lg-4 col-md-6 mb-4 program-item" th:classappend="${iterStat.index >= 6} ? 'd-none' : ''">
+                    <div class="program-card show">
+                        <img th:src="@{'/img/program/' + ${item.image}}" class="card-img-top" alt="Program image">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${item.name}">Program Name</h5>
+                            <div class="amount-container">
+                                <h6 class="text-primary">
+                                    <span th:text="${@amountFormatter.formatAmount(item.currentAmount)}">6.699.367</span>
+                                    <small class="text-muted">/ </small>
+                                    <span th:text="${@amountFormatter.formatAmount(item.goalAmount)}">200.000.000</span>
+                                </h6>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar"
+                                     th:style="'width:' + ${item.percentageAchieved} + '%'"
+                                     th:aria-valuenow="${item.percentageAchieved}"
+                                     aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                            <div class="stats-container">
+                                <div class="stat-item">
+                                    <div class="stat-value" th:text="${item.donationCount}">1.266</div>
+                                    <div class="stat-label">Lượt quyên góp</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value" th:text="${item.percentageAchieved} + '%'">3%</div>
+                                    <div class="stat-label">Đạt được</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value" th:text="${item.remainingDays}">68</div>
+                                    <div class="stat-label">Ngày còn lại</div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <a th:href="@{/program/{id}(id=${item.programId})}"
+                                   class="btn btn-donate"
+                                   th:classappend="${item.currentAmount >= item.goalAmount} ? 'disabled' : ''"
+                                   th:attr="disabled=${item.currentAmount >= item.goalAmount}">
+                                    Quyên góp ngay
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="seeMoreBtn" class="see-more-btn">See More</button>
+        </div>
+    </div>
+    <!-- Causes End -->
+
+    <!-- Footer Start -->
+    <div th:replace="~{fragments/_footer}"></div>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <div th:replace="~{fragments/_lib}"></div>
+
+   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const seeMoreBtn = document.getElementById('seeMoreBtn');
+        const hiddenItems = document.querySelectorAll('.program-item.d-none');
+
+        if (hiddenItems.length === 0) {
+            seeMoreBtn.style.display = 'none';
+        }
+
+        seeMoreBtn.addEventListener('click', function() {
+            const hiddenItems = document.querySelectorAll('.program-item.d-none');
+            for (let i = 0; i < 6 && i < hiddenItems.length; i++) {
+                hiddenItems[i].classList.remove('d-none');
+                setTimeout(() => {
+                    hiddenItems[i].querySelector('.program-card').classList.add('show');
+                }, 100 * i); // Add delay for animation
+            }
+            if (document.querySelectorAll('.program-item.d-none').length === 0) {
+                this.style.display = 'none';
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

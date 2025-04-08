@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html
+  data-bs-theme="light"
+  lang="en"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:th="http://www.thymeleaf.org"
+>
+  <head>
+    <title>SGU Heart</title>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="ie=edge" http-equiv="X-UA-Compatible" />
+    <div th:replace="~{fragments/_link}"></div>
+  </head>
+
+  <body>
+    <header>
+      <div th:replace="~{fragments/_header}"></div>
+    </header>
+    <main layout:fragment="content">
+        
+    </main>
+    <footer>
+      <div th:replace="~{fragments/_footer}"></div>
+    </footer>
+    <div th:replace="~{fragments/_lib}"></div>
+  </body>
+</html>

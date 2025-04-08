@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html layout:decorate="~{admin/fragments/_layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Program</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <h3>Edit Program</h3>
+  <form th:action="@{/admin/programs/edit/{id}(id=${program.programId})}" th:object="${program}" method="POST" enctype="multipart/form-data">
+
+    <!-- Trường tên chương trình -->
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" id="name" class="form-control" th:field="*{name}" placeholder="Enter program name" required>
+      <div th:if="${#fields.hasErrors('name')}" class="text-danger">
+        <span th:errors="*{name}">Name error</span>
+      </div>
+    </div>
+
+    <!-- Trường mô tả -->
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" class="form-control" th:field="*{description}" placeholder="Enter program description"></textarea>
+    </div>
+
+    <!-- Trường số tiền mục tiêu -->
+    <div class="form-group">
+      <label for="goalAmount">Goal Amount</label>
+      <input type="number" id="goalAmount" class="form-control" th:field="*{goalAmount}" placeholder="Enter goal amount" required>
+    </div>
+
+    <!-- Trường số tiền hiện tại -->
+
+    <!-- Trường ngày bắt đầu -->
+    <div class="form-group">
+      <label for="startDate">Start Date</label>
+      <input type="date" id="startDate" class="form-control" th:field="*{startDate}" required>
+    </div>
+
+    <!-- Trường ngày kết thúc -->
+    <div class="form-group">
+      <label for="endDate">End Date</label>
+      <input type="date" id="endDate" class="form-control" th:field="*{endDate}" required>
+      <div th:if="${#fields.hasErrors('endDate')}" class="text-danger">
+        <span th:errors="*{endDate}">End date error</span>
+      </div>
+    </div>
+
+    <!-- Trường chọn hình ảnh -->
+    <div class="form-group">
+      <label for="image">Image</label>
+      <input type="file" id="image" class="form-control" th:field="*{image}">
+      <div th:if="${#fields.hasErrors('image')}" class="text-danger">
+        <span th:errors="*{image}">Image error</span>
+      </div>
+    </div>
+
+    <!-- Nút submit -->
+    <button type="submit" class="btn btn-primary">Update Program</button>
+  </form>
+</div>
+</body>
+</html>

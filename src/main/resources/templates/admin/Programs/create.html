@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html layout:decorate="~{admin/fragments/_layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Program</title>
+</head>
+<body>
+<div layout:fragment="content" class="container mt-5">
+    <h3>Create New Program</h3>
+    <form th:action="@{/admin/programs/create}" th:object="${program}" method="POST" enctype="multipart/form-data">
+
+        <!-- Trường chọn danh mục -->
+        <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category" class="form-control" th:field="*{categoryId}" required>
+                <option value="" disabled selected>Select a category</option>
+                <option th:each="category : ${categories}" th:value="${category.categoryId}" th:text="${category.name}">Category Name</option>
+            </select>
+            <div th:if="${#fields.hasErrors('categoryId')}" class="text-danger">
+                <span th:errors="*{categoryId}">Category error</span>
+            </div>
+        </div>
+
+        <!-- Trường tên chương trình -->
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" class="form-control" th:field="*{name}" placeholder="Enter program name" required>
+            <div th:if="${#fields.hasErrors('name')}" class="text-danger">
+                <span th:errors="*{name}">Name error</span>
+            </div>
+        </div>
+
+        <!-- Trường mô tả chương trình -->
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" class="form-control" th:field="*{description}" placeholder="Enter program description"></textarea>
+            <div th:if="${#fields.hasErrors('description')}" class="text-danger">
+                <span th:errors="*{description}">Description error</span>
+            </div>
+        </div>
+
+        <!-- Trường ngày bắt đầu -->
+        <div class="form-group">
+            <label for="startDate">Start Date</label>
+            <input type="date" id="startDate" class="form-control" th:field="*{startDate}" required>
+            <div th:if="${#fields.hasErrors('startDate')}" class="text-danger">
+                <span th:errors="*{startDate}">Start date error</span>
+            </div>
+        </div>
+
+        <!-- Trường ngày kết thúc -->
+        <div class="form-group">
+            <label for="endDate">End Date</label>
+            <input type="date" id="endDate" class="form-control" th:field="*{endDate}" required>
+            <div th:if="${#fields.hasErrors('endDate')}" class="text-danger">
+                <span th:errors="*{endDate}">End date error</span>
+            </div>
+        </div>
+
+        <!-- Trường goal amount -->
+        <div class="form-group">
+            <label for="goalAmount">Goal Amount</label>
+            <input type="number" id="goalAmount" class="form-control" th:field="*{goalAmount}" required>
+            <div th:if="${#fields.hasErrors('goalAmount')}" class="text-danger">
+                <span th:errors="*{goalAmount}">Goal amount error</span>
+            </div>
+        </div>
+
+        <!-- Trường hình ảnh -->
+        <div class="form-group">
+            <label for="image">Image</label>
+            <input type="file" id="image" class="form-control" th:field="*{image}">
+            <div th:if="${#fields.hasErrors('image')}" class="text-danger">
+                <span th:errors="*{image}">Image error</span>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Create Program</button>
+    </form>
+</div>
+</body>
+</html>

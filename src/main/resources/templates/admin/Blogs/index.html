@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html layout:decorate="~{admin/fragments/_layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="UTF-8">
+  <title>Blogs Management</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div layout:fragment="content" class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center">
+    <h3>Blogs</h3>
+    <a class="btn btn-primary" th:href="@{/admin/blogs/create}">Add Blog</a>
+  </div>
+
+  <!-- Start: Table -->
+  <div class="card" id="TableCard">
+    <div class="card-header py-3">
+      <div class="row table-topper align-items-center">
+        <div class="col-12 col-sm-5 col-md-6 text-start" style="margin: 0px; padding: 5px 15px"></div>
+        <div class="col-12 col-sm-7 col-md-6 text-end" style="margin: 0px; padding: 5px 15px">
+          <button class="btn btn-primary btn-sm" style="margin: 2px" type="button">
+            Clear Filters
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="table-responsive">
+          <table class="table table-striped table-bordered" id="blog-table">
+            <thead class="table-dark">
+            <tr>
+              <th class="text-center">ID</th>
+              <th class="text-center">Title</th>
+<!--              <th class="text-center">Content</th>-->
+              <th class="text-center">Image</th>
+              <th class="text-center">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="blog : ${blogs}">
+              <td th:text="${blog.id}" class="text-center"></td>
+              <td th:text="${blog.title}" class="text-center"></td>
+<!--              <td th:text="${blog.content}" class="text-center" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;"></td>-->
+              <td class="text-center">
+                <!-- Hiển thị hình ảnh blog nếu có -->
+                <img th:src="@{ '/img/blog/' + ${blog.imageUrl}}" alt="Blog Image" style="max-height: 100px; max-width: 100px;">
+              </td>
+              <td class="text-center">
+                <a th:href="@{/admin/blogs/edit/{id}(id=${blog.id})}" class="btn btn-warning btn-sm">Edit</a>
+                <a th:href="@{/admin/blogs/delete/{id}(id=${blog.id})}" class="btn btn-danger btn-sm"
+                   onclick="return confirm('Are you sure you want to delete this blog?');">Delete</a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End: Table -->
+
+  <!-- Pagination controls -->
+  <div class="d-flex justify-content-center mt-3">
+    <nav aria-label="Page navigation">
+      <ul class="pagination">
+        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+          <a class="page-link" th:href="@{/admin/blogs(page=${currentPage - 1}, size=5)}" aria-label="Previous">
+            <span aria-hidden="true">&laquo; Previous</span>
+          </a>
+        </li>
+        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+          <a class="page-link" th:href="@{/admin/blogs(page=${i}, size=5)}" th:text="${i + 1}"></a>
+        </li>
+        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+          <a class="page-link" th:href="@{/admin/blogs(page=${currentPage + 1}, size=5)}" aria-label="Next">
+            <span aria-hidden="true">Next &raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+</body>
+</html>

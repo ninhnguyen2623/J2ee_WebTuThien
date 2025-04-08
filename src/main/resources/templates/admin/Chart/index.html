@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html layout:decorate="~{admin/fragments/_layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head layout:fragment="head">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <title>Statistics Dashboard</title>
+    <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+    <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            // Chart 1: Total Donations by Program
+            var programDataPoints = [];
+            var programChart = new CanvasJS.Chart("chartContainerProgram", {
+                animationEnabled: true,
+                zoomEnabled: true,
+                title: {
+                    text: "Total Donations by Program"
+                },
+                axisX: {
+                    title: "Program",
+                    interval: 1
+                },
+                axisY: {
+                    title: "Total Donations (in USD)"
+                },
+                data: [{
+                    type: "column",
+                    xValueFormatString: "Program #",
+                    yValueFormatString: "$#,##0.00",
+                    dataPoints: programDataPoints
+                }]
+            });
+
+            $.getJSON("/admin/donations/total-donations-by-program", function (data) {
+                var programId = 1;
+                $.each(data, function (key, value) {
+                    programDataPoints.push({
+                        label: "Program " + programId,
+                        y: value
+                    });
+                    programId++;
+                });
+                programChart.render();
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.error("Error fetching data for Program Chart: ", textStatus, errorThrown);
+            });
+
+            // Chart 2: Total Donations by Day
+            var dayDataPoints = [];
+            var dayChart = new CanvasJS.Chart("chartContainerDay", {
+                animationEnabled: true,
+                zoomEnabled: true,
+                title: {
+                    text: "Total Donations by Day"
+                },
+                axisX: {
+                    title: "Date",
+                    valueFormatString: "YYYY-MM-DD",
+                    labelAngle: -45
+                },
+                axisY: {
+                    title: "Total Donations (in USD)"
+                },
+                data: [{
+                    type: "line",
+                    xValueType: "dateTime",
+                    xValueFormatString: "YYYY-MM-DD",
+                    yValueFormatString: "$#,##0.00",
+                    dataPoints: dayDataPoints
+                }]
+            });
+
+            $.getJSON("/admin/donations/total-donations-by-day", function (data) {
+                $.each(data, function (key, value) {
+                    dayDataPoints.push({
+                        x: new Date(key).getTime(),
+                        y: value
+                    });
+                });
+                dayChart.render();
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.error("Error fetching data for Day Chart: ", textStatus, errorThrown);
+            });
+
+            // Table: Top Donors
+            $.getJSON("/admin/donations/top-donors?limit=5", function (data) {
+                var tableBody = $("#topDonorsTable tbody");
+                $.each(data, function (index, donor) {
+                    tableBody.append("<tr>" +
+                        "<td>" + (index + 1) + "</td>" +
+                        "<td>" + donor.donorName + "</td>" +
+                        "<td>$" + parseFloat(donor.totalAmount).toFixed(2) + "</td>" +
+                        "</tr>");
+                });
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.error("Error fetching data for Top Donors: ", textStatus, errorThrown);
+            });
+        }
+    </script>
+</head>
+
+<body layout:fragment="content">
+<h1>Statistics Dashboard</h1>
+
+<h2>1. Total Donations by Program</h2>
+<div id="chartContainerProgram" style="height: 370px; width: 100%; margin-bottom: 50px;"></div>
+
+<h2>2. Total Donations by Day</h2>
+<div id="chartContainerDay" style="height: 370px; width: 100%; margin-bottom: 50px;"></div>
+
+<h2>3. Top Donors</h2>
+<table id="topDonorsTable" border="1" style="width: 100%; text-align: left; border-collapse: collapse; margin-bottom: 50px;">
+    <thead>
+    <tr>
+        <th>Rank</th>
+        <th>Donor Name</th>
+        <th>Total Amount</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Data will be dynamically added here -->
+    </tbody>
+</table>
+</body>
+
+</html>

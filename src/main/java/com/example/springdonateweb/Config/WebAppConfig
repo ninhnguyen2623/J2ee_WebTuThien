@@ -1,0 +1,12 @@
+
+@Configuration
+public class Config extends WebSecurityConfigurerAdapter {
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+       StrictHttpFirewall firewall = new StrictHttpFirewall();
+       //configure the firewall instance....
+        web.httpFirewall(firewall);
+    }
+
+}
