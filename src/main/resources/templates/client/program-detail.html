@@ -4,27 +4,29 @@
     <title>Program Details</title>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <meta content="" name="keywords">
     <meta content="" name="description">
     <style>
         .page-header {
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/img/carousel-1.jpg") center center no-repeat;
+            background-image: url("/img/carousel-1.jpg") center center no-repeat;
             background-size: cover;
             padding: 120px 0;
         }
 
         .progress-bar {
-            background: linear-gradient(to right, #1abc9c, #2ecc71);
+            background: linear-gradient(to right, #bc8e1a, #e68617) !important;
             
         }
 
         .btn-primary {
-            transition: all 0.3s ease;
+            transition: all 0.5s ease;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            
         }
 
         .modal-content {
@@ -57,6 +59,9 @@
             font-size: 1.2rem;
             font-weight: 500;
         }
+        .btn-donate-info:hover {
+            background-color: #3c3c3c !important;
+        }
     </style>
 </head>
 
@@ -79,34 +84,112 @@
         <div class="container-xxl py-5">
             <div class="container">
                 <div class="row justify-content-center">
-                    <div class="col-lg-8">
+                    <div class="col-lg-12">
                         <!-- Program Card with Enhanced Styling -->
-                        <div class="card mb-4 shadow-lg rounded-3 border-0">
+                         <div class="d-flex align-items-center justify-content-between">
+                            <div class="" style="width: 680px; height: 490px; overflow: hidden; border-radius: 5px; border: 0.5px solid #ccc;">
+                              <img alt="Program image" class="card-img-top rounded-top" th:src="@{'/img/program/' + ${program.image}}" style="height: 500px; object-fit: cover" />
+                            </div>
+                            <div class="" style="width: 580px;">
+                                <div class="card-body ps-4 pt-0 pe-0 pb-0">
+                                    <!-- Program Status Badge -->
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="badge bg-success text-white px-3 py-2" style="border-radius: 10px;">Chiến dịch tích cực</span>
+                                        <span class="badge text-white bg-warning px-3 py-2" style="color: white; border-radius: 10px;">
+                                            <i class="far fa-clock me-1"></i>
+                                            <span th:text="${program.remainingDays}">30</span> Days Left
+                                        </span>
+                                    </div>
+    
+                                    <!-- Program Title and Description -->
+                                     <div class="d-flex align-items-center mb-3">
+                                        <div class="" style=" margin-right: 8px; width: 50px; height: 50px; border-radius: 50%; border: 0.5px solid #ccc; overflow: hidden;">
+                                            <img th:src="@{/img/imga-logo1.png}" alt="Logo"style="width: 60px; height=60px; object-fit: cover;">
+                                        </div>
+                                        <h2 class="card-title m-0" th:text="${program.name}">Program Name</h2>
+                                     </div>
+                                    <p class="card-text lead mb-4" th:text="${program.description}">Program Description</p>
+    
+                                    <!-- Progress Section -->
+                                    <div class="bg-light rounded-3 mb-3">
+                                        <div class="d-flex  align-items-center justify-content-between pb-2">
+                                            <h4 class="mb-0">
+                                                <span th:text="${@amountFormatter.formatAmount(program.currentAmount)}">6,699,367</span>
+                                                <span style="color: #ccc; font-size: 18px;">quyên góp /</span>
+                                                <span th:text="${@amountFormatter.formatAmount(program.goalAmount)}" style="color: #ccc; font-size: 18px;">200,000,000</span>
+                                            </h4>
+                                            <h4 class="text-primary mb-0" style="border: 1px solid orange; border-radius: 10px; padding: 5px;" th:text="${program.percentageAchieved} + '%'">3%</h4>
+                                        </div>
+    
+                                        <div class="progress pb-2" style="height: 25px">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" th:style="'width:' + ${program.percentageAchieved} + '%'" th:aria-valuenow="${program.percentageAchieved}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+    
+                                    <!-- Donation Statistics -->
+                                    <div class="row g-4 mb-4">
+                                        <div class="col-md-4">
+                                            <div class="text-center p-3 border rounded-3">
+                                                <p class="text-muted mb-0">Lượt quyên góp</p>
+                                                <h3 class="mb-1" th:text="${program.donationCount}">150</h3>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="text-center p-3 border rounded-3">
+                                                <p class="text-muted mb-0">Ngày còn lại</p>
+                                                <h3 class="mb-1" th:text="${program.remainingDays}">30</h3>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="text-center p-3 border rounded-3">
+                                                <p class="text-muted mb-0">Đạt được</p>
+                                                <h3 class="mb-1" th:text="${program.percentageAchieved} + '%'">3%</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+    
+                                    <!-- Call to Action -->
+                                    <div class="text-center ">
+                                        <a class="btn btn-donate-info btn-pay btn-dark text-white btn-lg px-5 py-3" style="border-radius: 10px;" th:href="@{/payment/{programId}(programId=${program.programId})}">
+                                            <i class="fa-solid fa-money-bill-transfer px-2"></i>
+                                            Quyên góp ngay
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                         </div>
+
+
+
+
+
+
+
+
+
+                        <!-- <div class="card mb-4 shadow-lg rounded-3 border-0">
                             <img alt="Program image" class="card-img-top rounded-top" th:src="@{'/img/program/' + ${program.image}}" style="height: 400px; object-fit: cover" />
 
                             <div class="card-body p-4">
-                                <!-- Program Status Badge -->
                                 <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <span class="badge bg-primary px-3 py-2 rounded-pill">Active Campaign</span>
-                                    <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">
+                                    <span class="badge bg-success text-white px-3 py-2" style="border-radius: 10px;">Chiến dịch tích cực</span>
+                                    <span class="badge text-white bg-warning px-3 py-2" style="color: white; border-radius: 10px;">
                                         <i class="far fa-clock me-1"></i>
                                         <span th:text="${program.remainingDays}">30</span> Days Left
                                     </span>
                                 </div>
 
-                                <!-- Program Title and Description -->
                                 <h2 class="card-title mb-3" th:text="${program.name}">Program Name</h2>
                                 <p class="card-text lead mb-4" th:text="${program.description}">Program Description</p>
 
-                                <!-- Progress Section -->
                                 <div class="bg-light p-4 rounded-3 mb-4">
                                     <div class="d-flex justify-content-between mb-3">
                                         <h4 class="mb-0">
                                             <span th:text="${@amountFormatter.formatAmount(program.currentAmount)}">6,699,367</span>
-                                            <small class="text-muted">raised of</small>
-                                            <span th:text="${@amountFormatter.formatAmount(program.goalAmount)}">200,000,000</span>
+                                            <span style="color: #ccc; font-size: 18px;">quyên góp /</span>
+                                            <span th:text="${@amountFormatter.formatAmount(program.goalAmount)}" style="color: #ccc; font-size: 18px;">200,000,000</span>
                                         </h4>
-                                        <h4 class="text-primary mb-0" th:text="${program.percentageAchieved} + '%'">3%</h4>
+                                        <h4 class="text-primary mb-0" style="border: 1px solid orange; border-radius: 10px; padding: 5px;" th:text="${program.percentageAchieved} + '%'">3%</h4>
                                     </div>
 
                                     <div class="progress" style="height: 25px">
@@ -114,37 +197,35 @@
                                     </div>
                                 </div>
 
-                                <!-- Donation Statistics -->
                                 <div class="row g-4 mb-4">
                                     <div class="col-md-4">
                                         <div class="text-center p-3 border rounded-3">
+                                            <p class="text-muted mb-0">Lượt quyên góp</p>
                                             <h3 class="mb-1" th:text="${program.donationCount}">150</h3>
-                                            <p class="text-muted mb-0">Donors</p>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="text-center p-3 border rounded-3">
+                                            <p class="text-muted mb-0">Ngày còn lại</p>
                                             <h3 class="mb-1" th:text="${program.remainingDays}">30</h3>
-                                            <p class="text-muted mb-0">Days Left</p>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="text-center p-3 border rounded-3">
+                                            <p class="text-muted mb-0">Đạt được</p>
                                             <h3 class="mb-1" th:text="${program.percentageAchieved} + '%'">3%</h3>
-                                            <p class="text-muted mb-0">Completed</p>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Call to Action -->
-                                <div class="text-center">
-                                    <a class="btn btn-pay btn-primary btn-lg px-5 py-3 rounded-pill" th:href="@{/payment/{programId}(programId=${program.programId})}">
-                                        <i class="fas fa-heart me-2"></i>
-                                        Donate Now
+                                <div class="text-center ">
+                                    <a class="btn btn-donate-info btn-pay btn-dark text-white btn-lg px-5 py-3" style="border-radius: 10px;" th:href="@{/payment/{programId}(programId=${program.programId})}">
+                                        <i class="fa-solid fa-money-bill-transfer px-2"></i>
+                                        Quyên góp ngay
                                     </a>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 

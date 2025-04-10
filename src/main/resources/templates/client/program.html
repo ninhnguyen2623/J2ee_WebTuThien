@@ -30,7 +30,7 @@
         }
         
         .program-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-4px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
         
@@ -40,9 +40,9 @@
             transition: transform 0.3s ease;
         }
         
-        .program-card:hover .card-img-top {
-            transform: scale(1.05);
-        }
+        /* .program-card:hover .card-img-top {
+            transform: scale(-0.5);
+        } */
         
         .program-card .card-body {
             padding: 1.5rem;
@@ -51,7 +51,6 @@
         .program-card .card-title {
             font-size: 1.25rem;
             font-weight: 600;
-            margin-bottom: 1rem;
             color: #2c3e50;
         }
         
@@ -63,7 +62,7 @@
         }
         
         .progress-bar {
-            background: linear-gradient(to right, #3498db, #2980b9); /* Changed color to blue gradient */
+            background: linear-gradient(to right, #db9e34, #f38249); /* Changed color to blue gradient */
             border-radius: 5px;
             transition: width 0.6s ease;
         }
@@ -90,21 +89,14 @@
             font-size: 0.85rem;
             color: #7f8c8d;
         }
-        
-        .btn-donate {
-            background: linear-gradient(45deg, #e74c3c, #c0392b); /* Changed color to red gradient */
-            border: none;
-            border-radius: 25px;
-            color: white;
-            padding: 0.8rem 2rem;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
+        .btn-qg {
+            border-radius: 10px;
+            font-size: 15px;
+            padding: 5px 8px; 
+            font-weight: 500;
         }
-        
-        .btn-donate:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        .btn-qg:hover {
+            background-color: #3c3c3c !important;
         }
         
         
@@ -131,17 +123,17 @@
         .container-xxl h1 {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #2c3e50;
+            color: #000;
         }
 
         .container-xxl h6 {
             font-size: 1rem;
             font-weight: 600;
-            color: #2c3e50;
+            color: #000;
         }
 
         .container-xxl .text-primary {
-            color: #e67e22 !important;
+            color: #000 !important;
         }
 
         .see-more-btn {
@@ -190,7 +182,7 @@
     <div class="container-xxl py-5">
         <div class="container">
             <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
-                <h1 class="display-6 mb-5">Tất cả học sinh đều có cơ hội được học</h1>
+                <h1 class="display-6 mb-5" style="line-height: 50px;"><span style="color: #e67e22;">Chiến dịch</span> xây dựng ước mơ giúp đỡ các hoàn cảnh</h1>
             </div>
             <div class="row d-flex justify-content-center" style="width: 100%;">
              
@@ -198,12 +190,27 @@
                     <div class="program-card show">
                         <img th:src="@{'/img/program/' + ${item.image}}" class="card-img-top" alt="Program image">
                         <div class="card-body">
-                            <h5 class="card-title" th:text="${item.name}">Program Name</h5>
-                            <div class="amount-container">
+                            <div class=""
+                                style="display: flex; justify-content: space-between; align-items: center;"
+                            >
+                                <div class="d-flex align-items-center ">
+                                    <div class="" style=" margin-right: 5px; width: 40px; height: 40px; border-radius: 50%; border: 0.5px solid #ccc; overflow: hidden;">
+                                        <img th:src="@{/img/imga-logo1.png}" alt="Logo"style="width: 40px; height=40px; object-fit: cover;">
+                                    </div>
+                                        <h5 class="m-0" th:text="${item.name}">Program Name</h5>
+                                </div>
+                                <div class="bg-warning text-white" style=" width: 100px; height: 30px; font-size: small; display: flex; align-items: center; border-radius: 10px;">
+                                    <div class="" style="padding-left: 6px;">Còn lại</div>
+                                    <div class="" th:text="${item.remainingDays}" style="padding: 0 3px;">68</div>
+                                    <div class="">ngày</div>
+                                </div>
+                            </div>
+
+                            <div class="amount-container mt-2">
                                 <h6 class="text-primary">
-                                    <span th:text="${@amountFormatter.formatAmount(item.currentAmount)}">6.699.367</span>
+                                    <span th:text="${@amountFormatter.formatAmount(item.currentAmount)}" style="font-size: 18px;">6.699.367</span>
                                     <small class="text-muted">/ </small>
-                                    <span th:text="${@amountFormatter.formatAmount(item.goalAmount)}">200.000.000</span>
+                                    <span th:text="${@amountFormatter.formatAmount(item.goalAmount)}" style="color: #7f8c8d; font-size: 13px;">200.000.000</span>
                                 </h6>
                             </div>
                             <div class="progress">
@@ -215,25 +222,21 @@
                             </div>
                             <div class="stats-container">
                                 <div class="stat-item">
-                                    <div class="stat-value" th:text="${item.donationCount}">1.266</div>
                                     <div class="stat-label">Lượt quyên góp</div>
+                                    <div class="stat-value" th:text="${item.donationCount}">1.266</div>
                                 </div>
                                 <div class="stat-item">
-                                    <div class="stat-value" th:text="${item.percentageAchieved} + '%'">3%</div>
                                     <div class="stat-label">Đạt được</div>
+                                    <div class="stat-value" th:text="${item.percentageAchieved} + '%'">3%</div>
                                 </div>
-                                <div class="stat-item">
-                                    <div class="stat-value" th:text="${item.remainingDays}">68</div>
-                                    <div class="stat-label">Ngày còn lại</div>
+                                <div class="text-center mt-2">
+                                    <a th:href="@{/program/{id}(id=${item.programId})}"
+                                       class="btn-qg btn btn-lg bg-dark text-white"
+                                       th:classappend="${item.currentAmount >= item.goalAmount} ? 'disabled' : ''"
+                                       th:attr="disabled=${item.currentAmount >= item.goalAmount}">
+                                        Quyên góp
+                                    </a>
                                 </div>
-                            </div>
-                            <div class="text-center">
-                                <a th:href="@{/program/{id}(id=${item.programId})}"
-                                   class="btn btn-donate"
-                                   th:classappend="${item.currentAmount >= item.goalAmount} ? 'disabled' : ''"
-                                   th:attr="disabled=${item.currentAmount >= item.goalAmount}">
-                                    Quyên góp ngay
-                                </a>
                             </div>
                         </div>
                     </div>
