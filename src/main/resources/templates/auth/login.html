@@ -10,107 +10,314 @@
     <!-- Favicon -->
     <link th:href="@{img/favicon.ico}" rel="icon">
 
-    <!-- Stylesheet -->
-    <link th:href="@{css/styleLogin.css}" rel="stylesheet">
-    <!-- Add this in the head section -->
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
     <style>
-        .social-btn {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #dadce0;
-            border-radius: 4px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-            cursor: pointer;
-            transition: background-color 0.3s, box-shadow 0.3s;
-            text-decoration: none;
-            color: #000;
+            min-height: 100vh;
         }
-
+        
+        .login-container {
+            display: flex;
+            width: 900px;
+            max-width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .side-panel {
+            background: linear-gradient(135deg, #4F46E5, #7C3AED);
+            color: white;
+            width: 40%;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .side-panel img {
+            max-width: 120px;
+            margin-bottom: 30px;
+        }
+        
+        .welcome-text {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .welcome-description {
+            font-size: 16px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        .login-card {
+            background-color: #fff;
+            width: 60%;
+            padding: 50px 40px;
+        }
+        
+        .login-title {
+            color: #223354;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .login-subtitle {
+            color: #637381;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .form-label {
+            display: block;
+            color: #637381;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #E0E3E7;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #223354;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #4F46E5;
+        }
+        
+        .forgot-password {
+            display: block;
+            text-align: right;
+            color: #4F46E5;
+            font-size: 14px;
+            margin-top: 8px;
+            text-decoration: none;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .btn-primary {
+            background-color: #4F46E5;
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            background-color: #4338CA;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+        }
+        
+        .divider-line {
+            flex-grow: 1;
+            height: 1px;
+            background-color: #E0E3E7;
+        }
+        
+        .divider-text {
+            padding: 0 16px;
+            color: #637381;
+            font-size: 14px;
+        }
+        
+        .social-btn {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #E0E3E7;
+            border-radius: 8px;
+            background-color: #fff;
+            color: #212B36;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-bottom: 16px;
+            transition: background-color 0.2s ease;
+        }
+        
         .social-btn:hover {
             background-color: #f8f9fa;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-
+        
         .social-btn img {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
         }
-
-        .google-btn {
-            background: #fff;
+        
+        .signup-text {
+            margin-top: 24px;
+            color: #637381;
+            font-size: 14px;
+            text-align: center;
         }
-
-        .facebook-btn {
-            background: #3b5998;
+        
+        .signup-link {
+            color: #4F46E5;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .signup-link:hover {
+            text-decoration: underline;
+        }
+        
+        .alert {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
             color: #fff;
-            border: none;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.3s forwards;
         }
-
-        .facebook-btn:hover {
-            background: #334d84;
+        
+        .alert-danger {
+            background-color: #ef4444;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+                max-width: 90%;
+            }
+            
+            .side-panel, .login-card {
+                width: 100%;
+            }
+            
+            .side-panel {
+                padding: 40px 30px;
+            }
+            
+            .login-card {
+                padding: 40px 30px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="wrapper login-3">
-        <div class="container">
-            <div class="col-left">
-                <div class="login-text">
-                    <h2><img th:src="@{img/logo.png}" alt="Logo"></h2>
-                    <p>
-                        Chào bạn! :>
-                    </p>
-                </div>
-            </div>
-            <div class="col-right">
-                <div class="login-form">
-                    <h2>Đăng nhập</h2>
-                    <form th:action="@{/login}" method="post">
-                        <p>
-                            <input type="email" name="username" class="form-control" id="email" placeholder="Enter email" required>
-                            <span  ></span>
-                        </p>
-                        <p>
-                            <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
-                        </p>
-                        <p>
-                            <button type="submit" class="btn btn-primary">Login</button>
-                        </p>
-                        <p>
-                            <a th:href="@{/forgot-password}">Quên tài khoản</a>
-                            <a th:href="@{/register}">Tạo tài khoản </a>
-                        </p>
-                        <div class="text-center mt-3">
-                            <div style="text-align: center; margin: 15px 0;">
-                                <span style="color: #666;">hoặc</span>
-                            </div>
-                            <a href="/oauth2/authorization/google" class="social-btn google-btn">
-                                <img th:src="@{/img/google.png}" alt="Google logo"/>
-                                <span>Đăng nhập với Google</span>
-                            </a>
-                        </div>
-                        <div class="text-center mt-3">
-                            <a href="/oauth2/authorization/facebook" class="social-btn facebook-btn">
-                                <img th:src="@{/img/facebook.png}" alt="Facebook logo"/>
-                                <span>Đăng nhập với Facebook</span>
-                            </a>
-                        </div>
-                    </form>
-                </div>
-            </div>
+    <div class="login-container">
+        <div class="side-panel">
+            <img th:src="@{img/logo.png}" alt="Logo">
+            <h2 class="welcome-text">Chào mừng bạn trở lại!</h2>
+            <p class="welcome-description">Hãy đăng nhập và tiếp tục hành trình cùng chúng tôi nhé.</p>
         </div>
+
+        <style>
+            .side-panel img {
+                max-width: 200px; 
+                max-height: 200px; 
+                margin-bottom: 30px;
+                object-fit: contain; 
+            }
+        </style>
         
+        <div class="login-card">
+            <h1 class="login-title">Đăng nhập</h1>
+            <p class="login-subtitle">Vui lòng đăng nhập để tiếp tục</p>
+            
+            <form th:action="@{/login}" method="post">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="username" class="form-control" id="email" placeholder="your.email@example.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Mật khẩu</label>
+                    <input type="password" name="password" class="form-control" id="password" placeholder="••••••••" required>
+                    <a th:href="@{/forgot-password}" class="forgot-password">Quên mật khẩu?</a>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Đăng nhập</button>
+            </form>
+            
+            <div class="divider">
+                <div class="divider-line"></div>
+                <span class="divider-text">Hoặc</span>
+                <div class="divider-line"></div>
+            </div>
+            
+            <a href="/oauth2/authorization/google" class="social-btn">
+                <img th:src="@{/img/google.png}" alt="Google logo"/>
+                <span>Đăng nhập với Google</span>
+            </a>
+            
+            <a href="/oauth2/authorization/facebook" class="social-btn">
+                <img th:src="@{/img/facebook.png}" alt="Facebook logo"/>
+                <span>Đăng nhập với Facebook</span>
+            </a>
+            
+            <p class="signup-text">
+                Bạn chưa có tài khoản? <a th:href="@{/register}" class="signup-link">Đăng ký ngay</a>
+            </p>
+        </div>
     </div>
+    
     <div th:if="${param.error == 'email'}" class="alert alert-danger" role="alert">
-        Email does not exist.
+        Email không tồn tại.
     </div>
     <div th:if="${param.error == 'password'}" class="alert alert-danger" role="alert">
-        Invalid password.
+        Mật khẩu không đúng.
     </div>
-      
 </body>
 </html>
