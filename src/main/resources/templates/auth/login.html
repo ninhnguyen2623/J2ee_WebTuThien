@@ -313,11 +313,26 @@
         </div>
     </div>
     
-    <div th:if="${param.error == 'email'}" class="alert alert-danger" role="alert">
-        Email không tồn tại.
+    <div th:if="${param.error}" class="alert alert-danger" role="alert">
+        <strong>Đăng nhập thất bại!</strong> Tên đăng nhập hoặc mật khẩu không đúng.
     </div>
-    <div th:if="${param.error == 'password'}" class="alert alert-danger" role="alert">
-        Mật khẩu không đúng.
-    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const alert = document.querySelector('.alert');
+            if (alert) {
+                // Hiển thị alert
+                alert.style.opacity = '1';
+                alert.style.transform = 'translateX(0)';
+                // Ẩn alert
+                setTimeout(function() {
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateX(100%)';
+                    setTimeout(function() {
+                        alert.style.display = 'none';
+                    }, 500); 
+                }, 2000);
+            }
+        });
+    </script>
 </body>
 </html>
