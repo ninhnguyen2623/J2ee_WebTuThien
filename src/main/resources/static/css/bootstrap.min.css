@@ -25,7 +25,7 @@
   --bs-warning: #ffc107;
   --bs-danger: #dc3545;
   --bs-light: #f8f8f9;
-  --bs-dark: #001d23;
+  --bs-dark: #000;
   --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -85,7 +85,7 @@ h6,
   font-family: "Saira", sans-serif;
   font-weight: 600;
   line-height: 1.2;
-  color: #001d23;
+  color: #000;
 }
 h1,
 .h1 {
@@ -1741,7 +1741,7 @@ progress {
   border-color: #dfdfe0;
 }
 .table-dark {
-  --bs-table-bg: #001d23;
+  --bs-table-bg: #000;
   --bs-table-striped-bg: #0d282e;
   --bs-table-striped-color: #fff;
   --bs-table-active-bg: #1a3439;
@@ -2822,8 +2822,8 @@ fieldset:disabled .btn {
 }
 .btn-dark {
   color: #fff;
-  background-color: #001d23;
-  border-color: #001d23;
+  background-color: #000;
+  border-color: #000;
 }
 .btn-dark:hover {
   color: #fff;
@@ -2856,8 +2856,8 @@ fieldset:disabled .btn {
 .btn-dark:disabled,
 .btn-dark.disabled {
   color: #fff;
-  background-color: #001d23;
-  border-color: #001d23;
+  background-color: #000;
+  border-color: #000;
 }
 .btn-outline-primary {
   color: #ff6f0f;
@@ -3098,13 +3098,13 @@ fieldset:disabled .btn {
   background-color: transparent;
 }
 .btn-outline-dark {
-  color: #001d23;
-  border-color: #001d23;
+  color: #000;
+  border-color: #000;
 }
 .btn-outline-dark:hover {
   color: #fff;
-  background-color: #001d23;
-  border-color: #001d23;
+  background-color: #000;
+  border-color: #000;
 }
 .btn-check:focus + .btn-outline-dark,
 .btn-outline-dark:focus {
@@ -3116,8 +3116,8 @@ fieldset:disabled .btn {
 .btn-outline-dark.active,
 .btn-outline-dark.dropdown-toggle.show {
   color: #fff;
-  background-color: #001d23;
-  border-color: #001d23;
+  background-color: #000;
+  border-color: #000;
 }
 .btn-check:checked + .btn-outline-dark:focus,
 .btn-check:active + .btn-outline-dark:focus,
@@ -3128,7 +3128,7 @@ fieldset:disabled .btn {
 }
 .btn-outline-dark:disabled,
 .btn-outline-dark.disabled {
-  color: #001d23;
+  color: #000;
   background-color: transparent;
 }
 .btn-link {
@@ -5387,7 +5387,7 @@ fieldset:disabled .btn {
   padding: 0.5rem 1rem;
   margin-bottom: 0;
   font-size: 1rem;
-  color: #001d23;
+  color: #000;
   background-color: #f0f0f0;
   border-bottom: 1px solid #d8d8d8;
   border-top-left-radius: 5px;
@@ -5755,7 +5755,7 @@ fieldset:disabled .btn {
   color: #f9f9fa;
 }
 .link-dark {
-  color: #001d23;
+  color: #000;
 }
 .link-dark:hover,
 .link-dark:focus {
@@ -6062,7 +6062,7 @@ fieldset:disabled .btn {
   border-color: #f8f8f9 !important;
 }
 .border-dark {
-  border-color: #001d23 !important;
+  border-color: #000 !important;
 }
 .border-white {
   border-color: #fff !important;
@@ -6804,7 +6804,7 @@ fieldset:disabled .btn {
   color: #f8f8f9 !important;
 }
 .text-dark {
-  color: #001d23 !important;
+  color: #000 !important;
 }
 .text-white {
   color: #fff !important;
@@ -6830,6 +6830,9 @@ fieldset:disabled .btn {
 .bg-secondary {
   background-color: #fff0e6 !important;
 }
+.bg-third{
+  background-color: #e8e8e8 !important;
+}
 .bg-success {
   background-color: #198754 !important;
 }
@@ -6846,7 +6849,7 @@ fieldset:disabled .btn {
   background-color: #f8f8f9 !important;
 }
 .bg-dark {
-  background-color: #001d23 !important;
+  background-color: #000 !important;
 }
 .bg-body {
   background-color: #fff !important;
