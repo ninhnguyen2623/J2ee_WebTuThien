@@ -1,0 +1,718 @@
+/*
+ * Consolidated Admin CSS
+ * This file combines admin-fixed.css and admin-theme.css
+ * for a more efficient admin interface styling
+ */
+
+/* ======== ADMIN LAYOUT & STRUCTURE ======== */
+:root {
+  --primary-color: #fe7013;
+  --primary-dark: #e55c00;
+  --primary-light: #ff9652;
+  --primary-very-light: #fff1e5;
+  --secondary-color: #000000;
+  --secondary-light: #333333;
+  --secondary-very-light: #f5f5f5;
+  --text-on-primary: #ffffff;
+  --text-on-secondary: #ffffff;
+  --shadow-color: rgba(254, 112, 19, 0.15);
+  --sidebar-width: 16rem; /* Kích thước sidebar */
+  --sidebar-mini-width: 6.5rem; /* Kích thước sidebar khi thu gọn */
+  --header-height: 4.375rem; /* Chiều cao header */
+}
+
+/* Đảm bảo body có chiều cao đầy đủ */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Cố định Sidebar bên trái */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh; /* Chiều cao bằng 100% viewport height */
+  width: var(--sidebar-width);
+  z-index: 1030;
+  overflow-y: auto;
+  transition: width 0.3s ease;
+  background-color: var(--secondary-color);
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Điều chỉnh sidebar background gradient */
+.bg-gradient-primary {
+  background-color: var(--secondary-color);
+  background-image: linear-gradient(
+    180deg,
+    var(--secondary-color) 10%,
+    var(--secondary-light) 100%
+  );
+  background-size: cover;
+}
+
+/* Sidebar brand styling */
+.sidebar-brand-icon i {
+  color: var(--primary-color);
+  transition: transform 0.3s ease;
+  font-size: 1.8rem;
+}
+
+.sidebar-brand:hover .sidebar-brand-icon i {
+  transform: scale(1.1);
+}
+
+.sidebar-brand-text {
+  color: var(--text-on-secondary);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  font-size: 1.1rem;
+}
+
+/* Sidebar menu items */
+.sidebar .nav-item .nav-link {
+  color: rgba(255, 255, 255, 0.8);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+  font-size: 1rem; /* Chữ to hơn */
+  font-weight: 500;
+}
+
+.sidebar .nav-item .nav-link:hover {
+  color: var(--text-on-secondary);
+  background-color: rgba(254, 112, 19, 0.1);
+  border-radius: 0.35rem;
+}
+
+.sidebar .nav-item .nav-link.active {
+  color: var(--text-on-secondary);
+  font-weight: 700;
+  background-color: rgba(254, 112, 19, 0.2);
+  border-radius: 0.35rem;
+  border-left: 4px solid var(--primary-color);
+}
+
+.sidebar .nav-item .nav-link i {
+  color: var(--primary-color);
+  font-size: 1rem; /* Icon to hơn */
+  margin-right: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.sidebar .nav-item .nav-link:hover i,
+.sidebar .nav-item .nav-link.active i {
+  color: var(--primary-color);
+  transform: scale(1.1);
+}
+
+/* Cố định Navbar ở trên cùng, bên phải sidebar */
+.topbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: var(--sidebar-width); /* Cách bên trái bằng chiều rộng sidebar */
+  height: var(--header-height);
+  z-index: 1020;
+  transition: all 0.3s ease;
+  background-color: #ffffff !important;
+  border-bottom: 1px solid rgba(254, 112, 19, 0.1);
+}
+
+/* Khi sidebar thu gọn, điều chỉnh topbar */
+.sidebar.toggled + #content-wrapper .topbar {
+  left: var(--sidebar-mini-width);
+}
+
+/* Thêm hiệu ứng shadow khi cuộn */
+.topbar.shadow-scroll {
+  box-shadow: 0 0.15rem 1.75rem 0 var(--shadow-color) !important;
+}
+
+/* Điều chỉnh khoảng cách cho content */
+#content-wrapper {
+  padding-top: var(--header-height); /* Chiều cao của navbar */
+  margin-left: var(--sidebar-width); /* Chiều rộng của sidebar */
+  transition: margin-left 0.3s ease;
+  background-color: #f8f9fc;
+  min-height: 100vh;
+  width: calc(100% - var(--sidebar-width));
+}
+
+/* Điều chỉnh khi sidebar được thu gọn */
+.sidebar.toggled {
+  width: var(--sidebar-mini-width) !important;
+}
+
+.sidebar.toggled + #content-wrapper {
+  margin-left: var(--sidebar-mini-width);
+  width: calc(100% - var(--sidebar-mini-width));
+}
+
+/* Styling for sidebar toggle button */
+#sidebarToggle {
+  background-color: rgba(254, 112, 19, 0.2);
+  color: white;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+#sidebarToggle:hover {
+  background-color: rgba(254, 112, 19, 0.3);
+  transform: scale(1.05);
+}
+
+#sidebarToggle:focus {
+  outline: none;
+}
+
+.sidebar.toggled #sidebarToggle i {
+  transform: rotate(180deg);
+}
+
+/* Custom scrollbar cho sidebar */
+.sidebar::-webkit-scrollbar {
+  width: 0.3rem;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(254, 112, 19, 0.5);
+  border-radius: 10px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(254, 112, 19, 0.7);
+}
+
+/* Đảm bảo dropdown menu hiển thị trên các phần tử cố định */
+.dropdown-menu {
+  z-index: 1040;
+}
+
+/* Đảm bảo các menu dropdown trong sidebar hiển thị đúng */
+.sidebar .nav-item .collapse {
+  z-index: 1035;
+}
+
+/* Table styles */
+.table {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  font-size: 0.95rem;
+}
+
+.table thead th {
+  background-color: white;
+  color: var(--secondary-color);
+  font-weight: 600;
+  border-bottom: 2px solid var(--primary-very-light);
+  padding: 1rem 0.75rem;
+  vertical-align: middle;
+}
+
+.table tbody td {
+  padding: 0.75rem;
+  vertical-align: middle;
+  border-top: 1px solid #e3e6f0;
+}
+
+.table tbody tr:hover {
+  background-color: var(--primary-very-light);
+}
+
+/* Form controls */
+.form-control:focus {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 0.2rem rgba(254, 112, 19, 0.25);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+
+  .sidebar.toggled {
+    width: 100% !important;
+  }
+
+  .topbar {
+    left: 0 !important;
+  }
+
+  .sidebar.toggled + #content-wrapper .topbar {
+    left: 0 !important;
+  }
+
+  #content-wrapper {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .sidebar.toggled + #content-wrapper {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+/* ======== ADMIN THEME STYLING ======== */
+
+/* Chart Colors */
+.chart-area canvas,
+.chart-pie canvas {
+  --chart-primary: rgba(254, 112, 19, 1);
+  --chart-primary-light: rgba(254, 112, 19, 0.1);
+  --chart-primary-mid: rgba(254, 112, 19, 0.5);
+  --chart-success: #28a745;
+  --chart-info: #17a2b8;
+  --chart-warning: #ffc107;
+  --chart-danger: #dc3545;
+}
+
+/* Progress bar */
+.progress-bar.bg-info {
+  background-color: var(--primary-color) !important;
+}
+
+/* Border colors for cards */
+.border-start-success {
+  border-left: 0.25rem solid var(--primary-light) !important;
+}
+
+.border-start-info {
+  border-left: 0.25rem solid var(--primary-color) !important;
+}
+
+.border-start-warning {
+  border-left: 0.25rem solid var(--primary-dark) !important;
+}
+
+.border-start-primary {
+  border-left-color: var(--primary-color) !important;
+}
+
+/* Text colors */
+.text-success {
+  color: var(--primary-light) !important;
+}
+
+.text-info {
+  color: var(--primary-color) !important;
+}
+
+.text-warning {
+  color: var(--primary-dark) !important;
+}
+
+.text-primary {
+  color: var(--primary-color) !important;
+}
+
+/* Card styles */
+.card {
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.15rem 1.75rem 0 var(--shadow-color);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0.5rem 2rem 0 var(--shadow-color);
+}
+
+.card-header {
+  background-color: white;
+}
+
+.card-header h6 {
+  color: var(--secondary-color);
+  font-weight: 700;
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+/* Buttons */
+.btn {
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  box-shadow: 0 0.125rem 0.25rem 0 var(--shadow-color);
+  transition: all 0.2s;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 0.3rem 0.5rem 0 var(--shadow-color);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 0.125rem 0.25rem 0 var(--shadow-color);
+}
+
+/* Sửa màu icon trong cards */
+.fa-calendar,
+.fa-dollar-sign,
+.fa-clipboard-list,
+.fa-comments {
+  color: var(--primary-color) !important;
+  opacity: 0.7;
+}
+
+/* Active state Datatable */
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background: var(--primary-very-light) !important;
+  border-color: var(--primary-light) !important;
+  color: var(--secondary-color) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  background: var(--primary-light) !important;
+  border-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+/* Màu nền cho các dropdown */
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: var(--primary-very-light);
+  color: var(--secondary-color);
+}
+
+/* Pagination styling */
+.pagination .page-item.active .page-link {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.page-link {
+  color: var(--primary-color);
+}
+
+.page-link:hover {
+  color: var(--primary-dark);
+}
+
+.page-item.active .page-link {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* Nút back-to-top */
+.scroll-to-top {
+  background-color: var(--primary-color);
+}
+
+.scroll-to-top:hover {
+  background-color: var(--primary-dark);
+}
+
+/* Custom checkbox và radio */
+.custom-control-input:checked ~ .custom-control-label::before,
+.custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* Modal styling */
+.modal-header {
+  border-bottom: 1px solid rgba(254, 112, 19, 0.1);
+}
+
+.modal-footer {
+  border-top: 1px solid rgba(254, 112, 19, 0.1);
+}
+
+/* Badge màu chính */
+.badge-primary {
+  background-color: var(--primary-color);
+}
+
+.bg-primary {
+  background-color: var(--primary-color) !important;
+}
+
+.bg-success {
+  background-color: var(--primary-light) !important;
+}
+
+/* Màu cho notifications */
+.dropdown-list .dropdown-item .text-truncate {
+  color: var(--secondary-color);
+}
+
+.dropdown-list .dropdown-item:active {
+  background-color: var(--primary-very-light);
+  color: var(--secondary-color);
+}
+
+/* Màu chữ trên các thẻ input */
+label {
+  color: var(--secondary-color);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* Styles cho các phần tử trong navbar topbar */
+.topbar .nav-item .nav-link {
+  height: 4.375rem;
+  display: flex;
+  align-items: center;
+  padding: 0 0.75rem;
+}
+
+.topbar .nav-item .nav-link:hover {
+  background-color: var(--primary-very-light);
+}
+
+.topbar .dropdown-list {
+  width: 20rem !important;
+  padding: 0;
+}
+
+.topbar .dropdown-list .dropdown-header {
+  background-color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.icon-circle {
+  height: 2.5rem;
+  width: 2.5rem;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropdown-list .dropdown-item {
+  white-space: normal;
+  padding: 0.75rem;
+  border-left: 1px solid #e3e6f0;
+  border-right: 1px solid #e3e6f0;
+  border-bottom: 1px solid #e3e6f0;
+  line-height: 1.3rem;
+  font-size: 0.95rem;
+}
+
+.dropdown-list-image {
+  position: relative;
+  height: 3rem;
+  width: 3rem;
+}
+
+.dropdown-list-image img {
+  height: 3rem;
+  width: 3rem;
+  object-fit: cover;
+}
+
+/* Thêm animation cho các dropdown */
+.animated--grow-in {
+  animation-name: growIn;
+  animation-duration: 200ms;
+  animation-timing-function: transform cubic-bezier(0.18, 1.25, 0.4, 1),
+    opacity cubic-bezier(0, 1, 0.4, 1);
+}
+
+@keyframes growIn {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Badge counter trong navbar */
+.badge-counter {
+  position: absolute;
+  transform: scale(0.7);
+  transform-origin: top right;
+  right: 0.25rem;
+  margin-top: -0.25rem;
+  font-size: 0.85rem;
+  padding: 0.25em 0.4em;
+  font-weight: 700;
+}
+
+/* Admin Styles */
+
+/* Layout and General Styles */
+.admin-container {
+  padding: 1.5rem;
+}
+
+.card {
+  border: none;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+  margin-bottom: 1.5rem;
+}
+
+.card-header {
+  font-weight: 500;
+  padding: 1rem 1.25rem;
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.breadcrumb {
+  background-color: transparent;
+  margin-bottom: 0;
+  padding: 0;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  font-weight: 500;
+}
+
+.required-label::after {
+  content: " *";
+  color: #dc3545;
+}
+
+.form-text {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+/* Image Preview */
+.image-preview-container {
+  position: relative;
+  margin-top: 0.625rem;
+}
+
+.image-preview,
+.current-image {
+  max-width: 100%;
+  height: 200px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  object-fit: cover;
+}
+
+.image-preview {
+  display: none;
+}
+
+/* Editor Styles */
+.ckeditor-container {
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+}
+
+.ck-editor__editable {
+  min-height: 200px;
+}
+
+/* Progress Styles */
+.progress-container {
+  margin-top: 10px;
+  position: relative;
+}
+
+.progress {
+  height: 25px;
+  border-radius: 6px;
+}
+
+.progress-bar {
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  line-height: 25px;
+}
+
+/* Table Styles */
+.table-responsive {
+  overflow-x: auto;
+}
+
+.action-btn {
+  margin: 0 2px;
+}
+
+.status-badge {
+  font-size: 0.85em;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.status-badge.active {
+  background-color: #28a745;
+  color: white;
+}
+
+.status-badge.inactive {
+  background-color: #dc3545;
+  color: white;
+}
+
+.status-badge.pending {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+/* Filter Section */
+.filter-section {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .actions-container {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .filter-form {
+    flex-direction: column;
+  }
+}

@@ -7,7 +7,7 @@
 <body>
 <div layout:fragment="content" class="container mt-5">
     <h3>Create User</h3>
-    <form th:action="@{/admin/user/create}" th:object="${user}" method="POST">
+    <form th:action="@{/admin/users/create}" th:object="${user}" method="POST">
         <div class="form-group mb-3">
             <label for="name" class="form-label">Name</label>
             <input type="text" id="name" class="form-control" th:field="*{name}" placeholder="Enter user name" required>
