@@ -16,12 +16,12 @@
     <body>
         <main layout:fragment="content">
             <div class="container-fluid p-0 mb-5">
-                <div class="carousel slide" data-bs-ride="carousel"
-                    id="header-carousel">
+                <div class="carousel slide" data-ride="carousel"
+                    id="header-carousel"> 
                     <div class="carousel-inner">
                         <div class="carousel-item active">
                             <img alt="Image" class="w-100 h-32"
-                                th:src="@{/img/carousel-1.jpg}">
+                                th:src="@{/img/carousel.jpg}">
                             <div class="carousel-caption">
                                 <div class="container">
                                     <div class="row justify-content-center">
@@ -188,10 +188,8 @@
                     <div class="text-center mx-auto mb-5 wow fadeInUp"
                         data-wow-delay="0.1s" style="max-width: 500px;">
                         <div
-                            class="d-inline-block rounded-pill bg-secondary text-primary py-1 px-3 mb-3">Feature
-                            Causes</div>
-                        <h1 class="display-6 mb-5">Tất cả học sinh, học sinh đều
-                            có cơ hội được học</h1>
+                            class="d-inline-block rounded-pill bg-secondary text-primary py-1 px-3 mb-3">Chương trình </div>
+                        <h1 class="display-6 mb-5">Chiến dịch nổi bật</h1>
                     </div>
                     <div class="row g-4 justify-content-center">
                         <div th:each="item, iterStat : ${program}"
