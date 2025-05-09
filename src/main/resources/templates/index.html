@@ -16,12 +16,12 @@
     <body>
         <main layout:fragment="content">
             <div class="container-fluid p-0 mb-5">
-                <div class="carousel slide" data-bs-ride="carousel"
-                    id="header-carousel">
+                <div class="carousel slide" data-ride="carousel"
+                    id="header-carousel"> 
                     <div class="carousel-inner">
                         <div class="carousel-item active">
                             <img alt="Image" class="w-100 h-32"
-                                th:src="@{/img/carousel-1.jpg}">
+                                th:src="@{/img/carousel.jpg}">
                             <div class="carousel-caption">
                                 <div class="container">
                                     <div class="row justify-content-center">
@@ -36,7 +36,7 @@
                                                 cho trẻ em có hoàn cảnh khó
                                                 khăn.</p>
                                             <a
-                                                class="btn btn-outline-primary  py-2 px-3 animated slideInDown"
+                                                class="btn btn-outline-primary py-2 px-3 animated slideInDown"
                                                 href>
                                                 Tìm hiểu thêm
                                                 <div
@@ -56,7 +56,7 @@
                             <div class="carousel-caption">
                                 <div class="container">
                                     <div class="row justify-content-center">
-                                        <div class="col-lg-7">
+                                        <div class="col-lg-7 pb-5">
                                             <h1
                                                 class="display-4 text-white mb-3 animated slideInDown">"Chung tay vượt lũ – Lan tỏa yêu thương"</h1>
                                             <p
@@ -188,10 +188,8 @@
                     <div class="text-center mx-auto mb-5 wow fadeInUp"
                         data-wow-delay="0.1s" style="max-width: 500px;">
                         <div
-                            class="d-inline-block rounded-pill bg-secondary text-primary py-1 px-3 mb-3">Feature
-                            Causes</div>
-                        <h1 class="display-6 mb-5">Tất cả học sinh, học sinh đều
-                            có cơ hội được học</h1>
+                            class="d-inline-block rounded-pill bg-secondary text-primary py-1 px-3 mb-3">Chương trình </div>
+                        <h1 class="display-6 mb-5">Chiến dịch nổi bật</h1>
                     </div>
                     <div class="row g-4 justify-content-center">
                         <div th:each="item, iterStat : ${program}"
@@ -201,9 +199,23 @@
                                 <img th:src="@{'/img/program/' + ${item.image}}"
                                     class="card-img-top" alt="Program image">
                                 <div class="card-body">
-                                    <h5 class="card-title"
-                                        th:text="${item.name}">Program Name</h5>
-                                    <div class="amount-container">
+                                    <div class=""
+                                    style="display: flex; justify-content: space-between; align-items: center;"
+                                >
+                                    <div class="d-flex align-items-center ">
+                                        <div class="" style=" margin-right: 5px; width: 40px; height: 40px; border-radius: 50%; border: 0.5px solid #ccc; overflow: hidden;">
+                                            <img th:src="@{/img/imga-logo1.png}" alt="Logo"style="width: 40px; height=40px; object-fit: cover;">
+                                        </div>
+                                            <h5 class="m-0" th:text="${item.name}">Program Name</h5>
+                                    </div>
+                                    <div class="bg-warning text-white" style=" width: 100px; height: 30px; font-size: small; display: flex; align-items: center; border-radius: 10px;">
+                                        <div class="" style="padding-left: 3px;">Còn lại</div>
+                                        <div class="" th:text="${item.remainingDays}" style="padding: 0 3px;">68</div>
+                                        <div class="">ngày</div>
+                                    </div>
+                                </div>
+                                    
+                                    <div class="amount-container mt-2">
                                         <h6 class="text-primary">
                                             <span
                                                 th:text="${@amountFormatter.formatAmount(item.currentAmount)}">6.699.367</span>
@@ -223,32 +235,21 @@
                                     </div>
                                     <div class="stats-container">
                                         <div class="stat-item">
-                                            <div class="stat-value"
-                                                th:text="${item.donationCount}">1.266</div>
-                                            <div class="stat-label">Lượt quyên
-                                                góp</div>
+                                            <div class="stat-label">Lượt quyên góp</div>
+                                            <div class="stat-value" th:text="${item.donationCount}">1.266</div>
                                         </div>
                                         <div class="stat-item">
-                                            <div class="stat-value"
-                                                th:text="${item.percentageAchieved} + '%'">3%</div>
-                                            <div class="stat-label">Đạt
-                                                được</div>
+                                            <div class="stat-label">Đạt được</div>
+                                            <div class="stat-value" th:text="${item.percentageAchieved} + '%'">3%</div>
                                         </div>
-                                        <div class="stat-item">
-                                            <div class="stat-value"
-                                                th:text="${item.remainingDays}">68</div>
-                                            <div class="stat-label">Ngày còn
-                                                lại</div>
+                                        <div class="text-center mt-2">
+                                            <a th:href="@{/program/{id}(id=${item.programId})}"
+                                               class="btn-qg btn btn-lg bg-dark text-white"
+                                               th:classappend="${item.currentAmount >= item.goalAmount} ? 'disabled' : ''"
+                                               th:attr="disabled=${item.currentAmount >= item.goalAmount}">
+                                                Quyên góp
+                                            </a>
                                         </div>
-                                    </div>
-                                    <div class="text-center">
-                                        <a
-                                            th:href="@{/program/{id}(id=${item.programId})}"
-                                            class="btn btn-donate"
-                                            th:classappend="${item.currentAmount >= item.goalAmount} ? 'disabled' : ''"
-                                            th:attr="disabled=${item.currentAmount >= item.goalAmount}">
-                                            Quyên góp ngay
-                                        </a>
                                     </div>
                                 </div>
                             </div>
