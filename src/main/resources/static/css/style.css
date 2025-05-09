@@ -179,7 +179,7 @@
 .page-header {
   padding-top: 12rem;
   padding-bottom: 6rem;
-  background: linear-gradient(rgba(0, 29, 35, 0.8), rgba(0, 29, 35, 0.8)),
+  background: linear-gradient(rgba(0, 29, 35, 0.5), rgba(0, 29, 35, 0.5)),
     url(../img/carousel-2.jpg) center center no-repeat;
   background-size: cover;
 }
