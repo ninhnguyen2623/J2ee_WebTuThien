@@ -144,10 +144,10 @@
     if (!UTILS.exists(DOM.sidebarToggle)) return;
 
     DOM.sidebarToggle.addEventListener("click", (event) => {
-      event.preventDefault();
+        event.preventDefault();
       DOM.body.classList.toggle("sidebar-toggled");
       DOM.sidebar.classList.toggle("toggled");
-    });
+      });
 
     // Responsive sidebar handling - close on small screens
     const handleResize = () => {
@@ -193,10 +193,10 @@
 
     const currentPageUrl = window.location.pathname;
     DOM.navLinks.forEach((link) => {
-      if (link.getAttribute("href") === currentPageUrl) {
-        link.classList.add("active");
-      }
-    });
+        if (link.getAttribute("href") === currentPageUrl) {
+          link.classList.add("active");
+        }
+      });
   }
 
   // ======== UI Components ========
@@ -407,31 +407,31 @@
   // Update row count display in the UI
   function updateRowCountDisplay(type) {
     const tableRows = document.querySelectorAll(`.${type}-row`);
-    const visibleRows = Array.from(tableRows).filter(
-      (row) => row.dataset.hiddenBySearch !== "true"
-    );
-    const countDisplay = document.querySelector(
-      ".text-muted span:nth-child(3)"
-    );
-    if (countDisplay) countDisplay.textContent = visibleRows.length;
-  }
+      const visibleRows = Array.from(tableRows).filter(
+        (row) => row.dataset.hiddenBySearch !== "true"
+      );
+      const countDisplay = document.querySelector(
+        ".text-muted span:nth-child(3)"
+      );
+      if (countDisplay) countDisplay.textContent = visibleRows.length;
+    }
 
-  // Update pagination controls
-  function updatePagination() {
-    // Only update pagination during client-side filtering
+    // Update pagination controls
+    function updatePagination() {
+      // Only update pagination during client-side filtering
     if (!DOM.searchInput || DOM.searchInput.value.trim() === "") return;
 
     const tableRows = document.querySelectorAll(".category-row, .program-row");
-    const visibleRows = Array.from(tableRows).filter(
-      (row) => row.dataset.hiddenBySearch !== "true"
-    );
+      const visibleRows = Array.from(tableRows).filter(
+        (row) => row.dataset.hiddenBySearch !== "true"
+      );
     const totalPages = Math.ceil(visibleRows.length / CONFIG.rowsPerPage);
 
-    const paginationElement = document.querySelector(".pagination");
-    if (!paginationElement) return;
+      const paginationElement = document.querySelector(".pagination");
+      if (!paginationElement) return;
 
-    // Update active state
-    const pageItems = paginationElement.querySelectorAll(".page-item");
+      // Update active state
+      const pageItems = paginationElement.querySelectorAll(".page-item");
     pageItems.forEach((item, i) => {
       if (i === 0) {
         // Previous button
@@ -443,13 +443,13 @@
         // Page number buttons
         const pageNum = i - 1;
         item.style.display = pageNum < totalPages ? "" : "none";
-        item.classList.toggle("active", pageNum === window.currentPage);
-      }
-    });
+          item.classList.toggle("active", pageNum === window.currentPage);
+        }
+      });
   }
 
   // Initialize pagination for tables
-  function initPagination() {
+    function initPagination() {
     const paginationElement = document.querySelector(".pagination");
     if (!paginationElement) return;
 
@@ -460,34 +460,34 @@
       if (!pageLink) return;
 
       pageLink.addEventListener("click", function (e) {
-        e.preventDefault();
+            e.preventDefault();
 
-        // Handle prev/next buttons
+            // Handle prev/next buttons
         if (i === 0) {
           // Previous button
-          if (window.currentPage > 0) {
-            window.currentPage--;
+              if (window.currentPage > 0) {
+                window.currentPage--;
           }
         } else if (i === pageItems.length - 1) {
           // Next button
           const tableRows = document.querySelectorAll(
             ".category-row, .program-row"
           );
-          const visibleRows = Array.from(tableRows).filter(
-            (row) => row.dataset.hiddenBySearch !== "true"
-          );
+              const visibleRows = Array.from(tableRows).filter(
+                (row) => row.dataset.hiddenBySearch !== "true"
+              );
           const totalPages = Math.ceil(visibleRows.length / CONFIG.rowsPerPage);
 
-          if (window.currentPage < totalPages - 1) {
-            window.currentPage++;
-          }
-        } else {
+              if (window.currentPage < totalPages - 1) {
+                window.currentPage++;
+              }
+            } else {
           // Page number button
           window.currentPage = i - 1;
         }
 
         // Display the new page
-        window.displayRows(window.currentPage);
+              window.displayRows(window.currentPage);
         updatePagination();
       });
     });
@@ -517,13 +517,13 @@
           };
 
           reader.readAsDataURL(this.files[0]);
-        } else {
+          } else {
           preview.src = "#";
           preview.classList.add("d-none");
-        }
+          }
+        });
       });
-    });
-  }
+    }
 
   // ======== Rich Text Editor ========
   // Initialize CKEditor for rich text fields
