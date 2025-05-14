@@ -2,84 +2,263 @@
 <html layout:decorate="~{admin/fragments/_layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
   <meta charset="UTF-8">
-  <title>Blogs Management</title>
+  <title>Quản lý bài viết</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
 </head>
 <body>
 <div layout:fragment="content" class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center">
-    <h3>Blogs</h3>
-    <a class="btn btn-primary" th:href="@{/admin/blogs/create}">Add Blog</a>
+  <div>
+    <h3 class="text-dark mb-0 fw-bold page-title">Quản lý bài viết</h3>
   </div>
 
-  <!-- Start: Table -->
-  <div class="card" id="TableCard">
-    <div class="card-header py-3">
-      <div class="row table-topper align-items-center">
-        <div class="col-12 col-sm-5 col-md-6 text-start" style="margin: 0px; padding: 5px 15px"></div>
-        <div class="col-12 col-sm-7 col-md-6 text-end" style="margin: 0px; padding: 5px 15px">
-          <button class="btn btn-primary btn-sm" style="margin: 2px" type="button">
-            Clear Filters
+  <div class="card shadow mb-4">
+    <div
+            class="card-header py-3 d-flex justify-content-between align-items-center"
+    >
+      <h6 class="m-0 fw-bold text-primary">
+        <i class="fas fa-filter me-2"></i>Tìm Kiếm & Lọc
+      </h6>
+      <div class="card-tools">
+        <a
+                th:href="@{/admin/blogs}"
+                class="btn btn-sm btn-outline-primary reset"
+                id="clearFilters"
+        >
+          <i class="fas fa-sync-alt me-1"></i>Làm Mới
+        </a>
+      </div>
+    </div>
+    <div class="card-body">
+      <form
+              id="filterForm"
+              class="row g-3"
+              method="GET"
+              th:action="@{/admin/blogs}"
+      >
+        <input type="hidden" name="page" id="pageInput" value="0" />
+        <div class="col-md-4">
+          <label
+                  for="searchTerm"
+                  class="form-label small fw-bold text-muted"
+          >Tìm kiếm theo tiêu đề</label
+          >
+          <div class="input-group">
+                <span class="input-group-text bg-light">
+                  <i class="fas fa-user text-primary"></i>
+                </span>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="searchTerm"
+                    name="searchTerm"
+                    placeholder="Nhập tiêu đề bài viết..."
+                    th:value="${searchTerm}"
+            />
+          </div>
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end">
+          <button type="submit" class="btn btn-primary w-100">
+            <i class="fas fa-search me-2"></i>Tìm kiếm
           </button>
         </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-12">
-        <div class="table-responsive">
-          <table class="table table-striped table-bordered" id="blog-table">
-            <thead class="table-dark">
-            <tr>
-              <th class="text-center">ID</th>
-              <th class="text-center">Title</th>
-<!--              <th class="text-center">Content</th>-->
-              <th class="text-center">Image</th>
-              <th class="text-center">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="blog : ${blogs}">
-              <td th:text="${blog.id}" class="text-center"></td>
-              <td th:text="${blog.title}" class="text-center"></td>
-<!--              <td th:text="${blog.content}" class="text-center" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;"></td>-->
-              <td class="text-center">
-                <!-- Hiển thị hình ảnh blog nếu có -->
-                <img th:src="@{ '/img/blog/' + ${blog.imageUrl}}" alt="Blog Image" style="max-height: 100px; max-width: 100px;">
-              </td>
-              <td class="text-center">
-                <a th:href="@{/admin/blogs/edit/{id}(id=${blog.id})}" class="btn btn-warning btn-sm">Edit</a>
-                <a th:href="@{/admin/blogs/delete/{id}(id=${blog.id})}" class="btn btn-danger btn-sm"
-                   onclick="return confirm('Are you sure you want to delete this blog?');">Delete</a>
-              </td>
-            </tr>
-            </tbody>
-          </table>
+        <div class="d-flex justify-content-between align-items-center">
+          <a class="btn btn-primary" th:href="@{/admin/blogs/create}">Thêm mới</a>
         </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card shadow mb-4">
+    <div
+            class="card-header py-3 d-flex justify-content-between align-items-center"
+    >
+      <h6 class="m-0 fw-bold text-primary">
+        <i class="fas fa-donate me-2"></i>Danh sách bài viết
+      </h6>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table data-table" id="donationTable">
+          <thead>
+          <tr>
+            <th class="text-center" style="width: 60px">
+              <span class="text-uppercase text-primary fw-bold">ID</span>
+            </th>
+            <th style="width: 25%">
+                    <span class="text-uppercase text-primary fw-bold"
+                    >Tiêu đề</span
+                    >
+            </th>
+            <th class="text-center" style="width: 20%">
+                    <span class="text-uppercase text-primary fw-bold"
+                    >Hình ảnh</span
+                    >
+            </th>
+
+            <th class="text-center" style="width: 100px">
+                    <span class="text-uppercase text-primary fw-bold"
+                    >Thao Tác</span
+                    >
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr
+                  th:each="blog : ${blogs}"
+                  class="donor-row"
+                  th:data-created="${blog.blogId}"
+          >
+            <td
+                    th:text="${blog.blogId}"
+                    class="text-center fw-bold"
+            >
+              ID
+            </td>
+            <td>
+              <div class="d-flex align-items-center">
+                <div>
+                        <span
+                                class="fw-bold donor-info"
+                                th:text="${blog.blogTitle}"
+                        >Tiêu đề</span
+                        >
+                </div>
+              </div>
+            </td>
+            <td>
+              <div
+                      class="d-flex align-items-center justify-content-center"
+              >
+                <div
+                        class="badge bg-light text-dark px-3 py-2 rounded-pill"
+                >
+                        <span
+                                class="donation-info"
+                                th:text="${blog.blogImage}"
+                        >Hình ảnh</span
+                        >
+                </div>
+              </div>
+            </td>
+
+            <td class="text-center">
+              <div class="btn-group" role="group">
+                <a
+                        th:href="@{/admin/blogs/detail/{id}(id=${blog.blogId})}"
+                        class="btn btn-sm btn-info action-btn"
+                        title="Xem chi tiết"
+                >
+                  <i class="fas fa-eye"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(blogs)}">
+            <td colspan="6" class="text-center py-5">
+              <div class="empty-state">
+                <div
+                        class="empty-state-icon"
+                        th:classappend="${searchTerm != null ? 'search-icon' : ''}"
+                >
+                  <i
+                          class="fas"
+                          th:classappend="${searchTerm != null ? 'fa-search' : 'fa-donate'}"
+                  ></i>
+                </div>
+                <h4
+                        class="empty-state-title"
+                        th:text="${searchTerm != null ? 'Không tìm thấy kết quả' : 'Không có bài viết nào'}"
+                >
+                  Không có bài viết nào
+                </h4>
+                <p
+                        class="empty-state-message"
+                        th:if="${searchTerm != null}"
+                >
+                  Không tìm thấy bài viết nào phù hợp với tiêu chí tìm
+                  kiếm.
+                  <br />Vui lòng thử lại với các tiêu chí khác hoặc
+                  <a th:href="@{/admin/blogs}" class="text-primary"
+                  >xem tất cả bài viết</a
+                  >.
+                </p>
+                <p
+                        class="empty-state-message"
+                        th:unless="${searchTerm != null}"
+                >
+                  Hiện tại chưa có bài viết nào trong hệ thống.
+                </p>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination controls -->
+      <div
+              th:if="${totalPages > 0}"
+              class="d-flex justify-content-between align-items-center mt-4"
+      >
+        <div class="text-muted">
+          <i class="fas fa-file-alt me-1"></i> Hiển thị
+          <span
+                  th:text="${#lists.size(blogs) > 0 ? (currentPage * 10) + 1 : 0}"
+          ></span>
+          -
+          <span
+                  th:text="${#lists.size(blogs) > 0 ? (currentPage * 10) + #lists.size(blogs) : 0}"
+          ></span>
+          của <span th:text="${totalItems}"></span> bài viết
+        </div>
+        <nav aria-label="Page navigation">
+          <ul class="pagination mb-0">
+            <li
+                    class="page-item"
+                    th:classappend="${currentPage == 0} ? 'disabled'"
+            >
+              <a
+                      class="page-link"
+                      th:href="@{/admin/blogs(page=${currentPage - 1}, searchTerm=${searchTerm}}"
+                      aria-label="Previous"
+              >
+                <i class="fas fa-chevron-left small"></i>
+              </a>
+            </li>
+
+            <li
+                    class="page-item"
+                    th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:classappend="${i == currentPage} ? 'active'"
+                    th:if="${totalPages <= 5 || (i >= currentPage - 1 && i <= currentPage + 1) || i == 0 || i == totalPages - 1}"
+            >
+              <a
+                      class="page-link"
+                      th:href="@{/admin/blogs(page=${i}, searchTerm=${searchTerm})}"
+                      th:text="${i + 1}"
+              >1</a
+              >
+            </li>
+
+            <li
+                    class="page-item"
+                    th:classappend="${currentPage >= totalPages - 1} ? 'disabled'"
+            >
+              <a
+                      class="page-link"
+                      th:href="@{/admin/blogs(page=${currentPage + 1}, searchTerm=${searchTerm})}"
+                      aria-label="Next"
+              >
+                <i class="fas fa-chevron-right small"></i>
+              </a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
   </div>
-  <!-- End: Table -->
 
-  <!-- Pagination controls -->
-  <div class="d-flex justify-content-center mt-3">
-    <nav aria-label="Page navigation">
-      <ul class="pagination">
-        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-          <a class="page-link" th:href="@{/admin/blogs(page=${currentPage - 1}, size=5)}" aria-label="Previous">
-            <span aria-hidden="true">&laquo; Previous</span>
-          </a>
-        </li>
-        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
-          <a class="page-link" th:href="@{/admin/blogs(page=${i}, size=5)}" th:text="${i + 1}"></a>
-        </li>
-        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-          <a class="page-link" th:href="@{/admin/blogs(page=${currentPage + 1}, size=5)}" aria-label="Next">
-            <span aria-hidden="true">Next &raquo;</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
-  </div>
 </div>
 </body>
 </html>
