@@ -229,7 +229,11 @@
                                         class="image-preview d-none"
                                         src="#"
                                         alt="Preview"
+                                        onerror="this.onerror=null; this.outerHTML='<div class=\'no-image-icon\'><i class=\'fas fa-file-image text-warning fa-3x\'></i></div>'; this.closest('.image-preview-container').classList.add('image-error')"
                                     />
+                                    <div class="mt-2">
+                                        <span class="text-muted d-none">Ảnh xem trước</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
