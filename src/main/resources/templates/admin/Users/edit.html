@@ -1,32 +1,412 @@
 <!DOCTYPE html>
-<html layout:decorate="~{admin/fragments/_layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html
+    layout:decorate="~{admin/fragments/_layout}"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:th="http://www.thymeleaf.org"
+>
 <head>
-  <meta charset="UTF-8">
-  <title>Edit User</title>
+  <meta charset="UTF-8" />
+  <title>Chỉnh Sửa Người Dùng</title>
 </head>
-<body>
-<div layout:fragment="content" class="container mt-5">
-  <h3>Edit User</h3>
-  <form th:action="@{/admin/users/update/{id}(id=${user.id})}" th:object="${user}" method="POST">
 
-    <div class="form-group mb-3">
-      <label for="name" class="form-label">Name</label>
-      <input type="text" id="name" class="form-control" th:field="*{name}" placeholder="Enter user name" required>
+<body>
+<div layout:fragment="content" class="container-fluid px-4 py-3">
+  <!-- Page Heading -->
+  <div class="d-sm-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="text-dark mb-0 fw-bold page-title">
+        Chỉnh Sửa Người Dùng
+      </h3>
     </div>
-    <div class="form-group mb-3">
-      <label for="email" class="form-label">Email</label>
-      <input type="email" id="email" class="form-control" th:field="*{email}" placeholder="Enter user email" required>
+    <a
+        class="btn btn-outline-secondary btn-sm d-sm-inline-block shadow-sm"
+        th:href="@{/admin/users}"
+    >
+      <i class="fas fa-arrow-left me-2"></i>Quay Lại Danh Sách
+    </a>
+  </div>
+  
+  <!-- Layout chính: Row 1 cho thông tin người dùng -->
+  <div class="row">
+    <!-- Cột trái: Thông tin người dùng -->
+    <div class="col-xl-8 mb-4">
+      <!-- User Information Card -->
+      <div class="card shadow mb-4">
+        <div
+            class="card-header py-3 d-flex justify-content-between align-items-center"
+        >
+          <h6 class="m-0 fw-bold text-primary">
+            <i class="fas fa-user-edit me-2"></i>Thông Tin Người Dùng
+          </h6>
+          <span
+              class="badge px-3 py-2 rounded-pill"
+              th:classappend="${user.status ? 'bg-success-light text-success' : 'bg-danger-light text-danger'}"
+          >
+                <span th:if="${user.status}">Đang hoạt động</span>
+                <span th:if="${!user.status}">Không hoạt động</span>
+              </span>
+        </div>
+        <div class="card-body">
+          <form
+              th:action="@{/admin/users/update/{id}(id=${user.id})}"
+              th:object="${user}"
+              method="POST"
+              class="needs-validation"
+              novalidate
+              id="userForm"
+          >
+            <input type="hidden" th:field="*{id}" />
+            <!-- Mật khẩu ẩn -->
+            <input type="hidden" id="password" th:field="*{password}" />
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label
+                      for="name"
+                      class="form-label small fw-bold text-muted required-label"
+                  >Họ tên</label
+                  >
+                  <div class="input-group">
+                        <span class="input-group-text bg-light">
+                          <i class="fas fa-user text-primary"></i>
+                        </span>
+                    <input
+                        type="text"
+                        id="name"
+                        class="form-control"
+                        th:field="*{name}"
+                        placeholder="Nhập họ tên"
+                        required
+                    />
+                  </div>
+                  <div class="invalid-feedback">Vui lòng nhập họ tên</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label
+                      for="email"
+                      class="form-label small fw-bold text-muted required-label"
+                  >Email</label
+                  >
+                  <div class="input-group">
+                        <span class="input-group-text bg-light">
+                          <i class="fas fa-envelope text-primary"></i>
+                        </span>
+                    <input
+                        type="email"
+                        id="email"
+                        class="form-control"
+                        th:field="*{email}"
+                        placeholder="Nhập địa chỉ email"
+                        required
+                    />
+                  </div>
+                  <div class="invalid-feedback">
+                    Vui lòng nhập email hợp lệ
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label
+                      for="phoneNumber"
+                      class="form-label small fw-bold text-muted required-label"
+                  >Số điện thoại</label
+                  >
+                  <div class="input-group">
+                        <span class="input-group-text bg-light">
+                          <i class="fas fa-phone text-primary"></i>
+                        </span>
+                    <input
+                        type="text"
+                        id="phoneNumber"
+                        class="form-control"
+                        th:field="*{phoneNumber}"
+                        placeholder="Nhập số điện thoại"
+                        required
+                        pattern="\d{10,11}"
+                    />
+                  </div>
+                  <div class="form-text">
+                    Số điện thoại phải có 10 hoặc 11 chữ số
+                  </div>
+                  <div class="invalid-feedback">
+                    Vui lòng nhập số điện thoại hợp lệ (10-11 chữ số)
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label
+                      for="roleId"
+                      class="form-label small fw-bold text-muted required-label"
+                  >Vai trò</label
+                  >
+                  <div class="input-group">
+                        <span class="input-group-text bg-light">
+                          <i class="fas fa-user-shield text-primary"></i>
+                        </span>
+                    <select
+                        id="roleId"
+                        class="form-select"
+                        name="roleId"
+                        required
+                    >
+                      <option value="">-- Chọn vai trò --</option>
+                      <option value="1" th:selected="${user.roleId == 1}">
+                        Admin
+                      </option>
+                      <option value="2" th:selected="${user.roleId == 2}">
+                        User
+                      </option>
+                    </select>
+                  </div>
+                  <div class="invalid-feedback">Vui lòng chọn vai trò</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group mb-3">
+              <label
+                  for="address"
+                  class="form-label small fw-bold text-muted required-label"
+              >Địa chỉ</label
+              >
+              <div class="input-group">
+                    <span class="input-group-text bg-light">
+                      <i class="fas fa-map-marker-alt text-primary"></i>
+                    </span>
+                <input
+                    type="text"
+                    id="address"
+                    class="form-control"
+                    th:field="*{address}"
+                    placeholder="Nhập địa chỉ"
+                    required
+                />
+              </div>
+              <div class="invalid-feedback">Vui lòng nhập địa chỉ</div>
+            </div>
+            
+            <div class="form-group mb-3">
+              <label
+                  for="status"
+                  class="form-label small fw-bold text-muted"
+              >Trạng thái</label
+              >
+              <div class="d-flex">
+                <div class="form-check me-4">
+                  <input
+                      class="form-check-input"
+                      type="radio"
+                      name="status"
+                      id="statusActive"
+                      value="true"
+                      th:field="*{status}"
+                  />
+                  <label class="form-check-label" for="statusActive">
+                    Hoạt động
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                      class="form-check-input"
+                      type="radio"
+                      name="status"
+                      id="statusInactive"
+                      value="false"
+                      th:field="*{status}"
+                  />
+                  <label class="form-check-label" for="statusInactive">
+                    Không hoạt động
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            <hr class="my-4" />
+            
+            <div class="d-flex justify-content-end mt-4">
+              <a
+                  th:href="@{/admin/users}"
+                  class="btn btn-outline-secondary me-2"
+              >
+                <i class="fas fa-times me-1"></i>Hủy Bỏ
+              </a>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-1"></i>Lưu Thay Đổi
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
-    <div class="form-group mb-3">
-      <label for="roleId" class="form-label">Role</label>
-      <select id="roleId" class="form-control" th:field="*{roleId}">
-        <option value="2" th:selected="${user.roleId == 2}">User</option>
-        <option value="1" th:selected="${user.roleId == 1}">Admin</option>
-      </select>
+    
+    <!-- Cột phải: Thông tin tài khoản -->
+    <div class="col-xl-4 mb-4">
+      <!-- User Details Card -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 fw-bold text-primary">
+            <i class="fas fa-id-card me-2"></i>Thông Tin Tài Khoản
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="text-center mb-4">
+            <div
+                class="avatar-circle avatar-circle-lg bg-primary mx-auto mb-3 d-flex align-items-center justify-content-center"
+            >
+                  <span
+                      class="text-white fs-2"
+                      th:text="${#strings.substring(user.name, 0, 1).toUpperCase()}"
+                  >U</span
+                  >
+            </div>
+            <h5 class="fw-bold" th:text="${user.name}">Tên người dùng</h5>
+            <span
+                class="badge px-3 py-2 mb-2"
+                th:classappend="${user.roleId == 1 ? 'bg-primary text-white' : 'bg-info text-white'}"
+            >
+                  <span th:if="${user.roleId == 1}">Admin</span>
+                  <span th:if="${user.roleId == 2}">User</span>
+                </span>
+            <p class="text-muted mb-0" th:text="${user.email}">
+              user@example.com
+            </p>
+          </div>
+          
+          <hr />
+          
+          <div class="user-details">
+            <div class="row mb-2">
+              <div class="col-4 detail-label">ID:</div>
+              <div class="col-8 detail-value">
+                <span class="fw-bold" th:text="${user.id}">1</span>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-4 detail-label">Email:</div>
+              <div class="col-8 detail-value text-truncate">
+                <a href="#" th:text="${user.email}">user@example.com</a>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-4 detail-label">Số điện thoại:</div>
+              <div class="col-8 detail-value">
+                    <span
+                        th:text="${user.phoneNumber != null && user.phoneNumber != '' ? user.phoneNumber : 'Chưa cập nhật'}"
+                    >0123456789</span
+                    >
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-4 detail-label">Vai trò:</div>
+              <div class="col-8 detail-value">
+                    <span
+                        class="badge"
+                        th:classappend="${user.roleId == 1 ? 'bg-primary' : 'bg-info'}"
+                        th:text="${user.roleId == 1 ? 'Admin' : 'User'}"
+                    >User</span
+                    >
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-4 detail-label">Trạng thái:</div>
+              <div class="col-8 detail-value">
+                    <span
+                        class="badge"
+                        th:classappend="${user.status ? 'bg-success-light text-success' : 'bg-danger-light text-danger'}"
+                    >
+                      <span th:if="${user.status}">Hoạt động</span>
+                      <span th:if="${!user.status}">Không hoạt động</span>
+                    </span>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-4 detail-label">Địa chỉ:</div>
+              <div class="col-8 detail-value">
+                    <span
+                        th:text="${user.address != null && user.address != '' ? user.address : 'Chưa cập nhật'}"
+                    >Địa chỉ</span
+                    >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <button type="submit" class="btn btn-primary">Update User</button>
-    <a th:href="@{/admin/users}" class="btn btn-secondary">Cancel</a>
-  </form>
+  </div>
+  
+  <!-- Row 2: Hướng dẫn sử dụng (đã đưa xuống dưới) -->
+  <div class="row">
+    <div class="col-12">
+      <!-- Help Card -->
+      <div class="card shadow">
+        <div class="card-header py-3">
+          <h6 class="m-0 fw-bold text-primary">
+            <i class="fas fa-info-circle me-2"></i>Hướng Dẫn Sử Dụng
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-7">
+              <p class="fw-bold mb-2">
+                Bạn có thể thay đổi các thông tin sau của người dùng:
+              </p>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <ul class="mb-3">
+                    <li>
+                      <strong>Họ tên:</strong> Tên đầy đủ của người dùng
+                    </li>
+                    <li>
+                      <strong>Email:</strong> Địa chỉ email dùng để đăng
+                                              nhập và liên hệ
+                    </li>
+                    <li>
+                      <strong>Số điện thoại:</strong> Số điện thoại liên hệ
+                                                      (cũng là mật khẩu mặc định)
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-md-6">
+                  <ul class="mb-3">
+                    <li>
+                      <strong>Vai trò:</strong> Phân quyền cho người dùng
+                                                (Admin/User)
+                    </li>
+                    <li>
+                      <strong>Địa chỉ:</strong> Địa chỉ liên hệ của người
+                                                dùng
+                    </li>
+                    <li>
+                      <strong>Trạng thái:</strong> Trạng thái hoạt động của
+                                                   tài khoản
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="alert alert-info d-flex align-items-center mb-3">
+                <i class="fas fa-exclamation-circle me-2 fs-5"></i>
+                <div>
+                  Các trường có dấu
+                  <span class="text-danger fw-bold">*</span> là bắt buộc
+                  phải nhập.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 </body>
 </html>
