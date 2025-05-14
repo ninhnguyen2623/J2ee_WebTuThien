@@ -4,14 +4,16 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     xmlns:th="http://www.thymeleaf.org"
 >
+<!-- Thiết lập thông tin cơ bản cho trang -->
 <head>
     <meta charset="UTF-8" />
     <title>Thêm Người Dùng Mới</title>
 </head>
 
 <body>
+<!-- Phần nội dung chính của trang -->
 <div layout:fragment="content" class="container-fluid px-4 py-3">
-    <!-- Page Heading -->
+    <!-- Tiêu đề trang và nút quay lại -->
     <div class="d-sm-flex justify-content-between align-items-center mb-4">
         <h3 class="text-dark mb-0 fw-bold page-title">Thêm Người Dùng Mới</h3>
         <a
@@ -22,7 +24,7 @@
         </a>
     </div>
     
-    <!-- Create User Form Card -->
+    <!-- Card chứa form tạo người dùng mới -->
     <div class="card shadow mb-4 user-form-card">
         <div
             class="card-header py-3 d-flex justify-content-between align-items-center"
@@ -30,6 +32,7 @@
             <h6 class="m-0 fw-bold text-primary">Thông Tin Người Dùng</h6>
         </div>
         <div class="card-body">
+            <!-- Form nhập thông tin người dùng với xác thực (validation) -->
             <form
                 id="userForm"
                 th:action="@{/admin/users/create}"
@@ -38,7 +41,7 @@
                 class="needs-validation"
                 novalidate
             >
-                <!-- Thông tin cơ bản -->
+                <!-- Phần thông tin cơ bản của người dùng -->
                 <div class="card shadow-sm border-0 mb-4 user-form-section">
                     <div class="card-header bg-light py-3">
                         <h6 class="m-0 text-primary">
@@ -47,7 +50,7 @@
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
-                            <!-- Hàng 1: Họ tên và Email -->
+                            <!-- Phần nhập họ tên người dùng -->
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label
@@ -69,6 +72,7 @@
                                 </div>
                             </div>
                             
+                            <!-- Phần nhập email -->
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label
@@ -90,7 +94,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Mật khẩu ẩn -->
+                            <!-- Trường mật khẩu ẩn (được thiết lập tự động = số điện thoại) -->
                             <input
                                 type="hidden"
                                 id="password"
@@ -98,7 +102,7 @@
                                 th:field="*{password}"
                             />
                             
-                            <!-- Hàng 2: Số điện thoại và Vai trò -->
+                            <!-- Phần nhập số điện thoại -->
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label
@@ -125,7 +129,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Dropdown vai trò -->
+                            <!-- Dropdown chọn vai trò người dùng -->
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label
@@ -153,7 +157,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Hàng 3: Địa chỉ -->
+                            <!-- Phần nhập địa chỉ -->
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label
@@ -176,7 +180,7 @@
                     </div>
                 </div>
                 
-                <!-- Nút submit và hủy -->
+                <!-- Phần nút hành động (hủy, đặt lại, lưu) -->
                 <div class="form-actions d-flex justify-content-between">
                     <a th:href="@{/admin/users}" class="btn btn-outline-secondary">
                         <i class="fas fa-times me-2"></i>Hủy
@@ -194,7 +198,7 @@
         </div>
     </div>
     
-    <!-- Tips Card -->
+    <!-- Phần mẹo và hướng dẫn -->
     <div class="card bg-light border-0 shadow-sm tips-card">
         <div class="card-body">
             <h6 class="fw-bold">

@@ -4,14 +4,16 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     xmlns:th="http://www.thymeleaf.org"
 >
+<!-- Thiết lập thông tin cơ bản cho trang -->
 <head>
   <meta charset="UTF-8" />
   <title>Chỉnh Sửa Người Dùng</title>
 </head>
 
 <body>
+<!-- Phần nội dung chính của trang -->
 <div layout:fragment="content" class="container-fluid px-4 py-3">
-  <!-- Page Heading -->
+  <!-- Tiêu đề trang và nút quay lại -->
   <div class="d-sm-flex justify-content-between align-items-center mb-4">
     <div>
       <h3 class="text-dark mb-0 fw-bold page-title">
@@ -26,11 +28,11 @@
     </a>
   </div>
   
-  <!-- Layout chính: Row 1 cho thông tin người dùng -->
+  <!-- Bố cục chính: Hàng 1 chứa form chỉnh sửa và thông tin người dùng -->
   <div class="row">
-    <!-- Cột trái: Thông tin người dùng -->
+    <!-- Cột trái: Form chỉnh sửa thông tin người dùng -->
     <div class="col-xl-8 mb-4">
-      <!-- User Information Card -->
+      <!-- Card chứa form chỉnh sửa -->
       <div class="card shadow mb-4">
         <div
             class="card-header py-3 d-flex justify-content-between align-items-center"
@@ -38,6 +40,7 @@
           <h6 class="m-0 fw-bold text-primary">
             <i class="fas fa-user-edit me-2"></i>Thông Tin Người Dùng
           </h6>
+          <!-- Hiển thị trạng thái người dùng (hoạt động/không hoạt động) -->
           <span
               class="badge px-3 py-2 rounded-pill"
               th:classappend="${user.status ? 'bg-success-light text-success' : 'bg-danger-light text-danger'}"
@@ -47,6 +50,7 @@
               </span>
         </div>
         <div class="card-body">
+          <!-- Form chỉnh sửa với xác thực (validation) -->
           <form
               th:action="@{/admin/users/update/{id}(id=${user.id})}"
               th:object="${user}"
@@ -55,11 +59,14 @@
               novalidate
               id="userForm"
           >
+            <!-- Trường ẩn chứa ID người dùng -->
             <input type="hidden" th:field="*{id}" />
-            <!-- Mật khẩu ẩn -->
+            <!-- Trường mật khẩu ẩn (giữ nguyên mật khẩu cũ) -->
             <input type="hidden" id="password" th:field="*{password}" />
             
+            <!-- Hàng 1: Họ tên và Email -->
             <div class="row mb-3">
+              <!-- Phần nhập họ tên -->
               <div class="col-md-6">
                 <div class="form-group mb-3">
                   <label
@@ -83,6 +90,7 @@
                   <div class="invalid-feedback">Vui lòng nhập họ tên</div>
                 </div>
               </div>
+              <!-- Phần nhập email -->
               <div class="col-md-6">
                 <div class="form-group mb-3">
                   <label
@@ -110,7 +118,9 @@
               </div>
             </div>
             
+            <!-- Hàng 2: Số điện thoại và Vai trò -->
             <div class="row mb-3">
+              <!-- Phần nhập số điện thoại -->
               <div class="col-md-6">
                 <div class="form-group mb-3">
                   <label
@@ -140,6 +150,7 @@
                   </div>
                 </div>
               </div>
+              <!-- Dropdown chọn vai trò -->
               <div class="col-md-6">
                 <div class="form-group mb-3">
                   <label
@@ -154,7 +165,7 @@
                     <select
                         id="roleId"
                         class="form-select"
-                        name="roleId"
+                        th:field="*{roleId}"
                         required
                     >
                       <option value="">-- Chọn vai trò --</option>
@@ -171,6 +182,7 @@
               </div>
             </div>
             
+            <!-- Phần nhập địa chỉ -->
             <div class="form-group mb-3">
               <label
                   for="address"
@@ -193,6 +205,7 @@
               <div class="invalid-feedback">Vui lòng nhập địa chỉ</div>
             </div>
             
+            <!-- Phần chọn trạng thái (radio buttons) -->
             <div class="form-group mb-3">
               <label
                   for="status"
@@ -231,6 +244,7 @@
             
             <hr class="my-4" />
             
+            <!-- Phần nút hành động (hủy, lưu thay đổi) -->
             <div class="d-flex justify-content-end mt-4">
               <a
                   th:href="@{/admin/users}"
@@ -247,9 +261,9 @@
       </div>
     </div>
     
-    <!-- Cột phải: Thông tin tài khoản -->
+    <!-- Cột phải: Hiển thị thông tin chi tiết người dùng -->
     <div class="col-xl-4 mb-4">
-      <!-- User Details Card -->
+      <!-- Card hiển thị thông tin tài khoản -->
       <div class="card shadow mb-4">
         <div class="card-header py-3">
           <h6 class="m-0 fw-bold text-primary">
@@ -257,7 +271,9 @@
           </h6>
         </div>
         <div class="card-body">
+          <!-- Phần trung tâm hiển thị avatar và thông tin cơ bản -->
           <div class="text-center mb-4">
+            <!-- Avatar người dùng (hiển thị chữ cái đầu) -->
             <div
                 class="avatar-circle avatar-circle-lg bg-primary mx-auto mb-3 d-flex align-items-center justify-content-center"
             >
@@ -267,7 +283,9 @@
                   >U</span
                   >
             </div>
+            <!-- Tên người dùng -->
             <h5 class="fw-bold" th:text="${user.name}">Tên người dùng</h5>
+            <!-- Badge hiển thị vai trò -->
             <span
                 class="badge px-3 py-2 mb-2"
                 th:classappend="${user.roleId == 1 ? 'bg-primary text-white' : 'bg-info text-white'}"
@@ -275,6 +293,7 @@
                   <span th:if="${user.roleId == 1}">Admin</span>
                   <span th:if="${user.roleId == 2}">User</span>
                 </span>
+            <!-- Hiển thị email -->
             <p class="text-muted mb-0" th:text="${user.email}">
               user@example.com
             </p>
@@ -282,19 +301,23 @@
           
           <hr />
           
+          <!-- Danh sách thông tin chi tiết -->
           <div class="user-details">
+            <!-- ID người dùng -->
             <div class="row mb-2">
               <div class="col-4 detail-label">ID:</div>
               <div class="col-8 detail-value">
                 <span class="fw-bold" th:text="${user.id}">1</span>
               </div>
             </div>
+            <!-- Email chi tiết -->
             <div class="row mb-2">
               <div class="col-4 detail-label">Email:</div>
               <div class="col-8 detail-value text-truncate">
                 <a href="#" th:text="${user.email}">user@example.com</a>
               </div>
             </div>
+            <!-- Số điện thoại -->
             <div class="row mb-2">
               <div class="col-4 detail-label">Số điện thoại:</div>
               <div class="col-8 detail-value">
@@ -304,6 +327,7 @@
                     >
               </div>
             </div>
+            <!-- Vai trò chi tiết -->
             <div class="row mb-2">
               <div class="col-4 detail-label">Vai trò:</div>
               <div class="col-8 detail-value">
@@ -315,6 +339,7 @@
                     >
               </div>
             </div>
+            <!-- Trạng thái chi tiết -->
             <div class="row mb-2">
               <div class="col-4 detail-label">Trạng thái:</div>
               <div class="col-8 detail-value">
@@ -327,6 +352,7 @@
                     </span>
               </div>
             </div>
+            <!-- Địa chỉ chi tiết -->
             <div class="row mb-2">
               <div class="col-4 detail-label">Địa chỉ:</div>
               <div class="col-8 detail-value">
@@ -342,10 +368,10 @@
     </div>
   </div>
   
-  <!-- Row 2: Hướng dẫn sử dụng (đã đưa xuống dưới) -->
+  <!-- Hàng 2: Card hướng dẫn sử dụng -->
   <div class="row">
     <div class="col-12">
-      <!-- Help Card -->
+      <!-- Card hướng dẫn -->
       <div class="card shadow">
         <div class="card-header py-3">
           <h6 class="m-0 fw-bold text-primary">
@@ -354,11 +380,13 @@
         </div>
         <div class="card-body">
           <div class="row">
+            <!-- Phần trái: Danh sách thông tin có thể chỉnh sửa -->
             <div class="col-md-7">
               <p class="fw-bold mb-2">
                 Bạn có thể thay đổi các thông tin sau của người dùng:
               </p>
               <div class="row g-3">
+                <!-- Cột 1: Thông tin cơ bản -->
                 <div class="col-md-6">
                   <ul class="mb-3">
                     <li>
@@ -374,6 +402,7 @@
                     </li>
                   </ul>
                 </div>
+                <!-- Cột 2: Thông tin quyền và trạng thái -->
                 <div class="col-md-6">
                   <ul class="mb-3">
                     <li>
@@ -392,6 +421,7 @@
                 </div>
               </div>
             </div>
+            <!-- Phần phải: Thông báo về trường bắt buộc -->
             <div class="col-md-5">
               <div class="alert alert-info d-flex align-items-center mb-3">
                 <i class="fas fa-exclamation-circle me-2 fs-5"></i>

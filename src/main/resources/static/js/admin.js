@@ -144,10 +144,10 @@
     if (!UTILS.exists(DOM.sidebarToggle)) return;
 
     DOM.sidebarToggle.addEventListener("click", (event) => {
-        event.preventDefault();
+      event.preventDefault();
       DOM.body.classList.toggle("sidebar-toggled");
       DOM.sidebar.classList.toggle("toggled");
-      });
+    });
 
     // Responsive sidebar handling - close on small screens
     const handleResize = () => {
@@ -193,10 +193,10 @@
 
     const currentPageUrl = window.location.pathname;
     DOM.navLinks.forEach((link) => {
-        if (link.getAttribute("href") === currentPageUrl) {
-          link.classList.add("active");
-        }
-      });
+      if (link.getAttribute("href") === currentPageUrl) {
+        link.classList.add("active");
+      }
+    });
   }
 
   // ======== UI Components ========
@@ -407,31 +407,31 @@
   // Update row count display in the UI
   function updateRowCountDisplay(type) {
     const tableRows = document.querySelectorAll(`.${type}-row`);
-      const visibleRows = Array.from(tableRows).filter(
-        (row) => row.dataset.hiddenBySearch !== "true"
-      );
-      const countDisplay = document.querySelector(
-        ".text-muted span:nth-child(3)"
-      );
-      if (countDisplay) countDisplay.textContent = visibleRows.length;
-    }
+    const visibleRows = Array.from(tableRows).filter(
+      (row) => row.dataset.hiddenBySearch !== "true"
+    );
+    const countDisplay = document.querySelector(
+      ".text-muted span:nth-child(3)"
+    );
+    if (countDisplay) countDisplay.textContent = visibleRows.length;
+  }
 
-    // Update pagination controls
-    function updatePagination() {
-      // Only update pagination during client-side filtering
+  // Update pagination controls
+  function updatePagination() {
+    // Only update pagination during client-side filtering
     if (!DOM.searchInput || DOM.searchInput.value.trim() === "") return;
 
     const tableRows = document.querySelectorAll(".category-row, .program-row");
-      const visibleRows = Array.from(tableRows).filter(
-        (row) => row.dataset.hiddenBySearch !== "true"
-      );
+    const visibleRows = Array.from(tableRows).filter(
+      (row) => row.dataset.hiddenBySearch !== "true"
+    );
     const totalPages = Math.ceil(visibleRows.length / CONFIG.rowsPerPage);
 
-      const paginationElement = document.querySelector(".pagination");
-      if (!paginationElement) return;
+    const paginationElement = document.querySelector(".pagination");
+    if (!paginationElement) return;
 
-      // Update active state
-      const pageItems = paginationElement.querySelectorAll(".page-item");
+    // Update active state
+    const pageItems = paginationElement.querySelectorAll(".page-item");
     pageItems.forEach((item, i) => {
       if (i === 0) {
         // Previous button
@@ -443,13 +443,13 @@
         // Page number buttons
         const pageNum = i - 1;
         item.style.display = pageNum < totalPages ? "" : "none";
-          item.classList.toggle("active", pageNum === window.currentPage);
-        }
-      });
+        item.classList.toggle("active", pageNum === window.currentPage);
+      }
+    });
   }
 
   // Initialize pagination for tables
-    function initPagination() {
+  function initPagination() {
     const paginationElement = document.querySelector(".pagination");
     if (!paginationElement) return;
 
@@ -460,34 +460,34 @@
       if (!pageLink) return;
 
       pageLink.addEventListener("click", function (e) {
-            e.preventDefault();
+        e.preventDefault();
 
-            // Handle prev/next buttons
+        // Handle prev/next buttons
         if (i === 0) {
           // Previous button
-              if (window.currentPage > 0) {
-                window.currentPage--;
+          if (window.currentPage > 0) {
+            window.currentPage--;
           }
         } else if (i === pageItems.length - 1) {
           // Next button
           const tableRows = document.querySelectorAll(
             ".category-row, .program-row"
           );
-              const visibleRows = Array.from(tableRows).filter(
-                (row) => row.dataset.hiddenBySearch !== "true"
-              );
+          const visibleRows = Array.from(tableRows).filter(
+            (row) => row.dataset.hiddenBySearch !== "true"
+          );
           const totalPages = Math.ceil(visibleRows.length / CONFIG.rowsPerPage);
 
-              if (window.currentPage < totalPages - 1) {
-                window.currentPage++;
-              }
-            } else {
+          if (window.currentPage < totalPages - 1) {
+            window.currentPage++;
+          }
+        } else {
           // Page number button
           window.currentPage = i - 1;
         }
 
         // Display the new page
-              window.displayRows(window.currentPage);
+        window.displayRows(window.currentPage);
         updatePagination();
       });
     });
@@ -514,16 +514,92 @@
             preview.src = e.target.result;
             preview.classList.remove("d-none");
             preview.style.display = "block";
+
+            // Đặt lại trạng thái lỗi nếu có
+            const previewContainer = preview.closest(
+              ".image-preview-container"
+            );
+            if (previewContainer) {
+              previewContainer.classList.remove("image-error");
+              const textElement =
+                previewContainer.querySelector(".mt-2 .text-muted");
+              if (textElement) {
+                textElement.classList.remove("d-none");
+                textElement.textContent = "Ảnh xem trước";
+              }
+            }
+          };
+
+          // Xử lý lỗi khi đọc file
+          reader.onerror = function () {
+            // Thay thế img bằng icon
+            const noImageIcon = document.createElement("div");
+            noImageIcon.className = "no-image-icon";
+            noImageIcon.innerHTML =
+              '<i class="fas fa-file-image text-warning fa-3x"></i>';
+
+            if (preview.parentNode) {
+              preview.parentNode.insertBefore(noImageIcon, preview);
+              preview.style.display = "none";
+            }
+
+            // Hiển thị thông báo lỗi
+            const previewContainer = preview.closest(
+              ".image-preview-container"
+            );
+            if (previewContainer) {
+              previewContainer.classList.add("image-error");
+              const textElement =
+                previewContainer.querySelector(".mt-2 .text-muted");
+              if (textElement) {
+                textElement.classList.remove("d-none");
+                textElement.innerHTML =
+                  '<i class="fas fa-exclamation-triangle text-warning me-1"></i>Không thể đọc file ảnh';
+              }
+            }
           };
 
           reader.readAsDataURL(this.files[0]);
-          } else {
+        } else {
           preview.src = "#";
           preview.classList.add("d-none");
-          }
-        });
+        }
       });
-    }
+    });
+
+    // Xử lý lỗi cho các hình ảnh hiện có
+    document.querySelectorAll(".image-preview").forEach((img) => {
+      if (!img.getAttribute("onerror")) {
+        img.onerror = function () {
+          this.onerror = null;
+
+          // Tạo icon thay thế
+          const noImageIcon = document.createElement("div");
+          noImageIcon.className = "no-image-icon";
+          noImageIcon.innerHTML =
+            '<i class="fas fa-file-image text-warning fa-3x"></i>';
+
+          // Thêm icon vào DOM
+          if (this.parentNode) {
+            this.parentNode.insertBefore(noImageIcon, this);
+            this.style.display = "none";
+          }
+
+          // Thêm class error và thông báo
+          const container = this.closest(".image-preview-container");
+          if (container) {
+            container.classList.add("image-error");
+            const textElement = container.querySelector(".mt-2 .text-muted");
+            if (textElement) {
+              textElement.classList.remove("d-none");
+              textElement.innerHTML =
+                '<i class="fas fa-exclamation-triangle text-warning me-1"></i>Hình ảnh bị lỗi hoặc không tồn tại';
+            }
+          }
+        };
+      }
+    });
+  }
 
   // ======== Rich Text Editor ========
   // Initialize CKEditor for rich text fields
@@ -670,3 +746,137 @@ function resetFilters() {
   document.getElementById("search").value = "";
   document.getElementById("filterForm").submit();
 }
+
+/**
+ * Initialize form validation for payment methods
+ */
+function initPaymentMethodForms() {
+  const forms = document.querySelectorAll(".needs-validation");
+
+  Array.from(forms).forEach((form) => {
+    form.addEventListener(
+      "submit",
+      (event) => {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+
+        form.classList.add("was-validated");
+      },
+      false
+    );
+  });
+}
+
+// Add initialization for payment methods to our core init function
+document.addEventListener("DOMContentLoaded", function () {
+  // Initialize existing components
+  if (typeof initAdminUI === "function") {
+    initAdminUI();
+  }
+
+  // Initialize tooltips if not already handled
+  const tooltipTriggerList = [].slice.call(
+    document.querySelectorAll('[data-bs-toggle="tooltip"]')
+  );
+  tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+    new bootstrap.Tooltip(tooltipTriggerEl);
+  });
+
+  // Initialize payment method forms
+  initPaymentMethodForms();
+});
+
+/**
+ * Các hàm quản lý người dùng
+ * Xử lý các tương tác trên trang quản lý người dùng
+ */
+function initUserManagementForms() {
+  const userForm = document.getElementById("userForm");
+  const phoneInput = document.getElementById("phoneNumber");
+  const passwordInput = document.getElementById("password");
+  const roleDropdown = document.getElementById("roleId");
+
+  // Xác thực (validation) form người dùng
+  if (userForm) {
+    userForm.addEventListener("submit", function (event) {
+      if (!userForm.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      userForm.classList.add("was-validated");
+    });
+  }
+
+  // Tự động thiết lập mật khẩu bằng số điện thoại (chỉ cho trang tạo mới)
+  if (phoneInput && passwordInput && window.location.href.includes("/create")) {
+    phoneInput.addEventListener("input", function () {
+      // Đặt mật khẩu bằng số điện thoại
+      passwordInput.value = this.value;
+    });
+
+    // Đảm bảo mật khẩu được thiết lập khi gửi form
+    if (userForm) {
+      userForm.addEventListener("submit", function (event) {
+        if (phoneInput.value && phoneInput.value.match(/^\d{10,11}$/)) {
+          passwordInput.value = phoneInput.value;
+        } else {
+          if (!userForm.checkValidity()) {
+            event.preventDefault();
+          }
+        }
+      });
+    }
+  }
+
+  // Xử lý xác nhận khi xóa người dùng
+  const deleteButtons = document.querySelectorAll(".btn-delete");
+  if (deleteButtons.length) {
+    deleteButtons.forEach((btn) => {
+      btn.addEventListener("click", function (e) {
+        if (!confirm("Bạn có chắc chắn muốn xóa người dùng này?")) {
+          e.preventDefault();
+        }
+      });
+    });
+  }
+
+  // Khởi tạo form lọc và tìm kiếm
+  const filterForm = document.getElementById("filterForm");
+  const clearFiltersBtn = document.getElementById("clearFilters");
+
+  if (filterForm && clearFiltersBtn) {
+    clearFiltersBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+
+      // Đặt lại tất cả các trường nhập liệu
+      const inputs = filterForm.querySelectorAll(
+        "input:not([type=hidden]), select"
+      );
+      inputs.forEach((input) => {
+        if (input.type === "text" || input.tagName === "SELECT") {
+          input.value = "";
+        }
+      });
+
+      // Đặt lại số trang về 0
+      const pageInput = document.getElementById("pageInput");
+      if (pageInput) pageInput.value = 0;
+
+      // Gửi form để thực hiện tìm kiếm với các giá trị đã đặt lại
+      filterForm.submit();
+    });
+  }
+}
+
+// Khởi tạo chức năng quản lý người dùng khi trang đã tải xong
+document.addEventListener("DOMContentLoaded", function () {
+  // Khởi tạo các component có sẵn
+  if (typeof initAdminUI === "function") {
+    initAdminUI();
+  }
+
+  // Khởi tạo các chức năng cụ thể cho quản lý người dùng
+  initUserManagementForms();
+});

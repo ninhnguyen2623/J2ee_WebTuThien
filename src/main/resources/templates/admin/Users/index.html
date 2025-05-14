@@ -3,14 +3,16 @@
     layout:decorate="~{admin/fragments/_layout}"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 >
+<!-- Thiết lập thông tin cơ bản cho trang -->
 <head>
     <meta charset="UTF-8" />
     <title>Quản Lý Người Dùng</title>
 </head>
 
 <body>
+<!-- Phần nội dung chính của trang -->
 <div layout:fragment="content" class="container-fluid px-4 py-3">
-    <!-- Page Heading -->
+    <!-- Tiêu đề trang và nút thêm người dùng mới -->
     <div class="d-sm-flex justify-content-between align-items-center mb-4">
         <div>
             <h3 class="text-dark mb-0 fw-bold page-title">Quản Lý Người Dùng</h3>
@@ -23,7 +25,7 @@
         </a>
     </div>
     
-    <!-- Filters and Search -->
+    <!-- Card chứa bộ lọc và tìm kiếm -->
     <div class="card shadow mb-4">
         <div
             class="card-header py-3 d-flex justify-content-between align-items-center"
@@ -42,13 +44,16 @@
             </div>
         </div>
         <div class="card-body">
+            <!-- Form tìm kiếm và lọc -->
             <form
                 id="filterForm"
                 class="row g-3"
                 method="GET"
                 th:action="@{/admin/users}"
             >
+                <!-- Trường ẩn lưu trang hiện tại (cho phân trang) -->
                 <input type="hidden" name="page" id="pageInput" value="0" />
+                <!-- Ô tìm kiếm theo tên hoặc email -->
                 <div class="col-md-4">
                     <label
                         for="searchTerm"
@@ -69,6 +74,7 @@
                         />
                     </div>
                 </div>
+                <!-- Dropdown lọc theo vai trò -->
                 <div class="col-md-3">
                     <label for="roleId" class="form-label small fw-bold text-muted"
                     >Vai trò</label
@@ -84,6 +90,7 @@
                         </select>
                     </div>
                 </div>
+                <!-- Dropdown lọc theo trạng thái -->
                 <div class="col-md-3">
                     <label for="status" class="form-label small fw-bold text-muted"
                     >Trạng thái</label
@@ -103,6 +110,7 @@
                         </select>
                     </div>
                 </div>
+                <!-- Nút tìm kiếm -->
                 <div class="col-md-2 d-flex align-items-end">
                     <button type="submit" class="btn btn-primary w-100">
                         <i class="fas fa-search me-2"></i>Tìm kiếm
@@ -112,7 +120,7 @@
         </div>
     </div>
     
-    <!-- Users Table -->
+    <!-- Card chứa bảng danh sách người dùng -->
     <div class="card shadow mb-4">
         <div
             class="card-header py-3 d-flex justify-content-between align-items-center"
@@ -123,7 +131,9 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
+                <!-- Bảng hiển thị danh sách người dùng -->
                 <table class="table data-table" id="usersTable">
+                    <!-- Phần tiêu đề bảng -->
                     <thead>
                     <tr>
                         <th class="text-center" style="width: 60px">
@@ -156,13 +166,17 @@
                         </th>
                     </tr>
                     </thead>
+                    <!-- Phần thân bảng - dữ liệu người dùng -->
                     <tbody>
+                    <!-- Vòng lặp hiển thị từng người dùng -->
                     <tr
                         th:each="user : ${list}"
                         class="user-row"
                         th:data-id="${user.id}"
                     >
+                        <!-- Cột ID -->
                         <td th:text="${user.id}" class="text-center fw-bold">ID</td>
+                        <!-- Cột tên người dùng (với avatar) -->
                         <td>
                             <div class="d-flex align-items-center">
                                 <div class="avatar me-3">
@@ -179,6 +193,7 @@
                                 </div>
                             </div>
                         </td>
+                        <!-- Cột email -->
                         <td>
                             <div class="d-flex align-items-center">
                                 <div>
@@ -188,17 +203,20 @@
                                 </div>
                             </div>
                         </td>
+                        <!-- Cột vai trò (hiển thị badge) -->
                         <td class="text-center">
                             <div
                                 class="d-flex align-items-center justify-content-center"
                             >
-                      <span
-                          th:if="${user.roleId == 1}"
-                          class="badge bg-primary px-3 py-2 rounded-pill"
-                      >
+                                <!-- Badge Admin -->
+                                <span
+                                    th:if="${user.roleId == 1}"
+                                    class="badge bg-primary px-3 py-2 rounded-pill"
+                                >
                         <i class="fas fa-shield-alt me-1"></i>
                         Admin
                       </span>
+                                <!-- Badge User -->
                                 <span
                                     th:if="${user.roleId == 2}"
                                     class="badge bg-info px-3 py-2 rounded-pill"
@@ -208,19 +226,22 @@
                       </span>
                             </div>
                         </td>
+                        <!-- Cột trạng thái (hiển thị badge) -->
                         <td class="text-center">
                             <div
                                 class="d-flex align-items-center justify-content-center"
                             >
-                      <span
-                          th:if="${user.status == true}"
-                          class="badge bg-success-light text-success px-3 py-2"
-                      >
+                                <!-- Badge hoạt động -->
+                                <span
+                                    th:if="${user.status == true}"
+                                    class="badge bg-success-light text-success px-3 py-2"
+                                >
                         <i
                             class="fas fa-circle me-1 text-success status-indicator"
                         ></i>
                         Hoạt động
                       </span>
+                                <!-- Badge không hoạt động -->
                                 <span
                                     th:if="${user.status == false}"
                                     class="badge bg-danger-light text-danger px-3 py-2"
@@ -232,8 +253,10 @@
                       </span>
                             </div>
                         </td>
+                        <!-- Cột các nút thao tác (sửa/xóa) -->
                         <td class="text-center">
                             <div class="btn-group" role="group">
+                                <!-- Nút chỉnh sửa -->
                                 <a
                                     th:href="@{/admin/users/edit/{id}(id=${user.id})}"
                                     class="btn btn-sm btn-warning action-btn"
@@ -241,6 +264,7 @@
                                 >
                                     <i class="fas fa-edit"></i>
                                 </a>
+                                <!-- Nút xóa (có confirm) -->
                                 <a
                                     th:href="@{/admin/users/delete/{id}(id=${user.id})}"
                                     class="btn btn-sm btn-danger action-btn btn-delete"
@@ -251,6 +275,7 @@
                             </div>
                         </td>
                     </tr>
+                    <!-- Trường hợp không có người dùng nào (empty state) -->
                     <tr th:if="${#lists.isEmpty(list)}">
                         <td colspan="6" class="text-center py-5">
                             <div class="empty-state">
@@ -264,12 +289,14 @@
                                     Không tìm thấy người dùng
                                 </h5>
                                 <p class="empty-state-message">
-                        <span
-                            th:if="${searchTerm != null || roleId != null || status != null}"
-                        >
+                                    <!-- Thông báo khi không tìm thấy kết quả lọc -->
+                                    <span
+                                        th:if="${searchTerm != null || roleId != null || status != null}"
+                                    >
                           Không có kết quả nào phù hợp với bộ lọc. Vui lòng thử
                           lại với các tiêu chí khác.
                         </span>
+                                    <!-- Thông báo khi chưa có người dùng nào -->
                                     <span
                                         th:unless="${searchTerm != null || roleId != null || status != null}"
                                     >
@@ -300,10 +327,11 @@
         </div>
     </div>
     
-    <!-- Pagination -->
+    <!-- Phần phân trang (pagination) -->
     <div th:if="${totalPages > 0}" class="card shadow mb-4">
         <div class="card-body py-3">
             <div class="d-flex justify-content-between align-items-center">
+                <!-- Hiển thị thông tin về số lượng hiển thị -->
                 <div class="text-muted">
                     <i class="fas fa-user-friends me-1"></i> Hiển thị
                     <span
@@ -315,8 +343,10 @@
                     ></span>
                                                              của <span th:text="${totalElements}"></span> người dùng
                 </div>
+                <!-- Thanh điều hướng phân trang -->
                 <nav aria-label="Page navigation">
                     <ul class="pagination mb-0">
+                        <!-- Nút Trước -->
                         <li
                             class="page-item"
                             th:classappend="${currentPage == 0 ? 'disabled' : ''}"
@@ -329,6 +359,7 @@
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
+                        <!-- Các nút số trang -->
                         <li
                             class="page-item"
                             th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
@@ -341,6 +372,7 @@
                                 th:text="${i + 1}"
                             ></a>
                         </li>
+                        <!-- Nút Tiếp -->
                         <li
                             class="page-item"
                             th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}"
@@ -359,117 +391,5 @@
         </div>
     </div>
 </div>
-
-<!-- Custom scripts for users page -->
-<th:block layout:fragment="scripts">
-    <script src="/js/admin.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          // Initialize tooltips if any
-          if (typeof initTooltips === "function") {
-            initTooltips();
-          }
-
-          // Initialize DataTable for users
-          if ($.fn.DataTable && !$.fn.DataTable.isDataTable("#usersTable")) {
-            $("#usersTable").DataTable({
-              paging: false, // We use custom pagination
-              ordering: true,
-              info: false,
-              searching: false, // We use custom search
-              language: {
-                zeroRecords: "Không tìm thấy kết quả phù hợp",
-                emptyTable: "Không có dữ liệu",
-              },
-            });
-          }
-
-          // Handle page changes for search
-          document
-            .querySelectorAll(".pagination .page-link")
-            .forEach((link) => {
-              link.addEventListener("click", function (e) {
-                // Already has href with proper parameters, no need for additional handling
-              });
-            });
-
-          // Reset page on filter change
-          document
-            .getElementById("searchTerm")
-            .addEventListener("input", function () {
-              document.getElementById("pageInput").value = 0;
-            });
-
-          document
-            .getElementById("roleId")
-            .addEventListener("change", function () {
-              document.getElementById("pageInput").value = 0;
-            });
-
-          document
-            .getElementById("status")
-            .addEventListener("change", function () {
-              document.getElementById("pageInput").value = 0;
-            });
-
-          // Confirm delete action
-          const deleteButtons = document.querySelectorAll(".btn-delete");
-          if (deleteButtons.length > 0) {
-            deleteButtons.forEach((button) => {
-              button.addEventListener("click", function (e) {
-                if (!confirm("Bạn có chắc chắn muốn xóa người dùng này?")) {
-                  e.preventDefault();
-                }
-              });
-            });
-          }
-
-          // Handle "Làm Mới" (reset) button
-          document
-            .getElementById("clearFilters")
-            .addEventListener("click", function (e) {
-              e.preventDefault();
-              resetFilters();
-            });
-        });
-
-        // Function to reset filters
-        function resetFilters() {
-          document.getElementById("searchTerm").value = "";
-          document.getElementById("roleId").value = "";
-          document.getElementById("status").value = "";
-          document.getElementById("pageInput").value = 0;
-          document.getElementById("filterForm").submit();
-        }
-    </script>
-    <style>
-        .status-indicator {
-          font-size: 8px;
-          vertical-align: middle;
-          margin-top: -2px;
-        }
-
-        .avatar {
-          width: 36px;
-          height: 36px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .avatar-img {
-          width: 36px;
-          height: 36px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .avatar-img i {
-          font-size: 16px;
-        }
-    </style>
-</th:block>
 </body>
 </html>

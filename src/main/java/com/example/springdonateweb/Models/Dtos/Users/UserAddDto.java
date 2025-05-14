@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,6 +29,6 @@ public class UserAddDto implements Serializable {
     @Pattern(regexp = "\\d{10,11}", message = "Số điện thoại chỉ được chứa 10 hoặc 11 ký tự và chỉ được là ký tự số")
     private String phoneNumber;
     private int roleId;
-
-
+    private Boolean status;
+    
 }

@@ -66,12 +66,24 @@ public class UsersService implements IUsersService {
     }
     
     @Override
+    @Transactional
     public UsersResponseDto update(UserAddDto userAddDto) {
         Optional<UsersEntity> usersEntity = findUserByIdAndStatusTrue(userAddDto.getId());
         return usersEntity.map(user -> {
             user.setName(userAddDto.getName());
             user.setEmail(userAddDto.getEmail());
             user.setRoleId(userAddDto.getRoleId());
+            user.setPhoneNumber(userAddDto.getPhoneNumber());
+            user.setAddress(userAddDto.getAddress());
+            if (userAddDto.getStatus() != null) {
+                user.setStatus(userAddDto.getStatus());
+            }
+            
+            // Lưu lại password nếu có trong DTO
+            if (userAddDto.getPassword() != null && !userAddDto.getPassword().isEmpty()) {
+                user.setPassword(passwordEncoder.encode(userAddDto.getPassword()));
+            }
+            
             UsersEntity result = usersRepository.save(user);
             return usersMapper.toResponseDto(result);
         }).orElse(null);

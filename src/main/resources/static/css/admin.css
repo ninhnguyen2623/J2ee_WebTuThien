@@ -1083,3 +1083,220 @@ h3 {
 .time-box {
   font-size: 0.875rem;
 }
+
+/* Avatar circles for users and methods */
+.avatar-circle-lg {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Payment method specific styles */
+.icon-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg-primary-light {
+  background-color: rgba(13, 110, 253, 0.15);
+}
+
+.bg-success-light {
+  background-color: rgba(25, 135, 84, 0.15);
+}
+
+.bg-danger-light {
+  background-color: rgba(220, 53, 69, 0.15);
+}
+
+.fw-medium {
+  font-weight: 500;
+}
+
+.required-label::after {
+  content: " *";
+  color: #dc3545;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #6c757d;
+  text-align: right;
+}
+
+.detail-value {
+  color: #212529;
+}
+
+.empty-state {
+  padding: 40px 0;
+}
+
+.empty-state-icon {
+  opacity: 0.5;
+}
+
+.empty-state-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.empty-state-description {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* ======== GIAO DIỆN QUẢN LÝ NGƯỜI DÙNG ======== */
+/* Card form tạo/chỉnh sửa người dùng */
+.user-form-card {
+  margin-bottom: 1.5rem;
+}
+
+/* Các phần con trong form người dùng */
+.user-form-section {
+  margin-bottom: 1.5rem;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+/* Tiêu đề của các phần con */
+.user-form-section .card-header {
+  background-color: var(--secondary-very-light);
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 1.25rem;
+}
+
+/* Icon trong tiêu đề */
+.user-form-section .card-header i {
+  color: var(--primary-color);
+  margin-right: 0.5rem;
+}
+
+/* Khung avatar người dùng */
+.avatar {
+  width: 40px;
+  height: 40px;
+}
+
+/* Hình ảnh avatar */
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Chỉ thị trạng thái người dùng (hoạt động/không hoạt động) */
+.status-indicator {
+  font-size: 8px;
+}
+
+/* Nút hành động (sửa, xóa) */
+.action-btn {
+  margin: 0 3px;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+/* Hiệu ứng khi hover chuột trên nút hành động */
+.action-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* Nút cảnh báo (sửa) */
+.btn-warning.action-btn {
+  background-color: rgba(255, 193, 7, 0.15);
+  color: #ffc107;
+  border: none;
+}
+
+/* Hiệu ứng hover cho nút cảnh báo */
+.btn-warning.action-btn:hover {
+  background-color: #ffc107;
+  color: white;
+}
+
+/* Nút nguy hiểm (xóa) */
+.btn-danger.action-btn {
+  background-color: rgba(220, 53, 69, 0.15);
+  color: #dc3545;
+  border: none;
+}
+
+/* Hiệu ứng hover cho nút nguy hiểm */
+.btn-danger.action-btn:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Card thông tin tài khoản người dùng */
+.user-account-info {
+  text-align: center;
+}
+
+/* Vòng tròn avatar lớn trong trang chi tiết */
+.user-avatar-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: var(--primary-light-bg);
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Icon trong avatar */
+.user-avatar-circle i {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+}
+
+/* Hiển thị lỗi khi ảnh không tải được */
+.image-preview-container.image-error {
+  background-color: var(--warning-light-bg);
+  border: 1px dashed var(--warning-color);
+  padding: 0.75rem;
+}
+
+.image-preview-container.image-error .image-preview {
+  border: 2px solid var(--warning-color);
+  opacity: 0.9;
+}
+
+.image-preview-container.image-error span {
+  color: var(--warning-color);
+  font-weight: 500;
+}
+
+/* Icon hiển thị khi không tải được ảnh */
+.no-image-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 150px;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+  border: 1px dashed #ccc;
+}
+
+.image-preview-container.image-error .no-image-icon {
+  background-color: rgba(255, 193, 7, 0.05);
+  border: 1px dashed var(--warning-color);
+}
