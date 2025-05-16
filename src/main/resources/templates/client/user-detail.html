@@ -11,7 +11,7 @@
     <main layout:fragment="content" class="main-content">
         <div class="container-fluid page-header mb-5 wow fadeIn" data-wow-delay="0.1s">
             <div class="container text-center">
-                <h1 class="display-4 text-white animated slideInDown mb-4">User Detail</h1>
+                <h1 class="display-4 text-white animated slideInDown mb-4">Thông tin người dùng</h1>
                 <nav aria-label="breadcrumb animated slideInDown">
                     <ol class="breadcrumb justify-content-center mb-0">
                         <li class="breadcrumb-item">
@@ -26,16 +26,16 @@
         </div>
 
         <div class="container">
-            <h1 class="mb-4">User Detail</h1>
+            <h1 class="mb-4">Thông tin người dùng</h1>
             <div class="card user-detail-card">
                 <div class="card-body">
                     <h5 class="card-title" th:text="${user.name != null ? user.name : 'No Name'}">User Name</h5>
                     <p class="card-text"><strong>Email:</strong> <span th:text="${user.email}">user@example.com</span></p>
-                    <p class="card-text"><strong>Address:</strong> <span th:text="${user.address}">123 Main St</span></p>
-                    <p class="card-text"><strong>Phone Number:</strong> <span th:text="${user.phoneNumber}">123-456-7890</span></p>
+                    <p class="card-text"><strong>Địa chỉ:</strong> <span th:text="${user.address}">123 Main St</span></p>
+                    <p class="card-text"><strong>Số điện thoại:</strong> <span th:text="${user.phoneNumber}">123-456-7890</span></p>
 
-                   <a th:href="@{change-email}" class="btn btn-primary mt-3">Change Email</a>
-                   <a th:href="@{change-password}" class="btn btn-primary mt-3">Change Email</a>
+                   <a th:href="@{change-email}" class="btn btn-primary mt-3">Thay đổi Email</a>
+                   <a th:href="@{change-password}" class="btn btn-primary mt-3">Thay đổi mật khẩu</a>
                 </div>
             </div>
         </div>
