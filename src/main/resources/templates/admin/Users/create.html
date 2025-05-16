@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html
+    layout:decorate="~{admin/fragments/_layout}"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8" />
+    <title>Thêm Người Dùng Mới</title>
+</head>
+
+<body>
+<div layout:fragment="content" class="container-fluid px-4 py-3">
+    <!-- Page Heading -->
+    <div class="d-sm-flex justify-content-between align-items-center mb-4">
+        <h3 class="text-dark mb-0 fw-bold page-title">Thêm Người Dùng Mới</h3>
+        <a
+            class="btn btn-outline-primary btn-sm d-sm-inline-block shadow-sm"
+            th:href="@{/admin/users}"
+        >
+            <i class="fas fa-arrow-left me-2"></i>Quay Lại Danh Sách
+        </a>
+    </div>
+    
+    <!-- Create User Form Card -->
+    <div class="card shadow mb-4 user-form-card">
+        <div
+            class="card-header py-3 d-flex justify-content-between align-items-center"
+        >
+            <h6 class="m-0 fw-bold text-primary">Thông Tin Người Dùng</h6>
+        </div>
+        <div class="card-body">
+            <form
+                id="userForm"
+                th:action="@{/admin/users/create}"
+                th:object="${user}"
+                method="POST"
+                class="needs-validation"
+                novalidate
+            >
+                <!-- Thông tin cơ bản -->
+                <div class="card shadow-sm border-0 mb-4 user-form-section">
+                    <div class="card-header bg-light py-3">
+                        <h6 class="m-0 text-primary">
+                            <i class="fas fa-user-circle me-2"></i>Thông tin cơ bản
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <!-- Hàng 1: Họ tên và Email -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label
+                                        for="name"
+                                        class="form-label fw-bold required-label"
+                                    >Họ và Tên</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="name"
+                                        class="form-control"
+                                        th:field="*{name}"
+                                        placeholder="Nhập họ và tên"
+                                        required
+                                    />
+                                    <div class="invalid-feedback">
+                                        Vui lòng nhập họ và tên
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label
+                                        for="email"
+                                        class="form-label fw-bold required-label"
+                                    >Email</label
+                                    >
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        class="form-control"
+                                        th:field="*{email}"
+                                        placeholder="Nhập địa chỉ email"
+                                        required
+                                    />
+                                    <div class="invalid-feedback">
+                                        Vui lòng nhập địa chỉ email hợp lệ
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Mật khẩu ẩn -->
+                            <input
+                                type="hidden"
+                                id="password"
+                                name="password"
+                                th:field="*{password}"
+                            />
+                            
+                            <!-- Hàng 2: Số điện thoại và Vai trò -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label
+                                        for="phoneNumber"
+                                        class="form-label fw-bold required-label"
+                                    >Số Điện Thoại</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="phoneNumber"
+                                        class="form-control"
+                                        th:field="*{phoneNumber}"
+                                        placeholder="Nhập số điện thoại"
+                                        required
+                                        pattern="\d{10,11}"
+                                    />
+                                    <div class="form-text">
+                                        Số điện thoại phải có 10 hoặc 11 chữ số (Được sử dụng
+                                        làm mật khẩu mặc định)
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Vui lòng nhập số điện thoại hợp lệ (10-11 chữ số)
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Dropdown vai trò -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label
+                                        for="roleId"
+                                        class="form-label fw-bold required-label"
+                                    >Vai Trò *</label
+                                    >
+                                    <div class="dropdown">
+                                        <select
+                                            id="roleId"
+                                            name="roleId"
+                                            class="form-select form-control"
+                                            required
+                                        >
+                                            <option value="">-- Chọn vai trò --</option>
+                                            <option value="1" th:selected="${user.roleId == 1}">
+                                                Admin
+                                            </option>
+                                            <option value="2" th:selected="${user.roleId == 2}">
+                                                User
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="invalid-feedback">Vui lòng chọn vai trò</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Hàng 3: Địa chỉ -->
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label
+                                        for="address"
+                                        class="form-label fw-bold required-label"
+                                    >Địa Chỉ</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="address"
+                                        class="form-control"
+                                        th:field="*{address}"
+                                        placeholder="Nhập địa chỉ"
+                                        required
+                                    />
+                                    <div class="invalid-feedback">Vui lòng nhập địa chỉ</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Nút submit và hủy -->
+                <div class="form-actions d-flex justify-content-between">
+                    <a th:href="@{/admin/users}" class="btn btn-outline-secondary">
+                        <i class="fas fa-times me-2"></i>Hủy
+                    </a>
+                    <div>
+                        <button type="reset" class="btn btn-outline-secondary me-2">
+                            <i class="fas fa-redo me-2"></i>Đặt Lại
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Lưu Người Dùng
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Tips Card -->
+    <div class="card bg-light border-0 shadow-sm tips-card">
+        <div class="card-body">
+            <h6 class="fw-bold">
+                <i class="fas fa-lightbulb text-warning me-2"></i>Mẹo:
+            </h6>
+            <ul class="mb-0">
+                <li>Đảm bảo địa chỉ email là duy nhất trong hệ thống.</li>
+                <li>Mật khẩu phải đủ mạnh để bảo vệ tài khoản.</li>
+                <li>Số điện thoại phải theo định dạng chính xác (10-11 chữ số).</li>
+                <li>Cân nhắc kỹ khi gán vai trò Admin cho người dùng.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

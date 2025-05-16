@@ -10,10 +10,18 @@ import java.util.List;
 
 public interface ICategoriesService {
     List<CategoryResponseDto> findAll();
+    
     CategoryResponseDto findById(int id);
+    
     CategoryResponseDto create(CategoryCreateDto categoryCreateDto);
+    
     CategoryResponseDto update(int id, CategoryUpdateDto categoryUpdateDto);
+    
     void delete(int id);
+    
     Page<CategoryResponseDto> findCategoriesByPage(int page, int size);
+    
+    Page<CategoryResponseDto> findCategoriesByPage(int page, int size, String keyword, String sortBy, String sortDir);
+    
     List<CategoriesEntity> findAll2();
 }

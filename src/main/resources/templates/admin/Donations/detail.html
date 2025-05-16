@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html
+    layout:decorate="~{admin/fragments/_layout}"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+<head>
+    <meta charset="UTF-8" />
+    <title>Chi Tiết Quyên Góp</title>
+</head>
+
+<body>
+<div layout:fragment="content" class="container-fluid px-4 py-3">
+    <!-- Page Heading -->
+    <div class="d-sm-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="text-dark mb-0 fw-bold page-title">Chi Tiết Quyên Góp</h3>
+        </div>
+        <a
+            th:href="@{/admin/donations}"
+            class="btn btn-secondary btn-sm d-sm-inline-block shadow-sm"
+        >
+            <i class="fas fa-arrow-left fa-sm me-2"></i>Quay Lại
+        </a>
+    </div>
+    
+    <div class="row">
+        <!-- Donation Info Card -->
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div
+                    class="card-header py-3 d-flex justify-content-between align-items-center"
+                >
+                    <h6 class="m-0 fw-bold text-primary">
+                        <i class="fas fa-info-circle me-2"></i>Thông Tin Quyên Góp
+                    </h6>
+                    <div>
+                <span class="badge bg-primary px-3 py-2"
+                >ID: <span th:text="${donation.donationId}"></span
+                ></span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        <!-- Donor Information -->
+                        <div class="col-md-6">
+                            <div class="card border-0 mb-3">
+                                <div class="card-body p-0">
+                                    <h6 class="mb-3 text-primary fw-bold">
+                                        <i class="fas fa-user-circle me-2"></i>Thông Tin Người
+                                                                               Quyên Góp
+                                    </h6>
+                                    <div class="mb-3">
+                                        <p class="detail-label mb-1">Tên Người Quyên Góp</p>
+                                        <p class="detail-value" th:text="${donation.donorName}">
+                                            Tên người quyên góp
+                                        </p>
+                                    </div>
+                                    <div class="mb-3" th:if="${donation.userId}">
+                                        <p class="detail-label mb-1">Mã Người Dùng</p>
+                                        <p class="detail-value" th:text="${donation.userId}">
+                                            ID người dùng
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card border-0">
+                                <div class="card-body p-0">
+                                    <h6 class="mb-3 text-primary fw-bold">
+                                        <i class="fas fa-money-bill-wave me-2"></i>Thông Tin
+                                                                                   Quyên Góp
+                                    </h6>
+                                    <div class="mb-3">
+                                        <p class="detail-label mb-1">Số Tiền Quyên Góp</p>
+                                        <p class="detail-value">
+                          <span
+                              class="badge bg-success-light text-success px-3 py-2"
+                              th:text="${#numbers.formatDecimal(donation.amount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"
+                          >
+                            10,000 VNĐ
+                          </span>
+                                        </p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <p class="detail-label mb-1">Thời Gian Quyên Góp</p>
+                                        <p class="detail-value">
+                          <span
+                              th:text="${#temporals.format(donation.donationDate, 'dd/MM/yyyy HH:mm')}"
+                          >
+                            01/01/2023 12:00
+                          </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Program Information -->
+                        <div class="col-md-6">
+                            <div class="card border-0">
+                                <div class="card-body p-0">
+                                    <h6 class="mb-3 text-primary fw-bold">
+                                        <i class="fas fa-project-diagram me-2"></i>Thông Tin
+                                                                                   Chương Trình
+                                    </h6>
+                                    <div class="mb-3">
+                                        <p class="detail-label mb-1">Tên Chương Trình</p>
+                                        <p class="detail-value" th:text="${program.name}">
+                                            Tên chương trình
+                                        </p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <p class="detail-label mb-1">Mã Chương Trình</p>
+                                        <p class="detail-value" th:text="${program.programId}">
+                                            ID chương trình
+                                        </p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <p class="detail-label mb-1">Danh Mục</p>
+                                        <p class="detail-value">
+                          <span
+                              class="badge bg-light text-dark px-3 py-2"
+                              th:text="${program.category}"
+                          >
+                            Danh mục
+                          </span>
+                                        </p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <p class="detail-label mb-1">Trạng Thái</p>
+                                        <p class="detail-value">
+                          <span
+                              class="status-badge"
+                              th:classappend="${program.status ? 'active' : 'inactive'}"
+                              th:text="${program.status ? 'Đang hoạt động' : 'Đã đóng'}"
+                          >
+                            Trạng thái
+                          </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Summary Card -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 fw-bold text-primary">
+                        <i class="fas fa-chart-pie me-2"></i>Tóm Tắt
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <div
+                            class="d-flex justify-content-between align-items-center mb-2"
+                        >
+                            <span class="text-muted fs-7">Mã quyên góp</span>
+                            <span
+                                class="badge bg-primary px-2 py-1"
+                                th:text="${donation.donationId}"
+                            ></span>
+                        </div>
+                        <div
+                            class="d-flex justify-content-between align-items-center mb-2"
+                        >
+                            <span class="text-muted fs-7">Số tiền</span>
+                            <span
+                                class="fw-bold"
+                                th:text="${#numbers.formatDecimal(donation.amount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"
+                            ></span>
+                        </div>
+                        <div
+                            class="d-flex justify-content-between align-items-center mb-2"
+                        >
+                            <span class="text-muted fs-7">Ngày quyên góp</span>
+                            <span
+                                th:text="${#temporals.format(donation.donationDate, 'dd/MM/yyyy')}"
+                            ></span>
+                        </div>
+                        <div
+                            class="d-flex justify-content-between align-items-center mb-2"
+                        >
+                            <span class="text-muted fs-7">Giờ quyên góp</span>
+                            <span
+                                th:text="${#temporals.format(donation.donationDate, 'HH:mm')}"
+                            ></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

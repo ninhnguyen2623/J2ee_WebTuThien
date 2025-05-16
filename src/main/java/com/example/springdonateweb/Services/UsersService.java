@@ -36,37 +36,35 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UsersService implements IUsersService {
-
-
+    
     private final PasswordEncoder passwordEncoder;
-
+    
     private final UsersMapper usersMapper;
     private final UsersRepository usersRepository;
-
+    
     private final HttpSession session;
-
+    
     private final AppUtil appUtil;
-
+    
     private final EmailService emailService;
-
+    
     @Value("${pass.length-of-pass}")
     public Integer lengthOfPass;
-
+    
     @Override
     public List<UsersResponseDto> findAll() {
         return usersRepository.findAll().stream().map(usersMapper::toResponseDto).collect(Collectors.toList());
     }
-
+    
     @Override
     public UsersResponseDto findById(int id) {
         return null;
     }
-
+    
     private Optional<UsersEntity> findUserByIdAndStatusTrue(int id) {
         return usersRepository.findByIdAndStatusTrue(id);
     }
-
-
+    
     @Override
     public UsersResponseDto update(UserAddDto userAddDto) {
         Optional<UsersEntity> usersEntity = findUserByIdAndStatusTrue(userAddDto.getId());
@@ -78,8 +76,7 @@ public class UsersService implements IUsersService {
             return usersMapper.toResponseDto(result);
         }).orElse(null);
     }
-
-
+    
     @Override
     @Transactional
     public UsersResponseDto delete(int id) {
@@ -91,19 +88,17 @@ public class UsersService implements IUsersService {
                 })
                 .orElse(null);
     }
-
+    
     @Override
     public boolean existsById(int id) {
         return usersRepository.existsById(id);
     }
-
-
+    
     public UsersResponseDto findByEmail(String email) {
         Optional<UsersEntity> usersEntity = usersRepository.findByEmail(email);
         return usersEntity.map(usersMapper::toResponseDto).orElse(null);
     }
-
-
+    
     @Override
     public UsersResponseDto register(UserCreateDto userCreateDto) {
         UsersEntity usersEntity = usersMapper.toEntity(userCreateDto);
@@ -112,66 +107,65 @@ public class UsersService implements IUsersService {
         usersEntity.setRoleId(2);
         UsersEntity result = usersRepository.save(usersEntity);
         UserDetails userDetails = createUserDetailFromRegister(result);
-
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails,
+                                                                                                          null, userDetails.getAuthorities());
         // Lưu Authentication vào SecurityContextHolder
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                SecurityContextHolder.getContext());
+                             SecurityContextHolder.getContext());
         return usersMapper.toResponseDto(result);
     }
-
+    
     @Override
     public UsersResponseDto update(UserUpdateDto userUpdateDto) {
         return null;
     }
-
+    
     @Override
     public UserDetails createUserDetailFromRegister(UsersEntity usersEntity) {
         return new org.springframework.security.core.userdetails.User(
                 usersEntity.getEmail(),
                 usersEntity.getPassword(),
-                List.of(new SimpleGrantedAuthority(usersEntity.getRoleId().toString()))
-        );
+                List.of(new SimpleGrantedAuthority(usersEntity.getRoleId().toString())));
     }
-
+    
     @Override
     public List<UsersResponseDto> findByStatusTrue() {
         return usersRepository.findByStatusTrue().stream()
-                .map(usersMapper::toResponseDto)
-                .collect(Collectors.toList());
+                              .map(usersMapper::toResponseDto)
+                              .collect(Collectors.toList());
     }
-
+    
     @Override
     public Page<UsersResponseDto> findUsersByPage(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<UsersEntity> userPage = usersRepository.findAll(pageable);
         return userPage.map(usersMapper::toResponseDto);
     }
-
+    
     @Override
     public boolean existsByEmail(String email) {
         return usersRepository.existsByEmail(email);
     }
-
+    
     @Override
     public boolean checkPassword(int id, String password) {
         Optional<UsersEntity> usersEntity = usersRepository.findByIdAndStatusTrue(id);
         if (usersEntity.isPresent()) {
             UsersEntity user = usersEntity.get();
             return passwordEncoder.matches(password, user.getPassword());
-
+            
         } else {
             return false;
         }
     }
-
+    
     @Override
     public boolean checkComfirmPassword(String password, String confirmPassword) {
         return password.equals(confirmPassword);
     }
-
+    
     @Override
     @Transactional
     public void changePassword(int id, String password) {
@@ -181,20 +175,19 @@ public class UsersService implements IUsersService {
             usersRepository.save(user);
         });
     }
-
-
+    
     @Override
     public UsersResponseDto findByIdAndStatusTrue(int id) {
         Optional<UsersEntity> usersEntity = usersRepository.findByIdAndStatusTrue(id);
         return usersEntity.map(usersMapper::toResponseDto).orElse(null);
     }
-
+    
     @Override
     public UsersResponseDto findByEmailAndStatusTrue(String email) {
         Optional<UsersEntity> usersEntity = usersRepository.findByEmailAndStatusTrue(email);
         return usersEntity.map(usersMapper::toResponseDto).orElse(null);
     }
-
+    
     @Override
     public UsersResponseDto create(UserAddDto userAddDto) {
         UsersEntity usersEntity = usersMapper.toEntity(userAddDto);
@@ -203,7 +196,7 @@ public class UsersService implements IUsersService {
         UsersEntity result = usersRepository.save(usersEntity);
         return usersMapper.toResponseDto(result);
     }
-
+    
     @Override
     @Transactional
     public void resetPassword(String email) {
@@ -215,15 +208,14 @@ public class UsersService implements IUsersService {
                 emailService.sendEmail(
                         person.getEmail(),
                         "Cấp lại mật khẩu",
-                        "Mật khẩu mới của bạn là " + rawPass + " , vui lòng không chia sẽ mật khẩu này cho bất kì ai!!"
-                );
+                        "Mật khẩu mới của bạn là " + rawPass
+                                + " , vui lòng không chia sẽ mật khẩu này cho bất kì ai!!");
             } catch (MessagingException | UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
         });
     }
-
-
+    
     @Override
     public void sendOtp(int id, String email) {
         try {
@@ -231,8 +223,7 @@ public class UsersService implements IUsersService {
             emailService.sendEmail(
                     email,
                     "OTP",
-                    "Mã OTP của bạn là: " + otp
-            );
+                    "Mã OTP của bạn là: " + otp);
             Optional<UsersEntity> usersEntity = usersRepository.findByIdAndStatusTrue(id);
             usersEntity.ifPresent(user -> {
                 DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
@@ -244,7 +235,7 @@ public class UsersService implements IUsersService {
             throw new RuntimeException(e);
         }
     }
-
+    
     @Override
     @Transactional
     public void changeEmail(int id) {
@@ -253,10 +244,10 @@ public class UsersService implements IUsersService {
             String[] data = user.getChangeEmail().split(";");
             user.setEmail(data[0]);
             usersRepository.save(user);
-
+            
         });
     }
-
+    
     @Override
     public boolean checkOtp(int id, String otp) {
         Optional<UsersEntity> getUser = usersRepository.findByIdAndStatusTrue(id);
@@ -274,6 +265,48 @@ public class UsersService implements IUsersService {
             return false;
         }
     }
-
-
+    
+    @Override
+    public Page<UsersResponseDto> searchUsers(String searchTerm, Integer roleId, Boolean status, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<UsersEntity> userPage;
+        
+        // All filters are empty - return all users
+        if ((searchTerm == null || searchTerm.isEmpty()) && roleId == null && status == null) {
+            userPage = usersRepository.findAll(pageable);
+        }
+        // Only searchTerm is provided
+        else if ((searchTerm != null && !searchTerm.isEmpty()) && roleId == null && status == null) {
+            userPage = usersRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
+                    searchTerm, searchTerm, pageable);
+        }
+        // Only roleId is provided
+        else if ((searchTerm == null || searchTerm.isEmpty()) && roleId != null && status == null) {
+            userPage = usersRepository.findByRoleId(roleId, pageable);
+        }
+        // Only status is provided
+        else if ((searchTerm == null || searchTerm.isEmpty()) && roleId == null && status != null) {
+            userPage = usersRepository.findByStatus(status, pageable);
+        }
+        // searchTerm and roleId are provided
+        else if ((searchTerm != null && !searchTerm.isEmpty()) && roleId != null && status == null) {
+            userPage = usersRepository.findByNameOrEmailAndRoleId(searchTerm, roleId, pageable);
+        }
+        // searchTerm and status are provided
+        else if ((searchTerm != null && !searchTerm.isEmpty()) && roleId == null && status != null) {
+            userPage = usersRepository.findByNameOrEmailAndStatus(searchTerm, status, pageable);
+        }
+        // roleId and status are provided
+        else if ((searchTerm == null || searchTerm.isEmpty()) && roleId != null && status != null) {
+            userPage = usersRepository.findByRoleIdAndStatus(roleId, status, pageable);
+        }
+        // All filters are provided
+        else {
+            userPage = usersRepository.findByNameOrEmailAndRoleIdAndStatus(
+                    searchTerm, roleId, status, pageable);
+        }
+        
+        return userPage.map(usersMapper::toResponseDto);
+    }
+    
 }

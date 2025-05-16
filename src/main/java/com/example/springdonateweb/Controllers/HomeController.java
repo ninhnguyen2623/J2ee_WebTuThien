@@ -56,7 +56,7 @@ public class HomeController {
             if (user != null) {
                
                 if (user.getRoleId() == 1) {  
-                    return "redirect:/admin/user"; 
+                    return "redirect:/admin";
                 }
 
                 model.addAttribute("program", program);

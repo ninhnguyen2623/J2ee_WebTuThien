@@ -1,64 +1,306 @@
 <!DOCTYPE html>
-<html layout:decorate="~{admin/fragments/_layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html
+    layout:decorate="~{admin/fragments/_layout}"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
 <head>
-  <meta charset="UTF-8">
-  <title>Edit Program</title>
+  <meta charset="UTF-8" />
+  <title>Chỉnh Sửa Chương Trình</title>
+  <!-- CKEditor 5 -->
+  <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
 </head>
+
 <body>
-<div layout:fragment="content">
-  <h3>Edit Program</h3>
-  <form th:action="@{/admin/programs/edit/{id}(id=${program.programId})}" th:object="${program}" method="POST" enctype="multipart/form-data">
-
-    <!-- Trường tên chương trình -->
-    <div class="form-group">
-      <label for="name">Name</label>
-      <input type="text" id="name" class="form-control" th:field="*{name}" placeholder="Enter program name" required>
-      <div th:if="${#fields.hasErrors('name')}" class="text-danger">
-        <span th:errors="*{name}">Name error</span>
-      </div>
+<div layout:fragment="content" class="container-fluid px-4 py-3">
+  <!-- Page Heading -->
+  <div class="d-sm-flex justify-content-between align-items-center mb-4">
+    <h3 class="text-dark mb-0 fw-bold page-title">
+      Chỉnh Sửa Chương Trình
+    </h3>
+    <a
+        class="btn btn-outline-primary btn-sm d-sm-inline-block shadow-sm"
+        th:href="@{/admin/programs}"
+    >
+      <i class="fas fa-arrow-left me-2"></i>Quay Lại Danh Sách
+    </a>
+  </div>
+  
+  <!-- Error Alert -->
+  <div class="alert alert-danger mb-4" th:if="${error != null}">
+    <h5 class="alert-heading">Đã xảy ra lỗi!</h5>
+    <p th:text="${error}">Chi tiết lỗi</p>
+    <hr />
+    <p class="mb-0">
+      <a th:href="@{/admin/programs}" class="btn btn-outline-danger">
+        <i class="fas fa-arrow-left me-2"></i>Quay Lại Danh Sách
+      </a>
+      <button
+          onclick="window.location.reload()"
+          class="btn btn-outline-secondary"
+      >
+        <i class="fas fa-redo me-2"></i>Tải Lại Trang
+      </button>
+    </p>
+  </div>
+  
+  <!-- Edit Program Form Card -->
+  <div class="card shadow mb-4">
+    <div
+        class="card-header py-3 d-flex justify-content-between align-items-center"
+    >
+      <h6 class="m-0 fw-bold text-primary">Thông Tin Chương Trình</h6>
+      <span class="badge bg-primary"
+      >ID: <span th:text="${program.programId}"></span
+      ></span>
     </div>
-
-    <!-- Trường mô tả -->
-    <div class="form-group">
-      <label for="description">Description</label>
-      <textarea id="description" class="form-control" th:field="*{description}" placeholder="Enter program description"></textarea>
+    <div class="card-body">
+      <form
+          id="programForm"
+          th:action="@{/admin/programs/edit/{id}(id=${program.programId})}"
+          th:object="${program}"
+          method="POST"
+          enctype="multipart/form-data"
+          class="needs-validation"
+          novalidate
+      >
+        <!-- Thông tin cơ bản -->
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-header bg-light py-3">
+            <h6 class="m-0 text-primary">
+              <i class="fas fa-info-circle me-2"></i>Thông tin cơ bản
+            </h6>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <!-- Cột trái -->
+              <div class="col-md-6">
+                <!-- Trường danh mục -->
+                <div class="mb-3">
+                  <label for="categoryId" class="form-label fw-bold"
+                  >Danh Mục <span class="text-danger">*</span></label
+                  >
+                  <select
+                      id="categoryId"
+                      class="form-select"
+                      th:field="*{categoryId}"
+                      required
+                  >
+                    <option value="">-- Chọn danh mục --</option>
+                    <option
+                        th:each="category : ${categories}"
+                        th:value="${category.categoryId}"
+                        th:text="${category.name}"
+                        th:selected="${category.categoryId == program.categoryId}"
+                    >
+                      Tên Danh Mục
+                    </option>
+                  </select>
+                  <div class="form-text">
+                    Chọn danh mục phù hợp cho chương trình
+                  </div>
+                  <div class="invalid-feedback">Vui lòng chọn danh mục</div>
+                </div>
+                
+                <!-- Trường tên chương trình -->
+                <div class="mb-3">
+                  <label for="name" class="form-label fw-bold"
+                  >Tên Chương Trình
+                    <span class="text-danger">*</span></label
+                  >
+                  <input
+                      type="text"
+                      id="name"
+                      class="form-control"
+                      th:field="*{name}"
+                      placeholder="Nhập tên chương trình"
+                      required
+                      maxlength="100"
+                  />
+                  <div class="form-text">
+                    Tên chương trình sẽ hiển thị trên hệ thống
+                  </div>
+                  <div class="invalid-feedback">
+                    Vui lòng nhập tên chương trình
+                  </div>
+                </div>
+                
+                <!-- Trường mục tiêu quyên góp -->
+                <div class="mb-3">
+                  <label for="goalAmount" class="form-label fw-bold"
+                  >Mục Tiêu Quyên Góp (VNĐ)
+                    <span class="text-danger">*</span></label
+                  >
+                  <div class="input-group">
+                    <input
+                        type="number"
+                        id="goalAmount"
+                        class="form-control"
+                        th:field="*{goalAmount}"
+                        placeholder="Nhập số tiền mục tiêu"
+                        required
+                        min="1000"
+                    />
+                    <span class="input-group-text">VNĐ</span>
+                  </div>
+                  <div class="form-text">
+                    Nhập số tiền mục tiêu cho chương trình
+                  </div>
+                  <div class="invalid-feedback">
+                    Vui lòng nhập mục tiêu quyên góp
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Cột phải -->
+              <div class="col-md-6">
+                <!-- Trường ngày bắt đầu -->
+                <div class="mb-3">
+                  <label for="startDate" class="form-label fw-bold"
+                  >Ngày Bắt Đầu <span class="text-danger">*</span></label
+                  >
+                  <input
+                      type="date"
+                      id="startDate"
+                      class="form-control"
+                      th:field="*{startDate}"
+                      required
+                  />
+                  <div class="form-text">
+                    Chọn ngày bắt đầu chương trình
+                  </div>
+                  <div class="invalid-feedback">
+                    Vui lòng chọn ngày bắt đầu
+                  </div>
+                </div>
+                
+                <!-- Trường ngày kết thúc -->
+                <div class="mb-3">
+                  <label for="endDate" class="form-label fw-bold"
+                  >Ngày Kết Thúc <span class="text-danger">*</span></label
+                  >
+                  <input
+                      type="date"
+                      id="endDate"
+                      class="form-control"
+                      th:field="*{endDate}"
+                      required
+                  />
+                  <div class="form-text">
+                    Chọn ngày kết thúc chương trình
+                  </div>
+                  <div class="invalid-feedback" id="endDateFeedback">
+                    Vui lòng chọn ngày kết thúc
+                  </div>
+                </div>
+                
+                <!-- Trường hình ảnh -->
+                <div class="mb-3">
+                  <label for="programImage" class="form-label fw-bold"
+                  >Hình Ảnh</label
+                  >
+                  <input
+                      type="file"
+                      id="programImage"
+                      class="form-control"
+                      name="image"
+                      accept="image/*"
+                      data-preview="imagePreview"
+                  />
+                  <div class="form-text">
+                    Chọn hình ảnh mới nếu muốn thay đổi (JPG, PNG, tối đa
+                    2MB)
+                  </div>
+                  <div
+                      class="image-preview-container"
+                      th:if="${program != null && program.image != null}"
+                  >
+                    <img
+                        id="imagePreview"
+                        class="image-preview"
+                        th:src="@{'/img/program/' + ${program.image}}"
+                        alt="Preview"
+                        onerror="this.onerror=null; this.src='/img/no-image.png'; this.nextElementSibling.textContent='Hình ảnh không tồn tại'"
+                    />
+                    <span class="text-muted ms-2">Hình hiện tại</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Mô tả chi tiết -->
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-header bg-light py-3">
+            <h6 class="m-0 text-primary">
+              <i class="fas fa-align-left me-2"></i>Mô tả chi tiết
+            </h6>
+          </div>
+          <div class="card-body">
+            <!-- Trường mô tả chương trình -->
+            <div class="mb-0">
+              <label for="description" class="form-label fw-bold"
+              >Mô Tả <span class="text-danger">*</span></label
+              >
+              <div class="ckeditor-container border rounded">
+                    <textarea
+                        id="description"
+                        name="description"
+                        th:field="*{description}"
+                        class="ckeditor form-control"
+                        placeholder="Nhập mô tả chương trình"
+                        required
+                        rows="5"
+                        style="min-height: 150px"
+                    ></textarea>
+              </div>
+              <div class="form-text mt-2">
+                Mô tả chi tiết giúp người dùng hiểu rõ hơn về chương trình
+                này
+              </div>
+              <div class="invalid-feedback">
+                Vui lòng nhập mô tả chương trình
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Nút submit và hủy -->
+        <div class="form-actions d-flex justify-content-between">
+          <a th:href="@{/admin/programs}" class="btn btn-outline-secondary">
+            <i class="fas fa-times me-2"></i>Hủy
+          </a>
+          <div>
+            <button type="reset" class="btn btn-outline-secondary me-2">
+              <i class="fas fa-redo me-2"></i>Đặt Lại
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save me-2"></i>Cập Nhật Chương Trình
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
-
-    <!-- Trường số tiền mục tiêu -->
-    <div class="form-group">
-      <label for="goalAmount">Goal Amount</label>
-      <input type="number" id="goalAmount" class="form-control" th:field="*{goalAmount}" placeholder="Enter goal amount" required>
+  </div>
+  
+  <!-- Warning Card -->
+  <div class="card bg-warning-light border-0 shadow-sm">
+    <div class="card-body">
+      <h6 class="fw-bold">
+        <i class="fas fa-exclamation-triangle text-warning me-2"></i>Lưu ý:
+      </h6>
+      <ul class="mb-0">
+        <li>
+          Việc thay đổi tên chương trình có thể ảnh hưởng đến khả năng tìm
+          kiếm của người dùng.
+        </li>
+        <li>
+          Hãy đảm bảo rằng bạn không thay đổi quá nhiều ý nghĩa nếu chương
+          trình đã có nhiều lượt quyên góp.
+        </li>
+      </ul>
     </div>
-
-    <!-- Trường số tiền hiện tại -->
-
-    <!-- Trường ngày bắt đầu -->
-    <div class="form-group">
-      <label for="startDate">Start Date</label>
-      <input type="date" id="startDate" class="form-control" th:field="*{startDate}" required>
-    </div>
-
-    <!-- Trường ngày kết thúc -->
-    <div class="form-group">
-      <label for="endDate">End Date</label>
-      <input type="date" id="endDate" class="form-control" th:field="*{endDate}" required>
-      <div th:if="${#fields.hasErrors('endDate')}" class="text-danger">
-        <span th:errors="*{endDate}">End date error</span>
-      </div>
-    </div>
-
-    <!-- Trường chọn hình ảnh -->
-    <div class="form-group">
-      <label for="image">Image</label>
-      <input type="file" id="image" class="form-control" th:field="*{image}">
-      <div th:if="${#fields.hasErrors('image')}" class="text-danger">
-        <span th:errors="*{image}">Image error</span>
-      </div>
-    </div>
-
-    <!-- Nút submit -->
-    <button type="submit" class="btn btn-primary">Update Program</button>
-  </form>
+  </div>
 </div>
 </body>
 </html>
