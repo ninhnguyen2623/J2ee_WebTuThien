@@ -58,7 +58,12 @@
               aria-expanded="false">
               <i class="fa fa-user"></i>
             </button>
-            <ul class="dropdown-menu dropdown-menu-end" style="right: -45px;">
+            <ul class="dropdown-menu dropdown-menu-end text-dark" style="right: -45px;">
+                <li>
+                <a class="dropdown-item text-center" th:href="@{/user-detail}">
+               <span sec:authentication="name">Username</span>
+                </a>
+              </li>
               <li>
                 <a class="dropdown-item" th:href="@{/user-detail}">
                   <i class="fas fa-user-circle me-2"></i>Tài khoản của tôi
