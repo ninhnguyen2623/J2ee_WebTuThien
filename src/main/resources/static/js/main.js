@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
         form.classList.add('was-validated');
     });
 });
-document.getElementById('sendOtpBtn').addEventListener('click', function() {
+/* document.getElementById('sendOtpBtn').addEventListener('click', function() {
     const newEmail = document.getElementById('newEmail').value;
     if (newEmail) {
         fetch('/send-otp', {
@@ -163,7 +163,7 @@ document.getElementById('sendOtpBtn').addEventListener('click', function() {
     } else {
         alert('Please enter a new email address.');
     }
-});
+}); */
 
 // Show toast 
 document.addEventListener('DOMContentLoaded', function () {
@@ -172,4 +172,10 @@ document.addEventListener('DOMContentLoaded', function () {
         return new bootstrap.Toast(toastEl)
     })
     toastList.forEach(toast => toast.show())
+});
+
+$(document).ready(function () {
+    $('#header-carousel').carousel({
+        interval: 3000
+    });
 });

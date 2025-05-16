@@ -9,7 +9,7 @@
 </head>
 <body>
 <main layout:fragment="content" class="main-content">
-    <div class="container-fluid page-header mb-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container-fluid page-header1 mb-5 wow fadeIn" data-wow-delay="0.1s">
         <div class="container text-center">
             <h1 class="display-4 text-white animated slideInDown mb-4">Quỹ chung</h1>
             <nav aria-label="breadcrumb animated slideInDown">
@@ -18,7 +18,7 @@
                         <a class="text-white" href="#">Home</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a class="text-white" href="#">Quỹ chung</a>
+                        <a class="text-primary" href="#">Quỹ chung</a>
                     </li>
                 </ol>
             </nav>
@@ -32,31 +32,31 @@
                     <div class="row g-3">
                         <div class="col-12">
                             <div class="mb-4">
-                                <label for="amount" class="form-label">Amount (VND)</label>
+                                <label for="amount" class="form-label">Số tiền (VND)</label>
                                 <input type="number"
                                        class="form-control form-control-lg"
                                        id="amount"
                                        name="amount"
                                        required
                                        min="10000"
-                                       placeholder="Enter amount">
+                                       placeholder="100.000 đ">
                                 <div class="invalid-feedback">
                                     Please enter an amount of at least 10,000 VND
                                 </div>
                             </div>
                         <div class="col-12">
                             <div class="mb-4">
-                                <label for="orderInfo" class="form-label">Note</label>
+                                <label for="orderInfo" class="form-label">Nội dung</label>
                                 <textarea class="form-control"
                                           id="orderInfo"
                                           name="orderInfo"
                                           rows="3"
-                                          placeholder="Leave a message..."></textarea>
+                                          placeholder="Hãy tin tưởng và ủng hộ..."></textarea>
                             </div>
                         </div>
                         <div class="col-12">
                             <button type="submit" class="btn btn-primary btn-lg w-100">
-                                Proceed to Payment
+                                Quyên góp
                             </button>
                         </div>
                     </div>

@@ -175,15 +175,6 @@
     object-fit: cover;
   }
 }
-
-.page-header {
-  padding-top: 12rem;
-  padding-bottom: 6rem;
-  background: linear-gradient(rgba(0, 29, 35, 0.8), rgba(0, 29, 35, 0.8)),
-    url(../img/carousel-2.jpg) center center no-repeat;
-  background-size: cover;
-}
-
 .page-header .breadcrumb-item + .breadcrumb-item::before {
   color: #999999;
 }
@@ -232,6 +223,13 @@
   transition: 0.5s;
 }
 
+
+.equal-img {
+        width: 100%;
+        height: 180px; /* hoặc chiều cao mong muốn */
+        object-fit: cover;
+}
+  
 .causes-item:hover .causes-overlay {
   height: 100%;
   opacity: 1;
@@ -242,9 +240,10 @@
   box-shadow: 0 0 45px rgba(0, 0, 0, 0.06);
 }
 
+
 /*** Donate ***/
 .donate {
-  background: rgba(0, 29, 35, 0.8);
+  background: rgba(0, 29, 35, 0.559);
 }
 
 .btn-group .btn-light:hover,
@@ -486,12 +485,20 @@
 
 /* Detail user */
 .page-header {
-  background: linear-gradient(rgba(0, 29, 35, 0.8), rgba(0, 29, 35, 0.8)),
-    url("../img/carousel-1.jpg") center center no-repeat;
+  background: linear-gradient(rgba(0, 29, 35, 0.537), rgba(0, 29, 35, 0.615)),
+    url("../img/carousel-3.jpg") center center no-repeat;
   background-size: cover;
-  padding-top: 12rem;
-  padding-bottom: 6rem;
+  padding-top: 22rem;
+  padding-bottom: 10rem;
 }
+.page-header1 {
+  background: linear-gradient(rgba(0, 29, 35, 0.537), rgba(0, 29, 35, 0.615)),
+    url("../img/courses-1.jpg") center center no-repeat;
+  background-size: cover;
+  padding-top: 22rem;
+  padding-bottom: 10rem;
+}
+
 
 .user-detail-card {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -713,3 +720,9 @@
 .shadow-header {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   }
+  .custom-table thead {
+    color: #000;            /* Màu chữ trắng */
+  }
+.custom-table tbody td {
+    color: #000000;            /* Màu chữ nội dung: đen */
+}
