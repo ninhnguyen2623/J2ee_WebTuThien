@@ -6,8 +6,6 @@
 <head>
   <meta charset="UTF-8" />
   <title>Chỉnh Sửa Chương Trình</title>
-  <!-- CKEditor 5 -->
-  <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
 </head>
 
 <body>
@@ -244,18 +242,16 @@
               <label for="description" class="form-label fw-bold"
               >Mô Tả <span class="text-danger">*</span></label
               >
-              <div class="ckeditor-container border rounded">
-                    <textarea
-                        id="description"
-                        name="description"
-                        th:field="*{description}"
-                        class="ckeditor form-control"
-                        placeholder="Nhập mô tả chương trình"
-                        required
-                        rows="5"
-                        style="min-height: 150px"
-                    ></textarea>
-              </div>
+              <textarea
+                  id="description"
+                  name="description"
+                  th:field="*{description}"
+                  class="form-control"
+                  placeholder="Nhập mô tả chương trình"
+                  required
+                  rows="5"
+                  style="min-height: 150px; resize: vertical"
+              ></textarea>
               <div class="form-text mt-2">
                 Mô tả chi tiết giúp người dùng hiểu rõ hơn về chương trình
                 này

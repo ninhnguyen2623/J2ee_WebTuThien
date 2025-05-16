@@ -58,12 +58,20 @@ public class ProgramsService implements IProgramsService {
     public ProgramsResponseDto update(ProgramUpdateDto programUpdateDto) {
         Optional<ProgramsEntity> program = programsRepository.findById(programUpdateDto.getProgramId());
         if (program.isPresent()) {
-            ProgramsEntity updatedProgram = programsMapper.partialUpdate(programUpdateDto, program.get());
-            Optional<CategoriesEntity> category = categoriesRepository.findById(programUpdateDto.getCategoryId());
-            category.ifPresent(updatedProgram::setCategory);
-            return programsMapper.toDto(programsRepository.save(updatedProgram));
+            try {
+                ProgramsEntity updatedProgram = programsMapper.partialUpdate(programUpdateDto, program.get());
+                Optional<CategoriesEntity> category = categoriesRepository.findById(programUpdateDto.getCategoryId());
+                category.ifPresent(updatedProgram::setCategory);
+                
+                ProgramsEntity savedEntity = programsRepository.save(updatedProgram);
+                return programsMapper.toDto(savedEntity);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw e;
+            }
+        } else {
+            return null;
         }
-        return null;
     }
     
     public Page<ProgramsResponseDto> findProgramsByPage(int page, int size) {
