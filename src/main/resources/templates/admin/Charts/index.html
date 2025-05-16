@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html
+    layout:decorate="~{admin/fragments/_layout}"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+<head>
+    <meta charset="UTF-8" />
+    <title>Biểu Đồ Thống Kê</title>
+    <style>
+        .chart-container {
+          position: relative;
+          height: 350px;
+          width: 100%;
+          margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+<div layout:fragment="content" class="container-fluid px-4 py-3">
+    <!-- Page Heading -->
+    <div class="d-sm-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="text-dark mb-0 fw-bold page-title">Biểu Đồ Thống Kê</h3>
+        </div>
+    </div>
+    
+    <!-- First row: Donations by Program -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div
+                    class="card-header py-3 d-flex justify-content-between align-items-center"
+                >
+                    <h6 class="m-0 fw-bold text-primary">
+                        <i class="fas fa-chart-bar me-2"></i>Tổng Tiền Quyên Góp Theo
+                                                             Chương Trình
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="donationByProgramChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Second row: other charts -->
+    <div class="row mb-4">
+        <!-- Donations Over Time -->
+        <div class="col-md-6">
+            <div class="card shadow h-100">
+                <div
+                    class="card-header py-3 d-flex justify-content-between align-items-center"
+                >
+                    <h6 class="m-0 fw-bold text-primary">
+                        <i class="fas fa-chart-line me-2"></i>Số Lượt Quyên Góp Theo
+                                                              Thời Gian
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="donationsOverTimeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Donations by Category -->
+        <div class="col-md-6">
+            <div class="card shadow h-100">
+                <div
+                    class="card-header py-3 d-flex justify-content-between align-items-center"
+                >
+                    <h6 class="m-0 fw-bold text-primary">
+                        <i class="fas fa-chart-pie me-2"></i>Phân Loại Đóng Góp Theo
+                                                             Lĩnh Vực
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="donationsByCategoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="scripts">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          // Định nghĩa màu cho biểu đồ
+          const chartColors = [
+            "rgba(54, 162, 235, 0.8)",
+            "rgba(255, 99, 132, 0.8)",
+            "rgba(75, 192, 192, 0.8)",
+            "rgba(255, 159, 64, 0.8)",
+            "rgba(153, 102, 255, 0.8)",
+            "rgba(255, 205, 86, 0.8)",
+            "rgba(201, 203, 207, 0.8)",
+            "rgba(54, 162, 235, 0.8)",
+            "rgba(255, 99, 132, 0.8)",
+          ];
+
+          // Định nghĩa màu border cho biểu đồ
+          const chartBorderColors = [
+            "rgb(54, 162, 235)",
+            "rgb(255, 99, 132)",
+            "rgb(75, 192, 192)",
+            "rgb(255, 159, 64)",
+            "rgb(153, 102, 255)",
+            "rgb(255, 205, 86)",
+            "rgb(201, 203, 207)",
+            "rgb(54, 162, 235)",
+            "rgb(255, 99, 132)",
+          ];
+
+          // Hàm định dạng tiền VNĐ
+          function formatCurrency(value) {
+            return new Intl.NumberFormat("vi-VN", {
+              style: "currency",
+              currency: "VND",
+              maximumFractionDigits: 0,
+            }).format(value);
+          }
+
+          // Hàm kiểm tra dữ liệu có trống không
+          function isEmptyData(data) {
+            return (
+              !data ||
+              !data.labels ||
+              !data.data ||
+              data.labels.length === 0 ||
+              data.data.length === 0
+            );
+          }
+
+          // Hàm hiển thị thông báo không có dữ liệu
+          function showNoDataMessage(chartId, message) {
+            const container = document.getElementById(chartId).parentNode;
+            const canvas = document.getElementById(chartId);
+
+            // Ẩn canvas
+            canvas.style.display = "none";
+
+            // Tạo thông báo
+            const messageDiv = document.createElement("div");
+            messageDiv.className = "text-center py-5";
+            messageDiv.innerHTML = `
+              <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
+              <h5 class="text-muted">Không có dữ liệu</h5>
+              <p class="text-muted small">${message}</p>
+            `;
+
+            container.appendChild(messageDiv);
+          }
+
+          // === BIỂU ĐỒ 1: TỔNG TIỀN QUYÊN GÓP THEO CHƯƠNG TRÌNH ===
+          fetch("/admin/charts/data/donation-by-program")
+            .then((response) => response.json())
+            .then((data) => {
+              if (isEmptyData(data)) {
+                showNoDataMessage(
+                  "donationByProgramChart",
+                  "Chưa có dữ liệu quyên góp theo chương trình"
+                );
+                return;
+              }
+
+              const ctx = document
+                .getElementById("donationByProgramChart")
+                .getContext("2d");
+              new Chart(ctx, {
+                type: "bar",
+                data: {
+                  labels: data.labels,
+                  datasets: [
+                    {
+                      label: "Tổng tiền quyên góp (VNĐ)",
+                      data: data.data,
+                      backgroundColor: chartColors,
+                      borderColor: chartBorderColors,
+                      borderWidth: 1,
+                    },
+                  ],
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      ticks: {
+                        callback: function (value) {
+                          return formatCurrency(value);
+                        },
+                      },
+                    },
+                  },
+                  plugins: {
+                    legend: {
+                      position: "top",
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: function (context) {
+                          return `Tổng quyên góp: ${formatCurrency(
+                            context.raw
+                          )}`;
+                        },
+                      },
+                    },
+                  },
+                },
+              });
+            })
+            .catch((error) => {
+              console.error("Error loading program donations data:", error);
+              showNoDataMessage(
+                "donationByProgramChart",
+                "Không thể tải dữ liệu chương trình"
+              );
+            });
+
+          // === BIỂU ĐỒ 2: SỐ LƯỢT QUYÊN GÓP THEO THỜI GIAN ===
+          fetch("/admin/charts/data/donations-over-time")
+            .then((response) => response.json())
+            .then((data) => {
+              if (isEmptyData(data)) {
+                showNoDataMessage(
+                  "donationsOverTimeChart",
+                  "Chưa có dữ liệu quyên góp theo thời gian"
+                );
+                return;
+              }
+
+              const ctx = document
+                .getElementById("donationsOverTimeChart")
+                .getContext("2d");
+              new Chart(ctx, {
+                type: "line",
+                data: {
+                  labels: data.labels,
+                  datasets: [
+                    {
+                      label: "Số lượt quyên góp",
+                      data: data.data,
+                      backgroundColor: "rgba(54, 162, 235, 0.2)",
+                      borderColor: "rgba(54, 162, 235, 1)",
+                      borderWidth: 2,
+                      tension: 0.3,
+                      pointBackgroundColor: "rgba(54, 162, 235, 1)",
+                      pointRadius: 5,
+                      pointHoverRadius: 7,
+                      fill: true,
+                    },
+                  ],
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      ticks: {
+                        precision: 0,
+                      },
+                    },
+                  },
+                  plugins: {
+                    legend: {
+                      position: "top",
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: function (context) {
+                          return `${context.raw} lượt quyên góp`;
+                        },
+                      },
+                    },
+                  },
+                },
+              });
+            })
+            .catch((error) => {
+              console.error("Error loading donations over time data:", error);
+              showNoDataMessage(
+                "donationsOverTimeChart",
+                "Không thể tải dữ liệu theo thời gian"
+              );
+            });
+
+          // === BIỂU ĐỒ 3: PHÂN LOẠI ĐÓNG GÓP THEO LĨNH VỰC ===
+          fetch("/admin/charts/data/donations-by-category")
+            .then((response) => response.json())
+            .then((data) => {
+              if (isEmptyData(data)) {
+                showNoDataMessage(
+                  "donationsByCategoryChart",
+                  "Chưa có dữ liệu quyên góp theo danh mục"
+                );
+                return;
+              }
+
+              const ctx = document
+                .getElementById("donationsByCategoryChart")
+                .getContext("2d");
+              new Chart(ctx, {
+                type: "doughnut",
+                data: {
+                  labels: data.labels,
+                  datasets: [
+                    {
+                      data: data.data,
+                      backgroundColor: chartColors,
+                      borderColor: chartBorderColors,
+                      borderWidth: 1,
+                      hoverOffset: 15,
+                    },
+                  ],
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      position: "right",
+                      labels: {
+                        boxWidth: 15,
+                      },
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: function (context) {
+                          const total = context.dataset.data.reduce(
+                            (acc, val) => acc + val,
+                            0
+                          );
+                          const percentage =
+                            total > 0
+                              ? Math.round((context.raw / total) * 100)
+                              : 0;
+                          return `${context.label}: ${formatCurrency(
+                            context.raw
+                          )} (${percentage}%)`;
+                        },
+                      },
+                    },
+                  },
+                },
+              });
+            })
+            .catch((error) => {
+              console.error("Error loading category donations data:", error);
+              showNoDataMessage(
+                "donationsByCategoryChart",
+                "Không thể tải dữ liệu theo danh mục"
+              );
+            });
+        });
+    </script>
+</th:block>
+</body>
+</html>

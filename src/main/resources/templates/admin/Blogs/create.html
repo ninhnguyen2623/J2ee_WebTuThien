@@ -1,31 +1,238 @@
 <!DOCTYPE html>
-<html layout:decorate="~{admin/fragments/_layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html
+    layout:decorate="~{admin/fragments/_layout}"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:th="http://www.thymeleaf.org"
+>
+<!-- Thiết lập thông tin cơ bản cho trang -->
 <head>
-  <meta charset="UTF-8">
-  <title>Create Blog</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+  <meta charset="UTF-8" />
+  <title>Thêm Bài Viết Mới</title>
+  <style>
+    .ck-editor__editable {
+      min-height: 300px;
+    }
+    .image-preview {
+      max-height: 200px;
+      max-width: 100%;
+      margin-top: 10px;
+      border-radius: 4px;
+      display: none;
+    }
+  </style>
 </head>
-<body>
-<div layout:fragment="content" class="container mt-5">
-  <h3>Create Blog</h3>
-  <!-- Form gửi tệp hình ảnh -->
-  <form th:action="@{/admin/blogs/create}" th:object="${blog}" method="POST" enctype="multipart/form-data">
-    <div class="form-group mb-3">
-      <label for="title">Title</label>
-      <input type="text" id="title" class="form-control" th:field="*{title}" required>
-    </div>
-    <div class="form-group mb-3">
-      <label for="content">Content</label>
-      <textarea id="content" class="form-control" th:field="*{content}" required></textarea>
-    </div>
-    <div class="form-group mb-3">
-      <label for="imageUrl">Image</label>
-      <input type="file" id="imageUrl" class="form-control" name="imageUrl" th:field="*{imageUrl}" accept="image/*" required />
-    </div>
-    <button type="submit" class="btn btn-primary mt-3">Create Blog</button>
-    <a th:href="@{/admin/blogs}" class="btn btn-secondary mt-3">Cancel</a>
-  </form>
 
+<body>
+<!-- Phần nội dung chính của trang -->
+<div layout:fragment="content" class="container-fluid px-4 py-3">
+  <!-- Tiêu đề trang và nút quay lại -->
+  <div class="d-sm-flex justify-content-between align-items-center mb-4">
+    <h3 class="text-dark mb-0 fw-bold page-title">Thêm Bài Viết Mới</h3>
+    <a
+        class="btn btn-outline-primary btn-sm d-sm-inline-block shadow-sm"
+        th:href="@{/admin/blogs}"
+    >
+      <i class="fas fa-arrow-left me-2"></i>Quay Lại Danh Sách
+    </a>
+  </div>
+  
+  <!-- Card chứa form tạo bài viết mới -->
+  <div class="card shadow mb-4 user-form-card">
+    <div
+        class="card-header py-3 d-flex justify-content-between align-items-center"
+    >
+      <h6 class="m-0 fw-bold text-primary">Thông Tin Bài Viết</h6>
+    </div>
+    <div class="card-body">
+      <!-- Form nhập thông tin bài viết với xác thực (validation) -->
+      <form
+          id="blogForm"
+          th:action="@{/admin/blogs/create}"
+          th:object="${blog}"
+          method="POST"
+          enctype="multipart/form-data"
+          class="needs-validation"
+          novalidate
+      >
+        <!-- Phần thông tin cơ bản của bài viết -->
+        <div class="card shadow-sm border-0 mb-4 user-form-section">
+          <div class="card-header bg-light py-3">
+            <h6 class="m-0 text-primary">
+              <i class="fas fa-newspaper me-2"></i>Thông tin cơ bản
+            </h6>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <!-- Phần nhập tiêu đề bài viết -->
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label
+                      for="title"
+                      class="form-label fw-bold required-label"
+                  >Tiêu đề bài viết</label
+                  >
+                  <input
+                      type="text"
+                      id="title"
+                      class="form-control"
+                      th:field="*{title}"
+                      placeholder="Nhập tiêu đề bài viết"
+                      required
+                  />
+                  <div class="invalid-feedback">
+                    Vui lòng nhập tiêu đề bài viết
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Phần nhập nội dung bài viết -->
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label
+                      for="content"
+                      class="form-label fw-bold required-label"
+                  >Nội dung</label
+                  >
+                  <textarea
+                      id="content"
+                      class="form-control"
+                      th:field="*{content}"
+                      placeholder="Nhập nội dung bài viết"
+                      rows="4"
+                      required
+                  ></textarea>
+                  <div class="invalid-feedback">
+                    Vui lòng nhập nội dung bài viết
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Phần tải lên hình ảnh -->
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label
+                      for="imageUrl"
+                      class="form-label fw-bold required-label"
+                  >Hình ảnh bài viết</label
+                  >
+                  <input
+                      type="file"
+                      id="imageUrl"
+                      class="form-control"
+                      name="imageUrl"
+                      accept="image/*"
+                      required
+                      onchange="previewImage(this)"
+                  />
+                  <div class="form-text">
+                    Chọn hình ảnh cho bài viết (JPG, PNG, hoặc GIF)
+                  </div>
+                  <div class="invalid-feedback">
+                    Vui lòng chọn hình ảnh cho bài viết
+                  </div>
+                  <img
+                      id="imagePreview"
+                      class="image-preview mt-3"
+                      alt="Image preview"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Phần nút hành động (hủy, đặt lại, lưu) -->
+        <div class="form-actions d-flex justify-content-between">
+          <a th:href="@{/admin/blogs}" class="btn btn-outline-secondary">
+            <i class="fas fa-times me-2"></i>Hủy
+          </a>
+          <div>
+            <button
+                type="reset"
+                class="btn btn-outline-secondary me-2"
+                onclick="resetImagePreview()"
+            >
+              <i class="fas fa-redo me-2"></i>Đặt Lại
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save me-2"></i>Lưu Bài Viết
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Card chứa hướng dẫn -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 fw-bold text-primary">
+        <i class="fas fa-lightbulb me-2"></i>Hướng Dẫn
+      </h6>
+    </div>
+    <div class="card-body">
+      <div class="alert alert-info d-flex">
+        <i class="fas fa-info-circle me-3 fs-5"></i>
+        <div>
+          <h6 class="fw-bold">Lưu ý khi tạo bài viết mới:</h6>
+          <ul class="mb-0">
+            <li>Tiêu đề bài viết nên ngắn gọn, rõ ràng</li>
+            <li>
+              Nội dung bài viết nên có độ dài phù hợp và cung cấp thông tin
+              đầy đủ
+            </li>
+            <li>
+              Hình ảnh nên có kích thước hợp lý để tối ưu tốc độ tải trang
+            </li>
+            <li>
+              Kiểm tra lại nội dung trước khi đăng để đảm bảo chất lượng bài
+              viết
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<script>
+  // Xem trước hình ảnh khi chọn file
+  function previewImage(input) {
+    const preview = document.getElementById("imagePreview");
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        preview.src = e.target.result;
+        preview.style.display = "block";
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  // Đặt lại xem trước hình ảnh
+  function resetImagePreview() {
+    const preview = document.getElementById("imagePreview");
+    preview.src = "";
+    preview.style.display = "none";
+  }
+
+  // Xác thực form
+  document.addEventListener("DOMContentLoaded", function () {
+    const forms = document.querySelectorAll(".needs-validation");
+    Array.from(forms).forEach((form) => {
+      form.addEventListener(
+        "submit",
+        (event) => {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add("was-validated");
+        },
+        false
+      );
+    });
+  });
+</script>
 </body>
 </html>

@@ -1,28 +1,41 @@
 <!DOCTYPE html>
-<html layout:decorate="~{admin/fragments/_layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html
+    layout:decorate="~{admin/fragments/_layout}"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
 <head>
-  <meta charset="UTF-8">
-  <title>Quản lý nhà hảo tâm</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+  <meta charset="UTF-8" />
+  <title>Quản Lý Nhà Hảo Tâm</title>
 </head>
-<body>
-<div layout:fragment="content" class="container mt-4">
-  <div>
-    <h3 class="text-dark mb-0 fw-bold page-title">Quản lý nhà hảo tâm</h3>
-  </div>
 
+<body>
+<div layout:fragment="content" class="container-fluid px-4 py-3">
+  <!-- Page Heading -->
+  <div class="d-sm-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="text-dark mb-0 fw-bold page-title">Quản Lý Nhà Hảo Tâm</h3>
+    </div>
+    <a
+        class="btn btn-primary btn-sm d-sm-inline-block shadow-sm"
+        th:href="@{/admin/donors/export}"
+    >
+      <i class="fas fa-file-excel me-2"></i>Xuất Excel
+    </a>
+  </div>
+  
+  <!-- Filters and Search -->
   <div class="card shadow mb-4">
     <div
-            class="card-header py-3 d-flex justify-content-between align-items-center"
+        class="card-header py-3 d-flex justify-content-between align-items-center"
     >
       <h6 class="m-0 fw-bold text-primary">
         <i class="fas fa-filter me-2"></i>Tìm Kiếm & Lọc
       </h6>
       <div class="card-tools">
         <a
-                th:href="@{/admin/donors}"
-                class="btn btn-sm btn-outline-primary reset"
-                id="clearFilters"
+            th:href="@{/admin/donors}"
+            class="btn btn-sm btn-outline-primary reset"
+            id="clearFilters"
         >
           <i class="fas fa-sync-alt me-1"></i>Làm Mới
         </a>
@@ -30,16 +43,17 @@
     </div>
     <div class="card-body">
       <form
-              id="filterForm"
-              class="row g-3"
-              method="GET"
-              th:action="@{/admin/donors}"
+          id="filterForm"
+          class="row g-3"
+          method="GET"
+          th:action="@{/admin/donors}"
       >
         <input type="hidden" name="page" id="pageInput" value="0" />
+        <input type="hidden" name="searchField" value="" />
         <div class="col-md-4">
           <label
-                  for="searchTerm"
-                  class="form-label small fw-bold text-muted"
+              for="searchTerm"
+              class="form-label small fw-bold text-muted"
           >Tìm kiếm theo tên</label
           >
           <div class="input-group">
@@ -47,65 +61,187 @@
                   <i class="fas fa-user text-primary"></i>
                 </span>
             <input
-                    type="text"
-                    class="form-control"
-                    id="searchTerm"
-                    name="searchTerm"
-                    placeholder="Nhập tên nhà hảo tâm..."
-                    th:value="${searchTerm}"
+                type="text"
+                class="form-control"
+                id="searchTerm"
+                name="searchTerm"
+                placeholder="Nhập tên nhà hảo tâm..."
+                th:value="${searchTerm}"
+                autocomplete="off"
+            />
+          </div>
+          <small
+              class="form-text text-muted"
+              th:if="${searchTerm != null && !searchTerm.isEmpty()}"
+          >
+            <i class="fas fa-info-circle me-1"></i>Đang tìm kiếm: "<span
+              class="fw-bold"
+              th:text="${searchTerm}"
+          ></span
+          >"
+          </small>
+        </div>
+        
+        <div class="col-md-3">
+          <label for="programId" class="form-label small fw-bold text-muted"
+          >Chương trình</label
+          >
+          <div class="input-group">
+                <span class="input-group-text bg-light">
+                  <i class="fas fa-project-diagram text-primary"></i>
+                </span>
+            <select class="form-select" id="programId" name="programId">
+              <option value="">-- Tất cả chương trình --</option>
+              <option
+                  th:each="program : ${programs}"
+                  th:value="${program.programId}"
+                  th:text="${program.name}"
+                  th:selected="${programId != null && programId == program.programId}"
+              ></option>
+            </select>
+          </div>
+          <small class="form-text text-muted" th:if="${programId != null}">
+            <i class="fas fa-info-circle me-1"></i>Đang lọc theo chương
+                                                   trình
+          </small>
+        </div>
+        
+        <div class="col-md-3">
+          <label class="form-label small fw-bold text-muted"
+          >Khoảng tiền quyên góp</label
+          >
+          <div class="input-group">
+            <input
+                type="number"
+                class="form-control"
+                id="minAmount"
+                name="minAmount"
+                placeholder="Từ..."
+                min="0"
+                th:value="${minAmount}"
+            />
+            <span class="input-group-text bg-light">
+                  <i class="fas fa-arrow-right text-muted"></i>
+                </span>
+            <input
+                type="number"
+                class="form-control"
+                id="maxAmount"
+                name="maxAmount"
+                placeholder="Đến..."
+                min="0"
+                th:value="${maxAmount}"
             />
           </div>
         </div>
-
+        
         <div class="col-md-2 d-flex align-items-end">
           <button type="submit" class="btn btn-primary w-100">
             <i class="fas fa-search me-2"></i>Tìm kiếm
           </button>
         </div>
-        <div class="d-flex justify-content-between align-items-center">
-          <a class="btn btn-primary" th:href="@{/admin/donors/create}">Thêm mới</a>
-        </div>
       </form>
     </div>
+    <!-- Active Filters Section -->
+    <div
+        class="card-footer bg-light py-2"
+        th:if="${searchTerm != null && !searchTerm.isEmpty() || programId != null || minAmount != null || maxAmount != null}"
+    >
+      <div class="d-flex flex-wrap gap-2">
+        <span class="text-muted small me-2">Bộ lọc đang áp dụng:</span>
+        
+        <!-- Search Term Filter -->
+        <div
+            class="badge bg-light text-dark px-3 py-2 rounded d-flex align-items-center"
+            th:if="${searchTerm != null && !searchTerm.isEmpty()}"
+        >
+          <i class="fas fa-search me-1 text-primary"></i>
+          <span th:text="${searchTerm}"></span>
+          <button
+              type="button"
+              class="btn-close ms-2"
+              onclick="AdminUI.clearSearchTerm()"
+              style="font-size: 0.5rem"
+          ></button>
+        </div>
+        
+        <!-- Program Filter -->
+        <div
+            class="badge bg-light text-dark px-3 py-2 rounded d-flex align-items-center"
+            th:if="${programId != null}"
+        >
+          <i class="fas fa-project-diagram me-1 text-primary"></i>
+          <span th:text="${programNames.get(programId)}"></span>
+          <button
+              type="button"
+              class="btn-close ms-2"
+              onclick="AdminUI.clearProgramId()"
+              style="font-size: 0.5rem"
+          ></button>
+        </div>
+        
+        <!-- Amount Range Filter -->
+        <div
+            class="badge bg-light text-dark px-3 py-2 rounded d-flex align-items-center"
+            th:if="${minAmount != null || maxAmount != null}"
+        >
+          <i class="fas fa-money-bill-wave me-1 text-primary"></i>
+          <span
+              th:text="${minAmount != null ? #numbers.formatDecimal(minAmount, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}"
+          ></span>
+          <i class="fas fa-arrow-right mx-1 text-muted"></i>
+          <span
+              th:text="${maxAmount != null ? #numbers.formatDecimal(maxAmount, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '∞'}"
+          ></span>
+          <button
+              type="button"
+              class="btn-close ms-2"
+              onclick="AdminUI.clearAmountRange()"
+              style="font-size: 0.5rem"
+          ></button>
+        </div>
+      </div>
+    </div>
   </div>
-
+  
+  <!-- Donors Table -->
   <div class="card shadow mb-4">
     <div
-            class="card-header py-3 d-flex justify-content-between align-items-center"
+        class="card-header py-3 d-flex justify-content-between align-items-center"
     >
       <h6 class="m-0 fw-bold text-primary">
-        <i class="fas fa-donate me-2"></i>Danh sách nhà hảo tâm
+        <i class="fas fa-hand-holding-heart me-2"></i>Danh Sách Nhà Hảo Tâm
       </h6>
     </div>
     <div class="card-body">
       <div class="table-responsive">
-        <table class="table data-table" id="donationTable">
+        <table class="table data-table" id="donorsTable">
           <thead>
           <tr>
             <th class="text-center" style="width: 60px">
               <span class="text-uppercase text-primary fw-bold">ID</span>
             </th>
-            <th style="width: 25%">
-                    <span class="text-uppercase text-primary fw-bold"
-                    >Chương trình</span
-                    >
-            </th>
             <th class="text-center" style="width: 20%">
                     <span class="text-uppercase text-primary fw-bold"
-                    >Người dùng</span
+                    >Người Dùng</span
+                    >
+            </th>
+            <th style="width: 25%">
+                    <span class="text-uppercase text-primary fw-bold"
+                    >Chương Trình</span
                     >
             </th>
             <th class="text-center" style="width: 15%">
                     <span class="text-uppercase text-primary fw-bold"
-                    >Quyên góp</span
+                    >Quyên Góp</span
                     >
             </th>
             <th class="text-center" style="width: 20%">
                     <span class="text-uppercase text-primary fw-bold"
-                    >Ngày quyên góp</span
+                    >Ngày Quyên Góp</span
                     >
             </th>
-            <th class="text-center" style="width: 100px">
+            <th class="text-center" style="width: 80px">
                     <span class="text-uppercase text-primary fw-bold"
                     >Thao Tác</span
                     >
@@ -114,37 +250,32 @@
           </thead>
           <tbody>
           <tr
-                  th:each="donor : ${donors}"
-                  class="donor-row"
-                  th:data-created="${donor.donorId}"
+              th:each="donor : ${donors}"
+              class="donor-row"
+              th:data-donor-id="${donor.donorId}"
           >
-            <td
-                    th:text="${donor.donorId}"
-                    class="text-center fw-bold"
-            >
+            <td th:text="${donor.donorId}" class="text-center fw-bold">
               ID
             </td>
-            <td>
-              <div class="d-flex align-items-center">
-                <div>
-                        <span
-                                class="fw-bold donor-info"
-                                th:text="${donor.donorName}"
-                        >Tên nhà hảo tâm</span
-                        >
-                </div>
+            <td class="text-center">
+              <div
+                  class="d-flex align-items-center justify-content-center"
+              >
+                      <span
+                          class="user-info fw-medium"
+                          th:text="${userName != null ? userName.get(donor.userId) : (userNames != null ? userNames.get(donor.userId) : donor.userId)}"
+                      >Người dùng</span
+                      >
               </div>
             </td>
             <td>
-              <div
-                      class="d-flex align-items-center justify-content-center"
-              >
+              <div class="d-flex align-items-center">
                 <div
-                        class="badge bg-light text-dark px-3 py-2 rounded-pill"
+                    class="badge bg-light text-dark px-3 py-2 rounded-pill"
                 >
                         <span
-                                class="donation-info"
-                                th:text="${programNames.get(donor.programId)}"
+                            class="donation-info"
+                            th:text="${programNames != null ? programNames.get(donor.programId) : donor.programId}"
                         >Chương trình</span
                         >
                 </div>
@@ -152,35 +283,35 @@
             </td>
             <td class="text-center">
               <div
-                      class="d-flex align-items-center justify-content-center"
+                  class="d-flex align-items-center justify-content-center"
               >
                       <span
-                              class="user-info"
-                              th:text="${userNames.get(donor.userId}"
-                      >Người dùng</span
+                          class="badge bg-success-light text-success px-3 py-2"
+                          th:text="${donationAmounts != null ? #numbers.formatDecimal(donationAmounts.get(donor.donationId), 0, 'COMMA', 0, 'POINT') + ' VNĐ' : donor.donationId}"
+                      >Số tiền</span
                       >
               </div>
             </td>
             <td class="text-center">
               <div class="bg-light p-2 rounded text-center time-box">
                 <div
-                        class="d-flex align-items-center justify-content-center mb-1"
+                    class="d-flex align-items-center justify-content-center mb-1"
                 >
                   <i class="far fa-calendar-alt me-2 text-primary"></i>
                   <span
-                          th:text="${donor.donationId}"
-                          class="donation-info"
-                  >Quyên góp</span
+                      th:text="${#temporals.format(donor.donationDate, 'dd/MM/yyyy')}"
+                      class="fw-bold donation-info"
+                  >Ngày</span
                   >
                 </div>
                 <div
-                        class="d-flex align-items-center justify-content-center"
+                    class="d-flex align-items-center justify-content-center"
                 >
                   <i class="far fa-clock me-2 text-primary"></i>
                   <span
-                          class="donation-info"
-                          th:text="${donor.donorDate, 'dd/MM/yyyy')}"
-                  >Ngày quyên góp</span
+                      class="donation-info"
+                      th:text="${#temporals.format(donor.donationDate, 'HH:mm')}"
+                  >Giờ</span
                   >
                 </div>
               </div>
@@ -188,9 +319,9 @@
             <td class="text-center">
               <div class="btn-group" role="group">
                 <a
-                        th:href="@{/admin/donors/detail/{id}(id=${donor.donorId})}"
-                        class="btn btn-sm btn-info action-btn"
-                        title="Xem chi tiết"
+                    th:href="@{/admin/donors/detail/{id}(id=${donor.donorId})}"
+                    class="btn btn-sm btn-info action-btn"
+                    title="Xem chi tiết"
                 >
                   <i class="fas fa-eye"></i>
                 </a>
@@ -199,101 +330,106 @@
           </tr>
           <tr th:if="${#lists.isEmpty(donors)}">
             <td colspan="6" class="text-center py-5">
-              <div class="empty-state">
-                <div
-                        class="empty-state-icon"
-                        th:classappend="${searchTerm != null ? 'search-icon' : ''}"
-                >
+              <div class="text-center py-4">
+                <div class="mb-3">
                   <i
-                          class="fas"
-                          th:classappend="${searchTerm != null ? 'fa-search' : 'fa-donate'}"
+                      class="fas fa-search fa-3x text-muted"
+                      th:if="${searchTerm != null || programId != null || minAmount != null || maxAmount != null}"
+                  ></i>
+                  <i
+                      class="fas fa-hand-holding-heart fa-3x text-muted"
+                      th:unless="${searchTerm != null || programId != null || minAmount != null || maxAmount != null}"
                   ></i>
                 </div>
-                <h4
-                        class="empty-state-title"
-                        th:text="${searchTerm != null ? 'Không tìm thấy kết quả' : 'Không có nhà hảo tâm nào'}"
+                <h5
+                    class="text-muted mb-3"
+                    th:text="${searchTerm != null || programId != null || minAmount != null || maxAmount != null ? 'Không tìm thấy kết quả' : 'Không có nhà hảo tâm nào'}"
                 >
                   Không có nhà hảo tâm nào
-                </h4>
+                </h5>
                 <p
-                        class="empty-state-message"
-                        th:if="${searchTerm != null}"
+                    class="text-muted mb-3"
+                    th:if="${searchTerm != null || programId != null || minAmount != null || maxAmount != null}"
                 >
                   Không tìm thấy nhà hảo tâm nào phù hợp với tiêu chí tìm
                   kiếm.
-                  <br />Vui lòng thử lại với các tiêu chí khác hoặc
-                  <a th:href="@{/admin/donors}" class="text-primary"
-                  >xem tất cả nhà hảo tâm</a
-                  >.
+                  <br />Vui lòng thử lại với các tiêu chí khác
                 </p>
-                <p
-                        class="empty-state-message"
-                        th:unless="${searchTerm != null}"
+                <a
+                    th:href="@{/admin/donors}"
+                    class="btn btn-sm btn-outline-primary"
+                    th:if="${searchTerm != null || programId != null || minAmount != null || maxAmount != null}"
                 >
-                  Hiện tại chưa có nhà hảo tâm nào trong hệ thống.
-                </p>
+                  <i class="fas fa-list me-1"></i>Xem tất cả nhà hảo tâm
+                </a>
               </div>
             </td>
           </tr>
           </tbody>
         </table>
       </div>
-
-      <!-- Pagination controls -->
-      <div
-              th:if="${totalPages > 0}"
-              class="d-flex justify-content-between align-items-center mt-4"
-      >
+    </div>
+  </div>
+  
+  <!-- Pagination controls -->
+  <div th:if="${totalPages > 0}" class="card shadow mb-4">
+    <div class="card-body py-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <!-- Hiển thị thông tin về số lượng hiển thị -->
         <div class="text-muted">
-          <i class="fas fa-file-alt me-1"></i> Hiển thị
+          <i class="fas fa-user-friends me-1"></i> Hiển thị
           <span
-                  th:text="${#lists.size(donors) > 0 ? (currentPage * 10) + 1 : 0}"
+              th:text="${#lists.size(donors) > 0 ? (currentPage * 10) + 1 : 0}"
           ></span>
-          -
+                                                   -
           <span
-                  th:text="${#lists.size(donors) > 0 ? (currentPage * 10) + #lists.size(donors) : 0}"
+              th:text="${#lists.size(donors) > 0 ? (currentPage * 10) + #lists.size(donors) : 0}"
           ></span>
-          của <span th:text="${totalItems}"></span> nhà hảo tâm
+                                                   của <span th:text="${totalItems}"></span> nhà hảo tâm
         </div>
+        
+        <!-- Thanh điều hướng phân trang -->
         <nav aria-label="Page navigation">
           <ul class="pagination mb-0">
+            <!-- Nút Trước -->
             <li
-                    class="page-item"
-                    th:classappend="${currentPage == 0} ? 'disabled'"
+                class="page-item"
+                th:classappend="${currentPage == 0 ? 'disabled' : ''}"
             >
               <a
-                      class="page-link"
-                      th:href="@{/admin/donors(page=${currentPage - 1}, searchTerm=${searchTerm}}"
-                      aria-label="Previous"
+                  class="page-link"
+                  th:href="@{/admin/donors(page=${currentPage - 1}, searchTerm=${searchTerm}, programId=${programId}, minAmount=${minAmount}, maxAmount=${maxAmount})}"
+                  aria-label="Previous"
               >
-                <i class="fas fa-chevron-left small"></i>
+                <span aria-hidden="true">&laquo;</span>
               </a>
             </li>
-
+            
+            <!-- Các nút số trang -->
             <li
-                    class="page-item"
-                    th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                    th:classappend="${i == currentPage} ? 'active'"
-                    th:if="${totalPages <= 5 || (i >= currentPage - 1 && i <= currentPage + 1) || i == 0 || i == totalPages - 1}"
+                class="page-item"
+                th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${currentPage == i ? 'active' : ''}"
+                th:if="${totalPages <= 5 || (i >= currentPage - 1 && i <= currentPage + 1) || i == 0 || i == totalPages - 1}"
             >
               <a
-                      class="page-link"
-                      th:href="@{/admin/donors(page=${i}, searchTerm=${searchTerm})}"
-                      th:text="${i + 1}"
-              >1</a
-              >
+                  class="page-link"
+                  th:href="@{/admin/donors(page=${i}, searchTerm=${searchTerm}, programId=${programId}, minAmount=${minAmount}, maxAmount=${maxAmount})}"
+                  th:text="${i + 1}"
+              ></a>
             </li>
-
+            
+            <!-- Nút Tiếp -->
             <li
-                    class="page-item"
-                    th:classappend="${currentPage >= totalPages - 1} ? 'disabled'"
+                class="page-item"
+                th:classappend="${currentPage >= totalPages - 1 ? 'disabled' : ''}"
             >
               <a
-                      class="page-link"
-                      th:href="@{/admin/donors(page=${currentPage + 1}, searchTerm=${searchTerm})}"
-                      aria-label="Next"
+                  class="page-link"
+                  th:href="@{/admin/donors(page=${currentPage + 1}, searchTerm=${searchTerm}, programId=${programId}, minAmount=${minAmount}, maxAmount=${maxAmount})}"
+                  aria-label="Next"
               >
-                <i class="fas fa-chevron-right small"></i>
+                <span aria-hidden="true">&raquo;</span>
               </a>
             </li>
           </ul>
@@ -301,7 +437,15 @@
       </div>
     </div>
   </div>
-
 </div>
+
+<th:block layout:fragment="scripts">
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Khởi tạo các thành phần tương tác nếu cần
+      console.log("Donors list page initialized");
+    });
+  </script>
+</th:block>
 </body>
 </html>

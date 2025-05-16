@@ -1,658 +1,307 @@
 /**
  * Optimized Admin JavaScript
- * Improved code organization and removed duplications
+ * Enhanced functionality with performance improvements
  */
 
-// Immediately-invoked Function Expression (IIFE) to avoid global scope pollution
 (function () {
-  "use strict"; // Use strict mode
+  "use strict";
 
-  // ======== DOM Element Selectors ========
-  // Store frequently used DOM selectors for performance
-  const DOM = {
-    body: document.body,
+  // DOM Elements
+  const elements = {
     sidebar: document.querySelector(".sidebar"),
-    sidebarToggle: document.querySelector("#sidebarToggle"),
+    sidebarToggle: document.getElementById("sidebarToggle"),
+    contentWrapper: document.getElementById("content-wrapper"),
+    topbar: document.querySelector(".topbar"),
     backToTop: document.querySelector(".back-to-top"),
-    dataTables: document.querySelectorAll(".dataTable"),
+    filterForm: document.querySelector(".filter-form"),
+    searchInput: document.querySelector(".search-input"),
+    dataTables: document.querySelectorAll(".data-table"),
+    tooltips: document.querySelectorAll('[data-bs-toggle="tooltip"]'),
+    ckEditors: document.querySelectorAll(".ckeditor"),
+    imagePreviews: document.querySelectorAll(".image-preview-container"),
+    formValidation: document.querySelectorAll(".needs-validation"),
     navLinks: document.querySelectorAll(".sidebar .nav-link"),
-    tooltipTriggers: document.querySelectorAll('[data-bs-toggle="tooltip"]'),
-    forms: document.querySelectorAll(".needs-validation"),
-    categoriesTable: document.getElementById("categoriesTable"),
-    programsTable: document.getElementById("programsTable"),
-    fileInputs: document.querySelectorAll('input[type="file"]'),
-    imagePreviewContainers: document.querySelectorAll(
-      ".image-preview-container"
-    ),
-    imagePreviews: document.querySelectorAll(".image-preview"),
-    ckEditorFields: document.querySelectorAll(".ckeditor"),
-    searchInput: document.getElementById("searchInput"),
-    filterForm: document.getElementById("filterForm"),
-    programForm: document.getElementById("programForm"),
-    categoryForm: document.getElementById("categoryForm"),
   };
 
-  // ======== Configuration Settings ========
-  const CONFIG = {
-    // DataTables default configuration
+  // Configuration
+  const config = {
     dataTable: {
-      responsive: true,
-      lengthMenu: [10, 25, 50, 100],
       language: {
-        search: "Tìm kiếm:",
-        lengthMenu: "Hiển thị _MENU_ mục",
-        info: "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
-        infoEmpty: "Hiển thị 0 đến 0 của 0 mục",
-        infoFiltered: "(được lọc từ tổng số _MAX_ mục)",
-        paginate: {
-          first: "Đầu",
-          last: "Cuối",
-          next: "Sau",
-          previous: "Trước",
-        },
+        url: "/js/dataTables.vietnamese.json",
       },
+      responsive: true,
+      pageLength: 10,
+      lengthMenu: [
+        [10, 25, 50, -1],
+        [10, 25, 50, "Tất cả"],
+      ],
+      dom:
+        '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+        '<"row"<"col-sm-12"tr>>' +
+        '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+      order: [[0, "desc"]],
     },
-    // Default rows per page for pagination
-    rowsPerPage: 10,
-    // CKEditor default configuration
     ckEditor: {
-      toolbar: {
-        items: [
-          "heading",
-          "|",
-          "bold",
-          "italic",
-          "link",
-          "bulletedList",
-          "numberedList",
-          "|",
-          "outdent",
-          "indent",
-          "|",
-          "uploadImage",
-          "blockQuote",
-          "insertTable",
-          "undo",
-          "redo",
-        ],
-      },
       language: "vi",
-      image: {
-        toolbar: [
-          "imageTextAlternative",
-          "imageStyle:inline",
-          "imageStyle:block",
-          "imageStyle:side",
-        ],
-      },
-      table: {
-        contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"],
-      },
+      removePlugins: "elementspath,resize",
+      toolbar: [
+        "heading",
+        "|",
+        "bold",
+        "italic",
+        "link",
+        "bulletedList",
+        "numberedList",
+        "|",
+        "outdent",
+        "indent",
+        "|",
+        "blockQuote",
+        "insertTable",
+        "undo",
+        "redo",
+      ],
     },
   };
 
-  // ======== Utility Functions ========
-  // Reusable utility functions
-  const UTILS = {
-    // Throttle function for performance optimizations
-    throttle: (func, delay) => {
-      let inProgress = false;
-      return (...args) => {
-        if (inProgress) return;
-        inProgress = true;
-        setTimeout(() => {
+  // Utility Functions
+  const utils = {
+    debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
           func(...args);
-          inProgress = false;
-        }, delay);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
       };
     },
 
-    // Check if an element exists
-    exists: (element) => element !== null && element !== undefined,
-
-    // Format date for display
-    formatDate: (date) => {
-      if (!date) return "";
-      const d = new Date(date);
-      return d.toLocaleDateString("vi-VN");
+    throttle(func, limit) {
+      let inThrottle;
+      return function executedFunction(...args) {
+        if (!inThrottle) {
+          func(...args);
+          inThrottle = true;
+          setTimeout(() => (inThrottle = false), limit);
+        }
+      };
     },
 
-    // Validate date range
-    validateDateRange: (startDate, endDate) => {
-      if (!startDate || !endDate) return true;
-      return new Date(endDate) > new Date(startDate);
+    formatDate(date) {
+      return new Date(date).toLocaleDateString("vi-VN", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      });
+    },
+
+    formatCurrency(amount) {
+      return new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      }).format(amount);
+    },
+
+    validateForm(form) {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      form.classList.add("was-validated");
+    },
+
+    // Thêm hàm mới để xử lý active state cho navbar
+    setActiveNavItem() {
+      const currentPath = window.location.pathname;
+      elements.navLinks.forEach((link) => {
+        const href = link.getAttribute("href");
+        if (href && currentPath.includes(href)) {
+          // Xóa active class từ tất cả các items
+          elements.navLinks.forEach((l) => l.classList.remove("active"));
+          // Thêm active class cho item hiện tại
+          link.classList.add("active");
+
+          // Nếu item nằm trong dropdown, mở dropdown
+          const parentCollapse = link.closest(".collapse");
+          if (parentCollapse) {
+            parentCollapse.classList.add("show");
+            const parentLink = document.querySelector(
+              `[data-bs-target="#${parentCollapse.id}"]`
+            );
+            if (parentLink) {
+              parentLink.classList.add("active");
+              parentLink.setAttribute("aria-expanded", "true");
+            }
+          }
+        }
+      });
     },
   };
 
-  // ======== Core Initialization ========
-  // Main initialization function to be called on DOM ready
-  function initAdminUI() {
-    initSidebar();
-    initDataTables();
-    initNavLinks();
-    initTooltips();
-    initFormValidation();
-    initBackToTop();
-    initDataListings();
-    initImagePreviews();
-    initCKEditor();
-  }
-
-  // ======== Sidebar Functions ========
-  // Initialize sidebar functionality
-  function initSidebar() {
-    if (!UTILS.exists(DOM.sidebarToggle)) return;
-
-    DOM.sidebarToggle.addEventListener("click", (event) => {
-      event.preventDefault();
-      DOM.body.classList.toggle("sidebar-toggled");
-      DOM.sidebar.classList.toggle("toggled");
-    });
-
-    // Responsive sidebar handling - close on small screens
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        DOM.body.classList.add("sidebar-toggled");
-        DOM.sidebar.classList.add("toggled");
-      }
-    };
-
-    // Call once and add listener
-    handleResize();
-    window.addEventListener("resize", UTILS.throttle(handleResize, 100));
-
-    // Prevent the content wrapper from scrolling when the fixed side navigation hovered over
-    DOM.body.addEventListener("scroll", (event) => {
-      const navbar = DOM.body.querySelector(".navbar-nav");
-      if (
-        navbar &&
-        navbar.classList.contains("overflow-auto") &&
-        window.getComputedStyle(navbar).overflow === "auto"
-      ) {
-        event.preventDefault();
-      }
-    });
-  }
-
-  // ======== DataTables Functions ========
-  // Initialize DataTables for tables with .dataTable class
-  function initDataTables() {
-    if (!DOM.dataTables.length || !$.fn.dataTable) return;
-
-    DOM.dataTables.forEach((table) => {
-      if (!$.fn.dataTable.isDataTable(table)) {
-        $(table).DataTable(CONFIG.dataTable);
-      }
-    });
-  }
-
-  // ======== Navigation Functions ========
-  // Add active class to current navigation link
-  function initNavLinks() {
-    if (!DOM.navLinks.length) return;
-
-    const currentPageUrl = window.location.pathname;
-    DOM.navLinks.forEach((link) => {
-      if (link.getAttribute("href") === currentPageUrl) {
-        link.classList.add("active");
-      }
-    });
-  }
-
-  // ======== UI Components ========
-  // Initialize Bootstrap tooltips
-  function initTooltips() {
-    if (!DOM.tooltipTriggers.length || !bootstrap?.Tooltip) return;
-    DOM.tooltipTriggers.forEach((el) => new bootstrap.Tooltip(el));
-  }
-
-  // Initialize form validation for forms with .needs-validation class
-  function initFormValidation() {
-    if (!DOM.forms.length) return;
-
-    DOM.forms.forEach((form) => {
-      form.addEventListener("submit", function (event) {
-        if (!form.checkValidity()) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-
-        // Specific validations based on form ID
-        if (form.id === "programForm") {
-          validateProgramForm(form, event);
-        } else if (form.id === "categoryForm") {
-          validateCategoryForm(form, event);
-        }
-
-        form.classList.add("was-validated");
-      });
-    });
-  }
-
-  // Validate program form
-  function validateProgramForm(form, event) {
-    const startDate = document.getElementById("startDate")?.value;
-    const endDate = document.getElementById("endDate")?.value;
-
-    if (!UTILS.validateDateRange(startDate, endDate)) {
-      event.preventDefault();
-      const endDateFeedback = document.getElementById("endDateFeedback");
-      if (endDateFeedback) {
-        endDateFeedback.textContent = "Ngày kết thúc phải sau ngày bắt đầu";
-        document.getElementById("endDate").classList.add("is-invalid");
-      }
-    }
-  }
-
-  // Validate category form
-  function validateCategoryForm(form, event) {
-    const nameInput = form.querySelector("#name");
-    if (nameInput && nameInput.dataset.original) {
-      const originalName = nameInput.dataset.original;
-      const currentName = nameInput.value;
-
-      // Confirm major changes
-      if (originalName && currentName !== originalName) {
-        if (
-          !confirm(
-            "Bạn đang thay đổi tên danh mục. Điều này có thể ảnh hưởng đến các chiến dịch liên quan. Bạn có chắc chắn muốn tiếp tục?"
-          )
-        ) {
-          event.preventDefault();
-        }
-      }
-    }
-  }
-
-  // Initialize back to top button
-  function initBackToTop() {
-    if (!UTILS.exists(DOM.backToTop)) return;
-
-    const scrollHandler = () => {
-      if (window.scrollY > 100) {
-        DOM.backToTop.classList.add("active");
-      } else {
-        DOM.backToTop.classList.remove("active");
-      }
-    };
-
-    // Throttle scroll event for performance
-    window.addEventListener("scroll", UTILS.throttle(scrollHandler, 100));
-
-    DOM.backToTop.addEventListener("click", (event) => {
-      event.preventDefault();
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    });
-  }
-
-  // ======== Data Listings Management ========
-  // Initialize categories and programs tables functionality
-  function initDataListings() {
-    if (UTILS.exists(DOM.categoriesTable)) {
-      initDataTable("category");
-    } else if (UTILS.exists(DOM.programsTable)) {
-      initDataTable("program");
-    }
-  }
-
-  // Generic data table initialization for both categories and programs
-  function initDataTable(type) {
-    const tableElement = DOM[`${type}sTable`];
-    const tableRows = document.querySelectorAll(`.${type}-row`);
-    const sortSelect = document.getElementById("sortOrder");
-
-    if (!tableElement || !tableRows.length) return;
-
-    // Shared variables
-    window.currentPage = 0;
-
-    // Display rows function for pagination
-    window.displayRows = function (page) {
-      const rowsPerPage = CONFIG.rowsPerPage;
-      const start = page * rowsPerPage;
-      const end = start + rowsPerPage;
-      let visibleCount = 0;
-
-      // Get all visible (non-filtered) rows
-      const availableRows = Array.from(tableRows).filter(
-        (row) => row.dataset.hiddenBySearch !== "true"
-      );
-
-      // Show/hide rows based on pagination
-      availableRows.forEach((row, index) => {
-        const showOnThisPage = index >= start && index < end;
-        row.style.display = showOnThisPage ? "" : "none";
-        if (showOnThisPage) visibleCount++;
-      });
-
-      // Update pagination UI only if client-side filtering is active
-      if (DOM.searchInput && DOM.searchInput.value.trim() !== "") {
-        updatePagination();
-        updateRowCountDisplay(type);
-      }
-
-      return visibleCount;
-    };
-
-    // Initialize search functionality
-    if (DOM.searchInput) {
-      DOM.searchInput.addEventListener("input", function () {
-        const searchTerm = this.value.toLowerCase().trim();
-
-        // Filter rows based on search term
-        tableRows.forEach((row) => {
-          const text = row.textContent.toLowerCase();
-          const isVisible = text.includes(searchTerm);
-
-          row.dataset.hiddenBySearch = isVisible ? "false" : "true";
+  // Initialize Components
+  const initComponents = {
+    sidebar() {
+      if (elements.sidebarToggle) {
+        elements.sidebarToggle.addEventListener("click", () => {
+          elements.sidebar.classList.toggle("toggled");
+          elements.contentWrapper.classList.toggle("toggled");
+          elements.topbar.classList.toggle("toggled");
         });
+      }
 
-        // Reset to first page and redisplay
-        window.currentPage = 0;
-        window.displayRows(0);
-      });
-    }
-
-    // Initialize sort functionality
-    if (sortSelect) {
-      sortSelect.addEventListener("change", function () {
-        const sortBy = this.value;
-        const rows = Array.from(tableRows);
-
-        // Sort rows based on selected criterion
-        rows.sort((a, b) => {
-          let aValue, bValue;
-
-          switch (sortBy) {
-            case "name-asc":
-              aValue = a.querySelector("td:nth-child(2)").textContent;
-              bValue = b.querySelector("td:nth-child(2)").textContent;
-              return aValue.localeCompare(bValue);
-            case "name-desc":
-              aValue = a.querySelector("td:nth-child(2)").textContent;
-              bValue = b.querySelector("td:nth-child(2)").textContent;
-              return bValue.localeCompare(aValue);
-            case "newest":
-              aValue = a.dataset.created;
-              bValue = b.dataset.created;
-              return bValue - aValue;
-            case "oldest":
-              aValue = a.dataset.created;
-              bValue = b.dataset.created;
-              return aValue - bValue;
-            default:
-              return 0;
-          }
+      // Thêm event listeners cho các nav links
+      elements.navLinks.forEach((link) => {
+        link.addEventListener("click", function (e) {
+          // Xóa active class từ tất cả các items
+          elements.navLinks.forEach((l) => l.classList.remove("active"));
+          // Thêm active class cho item được click
+          this.classList.add("active");
         });
-
-        // Re-append rows in the new order
-        const tbody = tableElement.querySelector("tbody");
-        rows.forEach((row) => tbody.appendChild(row));
-
-        // Redisplay with current pagination
-        window.displayRows(window.currentPage);
       });
-    }
 
-    // Initialize pagination
-    initPagination();
+      // Set active state khi trang load
+      utils.setActiveNavItem();
+    },
 
-    // First page display
-    window.displayRows(0);
-  }
-
-  // Update row count display in the UI
-  function updateRowCountDisplay(type) {
-    const tableRows = document.querySelectorAll(`.${type}-row`);
-    const visibleRows = Array.from(tableRows).filter(
-      (row) => row.dataset.hiddenBySearch !== "true"
-    );
-    const countDisplay = document.querySelector(
-      ".text-muted span:nth-child(3)"
-    );
-    if (countDisplay) countDisplay.textContent = visibleRows.length;
-  }
-
-  // Update pagination controls
-  function updatePagination() {
-    // Only update pagination during client-side filtering
-    if (!DOM.searchInput || DOM.searchInput.value.trim() === "") return;
-
-    const tableRows = document.querySelectorAll(".category-row, .program-row");
-    const visibleRows = Array.from(tableRows).filter(
-      (row) => row.dataset.hiddenBySearch !== "true"
-    );
-    const totalPages = Math.ceil(visibleRows.length / CONFIG.rowsPerPage);
-
-    const paginationElement = document.querySelector(".pagination");
-    if (!paginationElement) return;
-
-    // Update active state
-    const pageItems = paginationElement.querySelectorAll(".page-item");
-    pageItems.forEach((item, i) => {
-      if (i === 0) {
-        // Previous button
-        item.classList.toggle("disabled", window.currentPage === 0);
-      } else if (i === pageItems.length - 1) {
-        // Next button
-        item.classList.toggle("disabled", window.currentPage >= totalPages - 1);
-      } else {
-        // Page number buttons
-        const pageNum = i - 1;
-        item.style.display = pageNum < totalPages ? "" : "none";
-        item.classList.toggle("active", pageNum === window.currentPage);
-      }
-    });
-  }
-
-  // Initialize pagination for tables
-  function initPagination() {
-    const paginationElement = document.querySelector(".pagination");
-    if (!paginationElement) return;
-
-    const pageItems = paginationElement.querySelectorAll(".page-item");
-    pageItems.forEach((item, i) => {
-      const pageLink = item.querySelector(".page-link");
-
-      if (!pageLink) return;
-
-      pageLink.addEventListener("click", function (e) {
-        e.preventDefault();
-
-        // Handle prev/next buttons
-        if (i === 0) {
-          // Previous button
-          if (window.currentPage > 0) {
-            window.currentPage--;
-          }
-        } else if (i === pageItems.length - 1) {
-          // Next button
-          const tableRows = document.querySelectorAll(
-            ".category-row, .program-row"
-          );
-          const visibleRows = Array.from(tableRows).filter(
-            (row) => row.dataset.hiddenBySearch !== "true"
-          );
-          const totalPages = Math.ceil(visibleRows.length / CONFIG.rowsPerPage);
-
-          if (window.currentPage < totalPages - 1) {
-            window.currentPage++;
-          }
-        } else {
-          // Page number button
-          window.currentPage = i - 1;
-        }
-
-        // Display the new page
-        window.displayRows(window.currentPage);
-        updatePagination();
-      });
-    });
-  }
-
-  // ======== Image Preview Functions ========
-  // Handle file input change for image previews
-  function initImagePreviews() {
-    if (!DOM.fileInputs.length) return;
-
-    DOM.fileInputs.forEach((fileInput) => {
-      fileInput.addEventListener("change", function () {
-        const previewTarget = this.dataset.preview;
-        const preview = previewTarget
-          ? document.getElementById(previewTarget)
-          : this.closest(".form-group")?.querySelector(".image-preview");
-
-        if (!preview) return;
-
-        if (this.files && this.files[0]) {
-          const reader = new FileReader();
-
-          reader.onload = function (e) {
-            preview.src = e.target.result;
-            preview.classList.remove("d-none");
-            preview.style.display = "block";
-
-            // Đặt lại trạng thái lỗi nếu có
-            const previewContainer = preview.closest(
-              ".image-preview-container"
-            );
-            if (previewContainer) {
-              previewContainer.classList.remove("image-error");
-              const textElement =
-                previewContainer.querySelector(".mt-2 .text-muted");
-              if (textElement) {
-                textElement.classList.remove("d-none");
-                textElement.textContent = "Ảnh xem trước";
-              }
-            }
-          };
-
-          // Xử lý lỗi khi đọc file
-          reader.onerror = function () {
-            // Thay thế img bằng icon
-            const noImageIcon = document.createElement("div");
-            noImageIcon.className = "no-image-icon";
-            noImageIcon.innerHTML =
-              '<i class="fas fa-file-image text-warning fa-3x"></i>';
-
-            if (preview.parentNode) {
-              preview.parentNode.insertBefore(noImageIcon, preview);
-              preview.style.display = "none";
-            }
-
-            // Hiển thị thông báo lỗi
-            const previewContainer = preview.closest(
-              ".image-preview-container"
-            );
-            if (previewContainer) {
-              previewContainer.classList.add("image-error");
-              const textElement =
-                previewContainer.querySelector(".mt-2 .text-muted");
-              if (textElement) {
-                textElement.classList.remove("d-none");
-                textElement.innerHTML =
-                  '<i class="fas fa-exclamation-triangle text-warning me-1"></i>Không thể đọc file ảnh';
-              }
-            }
-          };
-
-          reader.readAsDataURL(this.files[0]);
-        } else {
-          preview.src = "#";
-          preview.classList.add("d-none");
+    dataTables() {
+      elements.dataTables.forEach((table) => {
+        if (table) {
+          new DataTable(table, config.dataTable);
         }
       });
-    });
+    },
 
-    // Xử lý lỗi cho các hình ảnh hiện có
-    document.querySelectorAll(".image-preview").forEach((img) => {
-      if (!img.getAttribute("onerror")) {
-        img.onerror = function () {
-          this.onerror = null;
+    tooltips() {
+      elements.tooltips.forEach((tooltip) => {
+        if (tooltip) {
+          new bootstrap.Tooltip(tooltip);
+        }
+      });
+    },
 
-          // Tạo icon thay thế
-          const noImageIcon = document.createElement("div");
-          noImageIcon.className = "no-image-icon";
-          noImageIcon.innerHTML =
-            '<i class="fas fa-file-image text-warning fa-3x"></i>';
-
-          // Thêm icon vào DOM
-          if (this.parentNode) {
-            this.parentNode.insertBefore(noImageIcon, this);
-            this.style.display = "none";
-          }
-
-          // Thêm class error và thông báo
-          const container = this.closest(".image-preview-container");
-          if (container) {
-            container.classList.add("image-error");
-            const textElement = container.querySelector(".mt-2 .text-muted");
-            if (textElement) {
-              textElement.classList.remove("d-none");
-              textElement.innerHTML =
-                '<i class="fas fa-exclamation-triangle text-warning me-1"></i>Hình ảnh bị lỗi hoặc không tồn tại';
-            }
-          }
-        };
-      }
-    });
-  }
-
-  // ======== Rich Text Editor ========
-  // Initialize CKEditor for rich text fields
-  function initCKEditor() {
-    if (!DOM.ckEditorFields.length || !window.ClassicEditor) return;
-
-    DOM.ckEditorFields.forEach((editorField) => {
-      ClassicEditor.create(editorField, CONFIG.ckEditor)
-        .then((editor) => {
-          console.log("CKEditor initialized successfully");
-
-          // Store the editor instance if needed for later reference
-          editorField.ckeditorInstance = editor;
-
-          // Update preview if there's a preview container
-          const previewContainer = document.querySelector(
-            ".ckeditor-preview-container"
+    ckEditors() {
+      elements.ckEditors.forEach((editor) => {
+        if (editor) {
+          ClassicEditor.create(editor, config.ckEditor).catch((error) =>
+            console.error(error)
           );
-          if (previewContainer) {
-            editor.model.document.on("change:data", () => {
-              previewContainer.innerHTML = editor.getData();
+        }
+      });
+    },
+
+    imagePreviews() {
+      elements.imagePreviews.forEach((container) => {
+        const input = container.querySelector('input[type="file"]');
+        const preview = container.querySelector(".image-preview");
+        const noImageIcon = container.querySelector(".no-image-icon");
+
+        if (input && preview) {
+          input.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                preview.src = e.target.result;
+                preview.style.display = "block";
+                if (noImageIcon) noImageIcon.style.display = "none";
+                container.classList.remove("image-error");
+              };
+              reader.onerror = () => {
+                container.classList.add("image-error");
+                preview.style.display = "none";
+                if (noImageIcon) noImageIcon.style.display = "flex";
+              };
+              reader.readAsDataURL(file);
+            }
+          });
+        }
+      });
+    },
+
+    formValidation() {
+      elements.formValidation.forEach((form) => {
+        if (form) {
+          form.addEventListener("submit", (event) => {
+            utils.validateForm(form);
+          });
+        }
+      });
+    },
+
+    backToTop() {
+      if (elements.backToTop) {
+        const scrollHandler = utils.throttle(() => {
+          if (window.pageYOffset > 100) {
+            elements.backToTop.classList.add("active");
+          } else {
+            elements.backToTop.classList.remove("active");
+          }
+        }, 100);
+
+        window.addEventListener("scroll", scrollHandler);
+        elements.backToTop.addEventListener("click", () => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      }
+    },
+
+    searchFilter() {
+      if (elements.searchInput) {
+        const searchHandler = utils.debounce((e) => {
+          const searchTerm = e.target.value.toLowerCase();
+          const table = document.querySelector(".data-table");
+          if (table) {
+            const rows = table.querySelectorAll("tbody tr");
+            rows.forEach((row) => {
+              const text = row.textContent.toLowerCase();
+              row.style.display = text.includes(searchTerm) ? "" : "none";
             });
           }
-        })
-        .catch((error) => {
-          console.error("CKEditor initialization error:", error);
-        });
-    });
+        }, 300);
+
+        elements.searchInput.addEventListener("input", searchHandler);
+      }
+    },
+  };
+
+  // Initialize Admin UI
+  function initAdminUI() {
+    // Initialize all components
+    Object.values(initComponents).forEach((init) => init());
+
+    // Add scroll shadow to topbar
+    if (elements.topbar) {
+      const scrollHandler = utils.throttle(() => {
+        if (window.pageYOffset > 0) {
+          elements.topbar.classList.add("shadow-scroll");
+        } else {
+          elements.topbar.classList.remove("shadow-scroll");
+        }
+      }, 100);
+
+      window.addEventListener("scroll", scrollHandler);
+    }
+
+    // Handle window resize
+    const resizeHandler = utils.debounce(() => {
+      if (window.innerWidth <= 768) {
+        elements.sidebar.classList.remove("toggled");
+        elements.contentWrapper.classList.remove("toggled");
+        elements.topbar.classList.remove("toggled");
+      }
+    }, 250);
+
+    window.addEventListener("resize", resizeHandler);
   }
 
-  // ======== Initialize on DOM Ready ========
-  document.addEventListener("DOMContentLoaded", initAdminUI);
-
-  // ======== Public Methods ========
-  // Expose functions that need to be accessible globally
-  window.resetFilters = function () {
-    // Reset all form inputs for filters
-    const filterForm = document.getElementById("filterForm");
-    if (!filterForm) return;
-
-    // Reset all inputs
-    const inputs = filterForm.querySelectorAll("input, select");
-    inputs.forEach((input) => {
-      if (input.type === "text" || input.tagName === "SELECT") {
-        input.value = "";
-      } else if (input.type === "checkbox" || input.type === "radio") {
-        input.checked = false;
-      }
-    });
-
-    // Submit the form
-    filterForm.submit();
-  };
+  // Initialize when DOM is ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAdminUI);
+  } else {
+    initAdminUI();
+  }
 })();
 
 /**
@@ -879,4 +528,419 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Khởi tạo các chức năng cụ thể cho quản lý người dùng
   initUserManagementForms();
+});
+
+/**
+ * Reusable UI components and functions
+ * These functions handle common UI patterns across admin pages
+ */
+const AdminUI = {
+  /**
+   * Initialize all detail pages with consistent behavior
+   */
+  initDetailPage: function () {
+    // Add back button behavior
+    const backButtons = document.querySelectorAll(".btn-back, .btn-return");
+    backButtons.forEach((btn) => {
+      btn.addEventListener("click", function (e) {
+        if (this.getAttribute("href") === "#" || !this.getAttribute("href")) {
+          e.preventDefault();
+          window.history.back();
+        }
+      });
+    });
+
+    // Initialize status badges
+    this.initStatusBadges();
+  },
+
+  /**
+   * Initialize all form pages with consistent behavior
+   */
+  initFormPage: function () {
+    // Form validation
+    const forms = document.querySelectorAll(".admin-form");
+    forms.forEach((form) => {
+      form.addEventListener("submit", function (e) {
+        if (!this.checkValidity()) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        this.classList.add("was-validated");
+      });
+    });
+
+    // Help toggles
+    const helpToggles = document.querySelectorAll(".help-toggle");
+    helpToggles.forEach((toggle) => {
+      toggle.addEventListener("click", function (e) {
+        e.preventDefault();
+        const helpSection = document.querySelector(
+          this.getAttribute("data-target")
+        );
+        if (helpSection) {
+          helpSection.classList.toggle("d-none");
+
+          // Update icon
+          const icon = this.querySelector("i");
+          if (icon) {
+            if (helpSection.classList.contains("d-none")) {
+              icon.classList.replace("fa-chevron-up", "fa-chevron-down");
+            } else {
+              icon.classList.replace("fa-chevron-down", "fa-chevron-up");
+            }
+          }
+        }
+      });
+    });
+
+    // Toggle switches for status
+    const statusSwitches = document.querySelectorAll(".status-switch");
+    statusSwitches.forEach((switchEl) => {
+      switchEl.addEventListener("change", function () {
+        const statusValue = document.querySelector(
+          this.getAttribute("data-target")
+        );
+        if (statusValue) {
+          statusValue.value = this.checked ? "1" : "0";
+        }
+
+        // Update status label if exists
+        const statusLabel = document.querySelector(
+          this.getAttribute("data-label")
+        );
+        if (statusLabel) {
+          statusLabel.textContent = this.checked
+            ? "Đang hoạt động"
+            : "Không hoạt động";
+          statusLabel.className = this.checked
+            ? "badge bg-success-light text-success"
+            : "badge bg-danger-light text-danger";
+        }
+      });
+    });
+  },
+
+  /**
+   * Initialize list/index pages with consistent behavior
+   */
+  initListPage: function () {
+    // Reset filters
+    const resetButtons = document.querySelectorAll(".reset-filters");
+    resetButtons.forEach((btn) => {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        const form = this.closest("form");
+        if (form) {
+          // Reset all inputs except submit buttons
+          const inputs = form.querySelectorAll(
+            'input:not([type="submit"]), select, textarea'
+          );
+          inputs.forEach((input) => {
+            if (input.type === "checkbox" || input.type === "radio") {
+              input.checked = input.defaultChecked;
+            } else {
+              input.value = input.defaultValue;
+            }
+          });
+
+          // Submit the form
+          form.submit();
+        } else {
+          // If no form found, just navigate to the href
+          window.location.href = this.getAttribute("href");
+        }
+      });
+    });
+
+    // Initialize enhanced search
+    this.initEnhancedSearch();
+
+    // Initialize status badges
+    this.initStatusBadges();
+
+    // Initialize confirm dialogs
+    this.initConfirmDialogs();
+  },
+
+  /**
+   * Initialize enhanced search functionality
+   */
+  initEnhancedSearch: function () {
+    // Real-time search feature
+    const searchInput = document.getElementById("searchTerm");
+    if (searchInput) {
+      let typingTimer;
+      const doneTypingInterval = 500; // 500ms delay after user stops typing
+
+      searchInput.addEventListener("input", function () {
+        clearTimeout(typingTimer);
+        if (searchInput.value.length >= 2) {
+          // Only search if 2+ characters typed
+          searchInput.classList.add("typing");
+          typingTimer = setTimeout(function () {
+            const form = searchInput.closest("form");
+            if (form) form.submit();
+          }, doneTypingInterval);
+        } else {
+          searchInput.classList.remove("typing");
+        }
+      });
+    }
+  },
+
+  /**
+   * Clear search term
+   */
+  clearSearchTerm: function () {
+    document.getElementById("searchTerm").value = "";
+    document.getElementById("filterForm").submit();
+  },
+
+  /**
+   * Clear program filter
+   */
+  clearProgramId: function () {
+    document.getElementById("programId").value = "";
+    document.getElementById("filterForm").submit();
+  },
+
+  /**
+   * Clear amount range filters
+   */
+  clearAmountRange: function () {
+    document.getElementById("minAmount").value = "";
+    document.getElementById("maxAmount").value = "";
+    document.getElementById("filterForm").submit();
+  },
+
+  /**
+   * Initialize status badges with appropriate classes
+   */
+  initStatusBadges: function () {
+    const statusBadges = document.querySelectorAll(".status-badge");
+    statusBadges.forEach((badge) => {
+      const status = badge.getAttribute("data-status");
+      if (status === "true" || status === "1" || status === "active") {
+        badge.classList.add("success");
+      } else if (
+        status === "false" ||
+        status === "0" ||
+        status === "inactive"
+      ) {
+        badge.classList.add("danger");
+      } else if (status === "pending") {
+        badge.classList.add("warning");
+      }
+    });
+  },
+
+  /**
+   * Initialize confirmation dialogs for delete actions
+   */
+  initConfirmDialogs: function () {
+    const confirmButtons = document.querySelectorAll("[data-confirm]");
+    confirmButtons.forEach((btn) => {
+      btn.addEventListener("click", function (e) {
+        if (
+          !confirm(
+            this.getAttribute("data-confirm") ||
+              "Bạn có chắc chắn muốn thực hiện thao tác này?"
+          )
+        ) {
+          e.preventDefault();
+        }
+      });
+    });
+  },
+
+  /**
+   * Initialize image preview functionality
+   */
+  initImagePreviews: function () {
+    const imageInputs = document.querySelectorAll(".image-input");
+    imageInputs.forEach((input) => {
+      input.addEventListener("change", function () {
+        const previewContainer = document.querySelector(
+          this.getAttribute("data-preview")
+        );
+        if (previewContainer && this.files && this.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const previewImage = previewContainer.querySelector("img");
+            if (previewImage) {
+              previewImage.src = e.target.result;
+              previewImage.style.display = "block";
+            }
+
+            // Hide no-image icon if it exists
+            const noImageIcon =
+              previewContainer.querySelector(".no-image-icon");
+            if (noImageIcon) {
+              noImageIcon.style.display = "none";
+            }
+          };
+          reader.readAsDataURL(this.files[0]);
+        }
+      });
+    });
+  },
+};
+
+// Initialize components when DOM is loaded
+document.addEventListener("DOMContentLoaded", function () {
+  // Determine page type and initialize appropriate components
+  const pageBody = document.body;
+
+  if (pageBody.classList.contains("detail-page")) {
+    AdminUI.initDetailPage();
+  }
+
+  if (pageBody.classList.contains("form-page")) {
+    AdminUI.initFormPage();
+  }
+
+  if (pageBody.classList.contains("list-page")) {
+    AdminUI.initListPage();
+  }
+
+  // Always initialize image previews
+  AdminUI.initImagePreviews();
+});
+
+// Dashboard Charts Initialization
+document.addEventListener("DOMContentLoaded", function () {
+  // Debugging data objects
+  console.log("Donations by day:", "[(${donationsByDay})]");
+  console.log("Donations by category:", "[(${donationsByCategory})]");
+
+  // Format currency in VND
+  function formatCurrency(value) {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      maximumFractionDigits: 0,
+    }).format(value);
+  }
+
+  // Donations over time chart
+  if (document.getElementById("donationTimeChart")) {
+    const donationTimeData = {
+      labels: Object.keys(
+        JSON.parse('[(${donationsByDay != null ? donationsByDay : "{}"})]')
+      ),
+      datasets: [
+        {
+          label: "Số tiền quyên góp",
+          data: Object.values(
+            JSON.parse('[(${donationsByDay != null ? donationsByDay : "{}"})]')
+          ),
+          backgroundColor: "rgba(78, 115, 223, 0.2)",
+          borderColor: "rgba(78, 115, 223, 1)",
+          borderWidth: 2,
+          tension: 0.4,
+          fill: true,
+        },
+      ],
+    };
+
+    const donationTimeConfig = {
+      type: "line",
+      data: donationTimeData,
+      options: {
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: "top",
+          },
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                return formatCurrency(context.raw);
+              },
+            },
+          },
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function (value) {
+                return formatCurrency(value);
+              },
+            },
+          },
+        },
+      },
+    };
+
+    new Chart(
+      document.getElementById("donationTimeChart").getContext("2d"),
+      donationTimeConfig
+    );
+  }
+
+  // Category distribution chart
+  if (document.getElementById("categoryChart")) {
+    const categoryData = {
+      labels: Object.keys(
+        JSON.parse(
+          '[(${donationsByCategory != null ? donationsByCategory : "{}"})]'
+        )
+      ),
+      datasets: [
+        {
+          data: Object.values(
+            JSON.parse(
+              '[(${donationsByCategory != null ? donationsByCategory : "{}"})]'
+            )
+          ),
+          backgroundColor: [
+            "rgba(78, 115, 223, 0.8)",
+            "rgba(28, 200, 138, 0.8)",
+            "rgba(246, 194, 62, 0.8)",
+            "rgba(231, 74, 59, 0.8)",
+            "rgba(54, 185, 204, 0.8)",
+          ],
+          borderWidth: 1,
+        },
+      ],
+    };
+
+    const categoryConfig = {
+      type: "doughnut",
+      data: categoryData,
+      options: {
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: {
+              boxWidth: 12,
+            },
+          },
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                const total = context.dataset.data.reduce(
+                  (acc, val) => acc + val,
+                  0
+                );
+                const percentage = Math.round((context.raw / total) * 100);
+                return `${context.label}: ${formatCurrency(
+                  context.raw
+                )} (${percentage}%)`;
+              },
+            },
+          },
+        },
+        cutout: "60%",
+      },
+    };
+
+    new Chart(
+      document.getElementById("categoryChart").getContext("2d"),
+      categoryConfig
+    );
+  }
 });

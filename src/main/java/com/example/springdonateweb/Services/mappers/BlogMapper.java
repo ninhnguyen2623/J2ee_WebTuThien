@@ -9,26 +9,25 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Mapper(componentModel = "spring")
 public interface BlogMapper {
-
-
+    
     BlogResponseDto toDto(BlogEntity entity);
-
+    
     @Mappings({
-        @Mapping(source = "imageUrl", target = "imageUrl", qualifiedByName = "multipartFileToString")
+            @Mapping(source = "imageUrl", target = "imageUrl", qualifiedByName = "multipartFileToString")
     })
     BlogEntity toEntity(BlogCreateDto blogCreateDto);
-
+    
     BlogEntity toEntity(BlogUpdateDto blogUpdateDto);
-
+    
     @Mappings({
             @Mapping(target = "createdAt", expression = "java(entity.getCreatedAt().toString())"),
             @Mapping(target = "updatedAt", expression = "java(entity.getUpdatedAt().toString())")
     })
     BlogResponseDto toResponseDto(BlogEntity entity);
-
+    
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     BlogEntity partialUpdate(BlogUpdateDto blogUpdateDto, @MappingTarget BlogEntity blogEntity);
-
+    
     @Named("multipartFileToString")
     static String multipartFileToString(MultipartFile file) {
         // Implement the logic to convert MultipartFile to String

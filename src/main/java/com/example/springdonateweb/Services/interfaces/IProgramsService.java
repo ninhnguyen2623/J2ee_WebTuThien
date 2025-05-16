@@ -19,8 +19,8 @@ public interface IProgramsService {
     void delete(int id);
     
     List<ProgramsResponseDto> findByStatusTrue();
-    
     // Phương thức mới cho phân trang
+    
     Page<ProgramsResponseDto> findProgramsByPage(int page, int size);
     
     List<ProgramsResponseDto> findByCategory_CategoryId(int categoryId);

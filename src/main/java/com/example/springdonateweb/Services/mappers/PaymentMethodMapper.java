@@ -8,13 +8,14 @@ import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface PaymentMethodMapper {
-
+    
     PaymentmethodsEntity toEntity(PaymentMethodCreateDto paymentMethodCreateDto);
-
+    
     PaymentmethodsEntity toEntity(PaymentMethodUpdateDto paymentMethodUpdateDto);
-
+    
     PaymentMethodResponseDto toDto(PaymentmethodsEntity paymentmethodsEntity);
-
+    
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    PaymentmethodsEntity partialUpdate(PaymentMethodUpdateDto paymentMethodUpdateDto, @MappingTarget PaymentmethodsEntity paymentmethodsEntity);
+    PaymentmethodsEntity partialUpdate(PaymentMethodUpdateDto paymentMethodUpdateDto,
+                                       @MappingTarget PaymentmethodsEntity paymentmethodsEntity);
 }

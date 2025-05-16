@@ -1,6 +1,5 @@
 package com.example.springdonateweb.Services;
 
-
 import com.example.springdonateweb.Models.Entities.FundCommonEntity;
 import com.example.springdonateweb.Repositories.*;
 import com.example.springdonateweb.util.VnPayUtil;
@@ -18,7 +17,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class TempService {
-
+    
     private final VnPayUtil vnPayUtil;
     private final DonationsRepository donationsRepository;
     private final DonorsRepository donorsRepository;
@@ -33,41 +32,41 @@ public class TempService {
     private String vnp_Url;
     @Value("${vnp_ReturnUrl}")
     private String vnp_ReturnUrl;
-
+    
     public String createOrder(int total, String orderInfor, String urlReturn) {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String vnp_TxnRef = VnPayUtil.getRandomNumber(8);
         String vnp_IpAddr = "127.0.0.1";
         String orderType = "order-type";
-
+        
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", vnp_Version);
         vnp_Params.put("vnp_Command", vnp_Command);
         vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
         vnp_Params.put("vnp_Amount", String.valueOf(total * 100));
         vnp_Params.put("vnp_CurrCode", "VND");
-
+        
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
         vnp_Params.put("vnp_OrderInfo", orderInfor);
         vnp_Params.put("vnp_OrderType", orderType);
-
+        
         String locate = "vn";
         vnp_Params.put("vnp_Locale", locate);
-
+        
         urlReturn += vnp_ReturnUrl;
         vnp_Params.put("vnp_ReturnUrl", vnp_ReturnUrl);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
-
+        
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         String vnp_CreateDate = formatter.format(cld.getTime());
         vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
-
+        
         cld.add(Calendar.MINUTE, 15);
         String vnp_ExpireDate = formatter.format(cld.getTime());
         vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
-
+        
         List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
         Collections.sort(fieldNames);
         StringBuilder hashData = new StringBuilder();
@@ -77,11 +76,11 @@ public class TempService {
             String fieldName = itr.next();
             String fieldValue = vnp_Params.get(fieldName);
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
-                //Build hash data
+                // Build hash data
                 hashData.append(fieldName);
                 hashData.append('=');
                 hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
-                //Build query
+                // Build query
                 query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII));
                 query.append('=');
                 query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
@@ -97,10 +96,10 @@ public class TempService {
         String paymentUrl = vnp_Url + "?" + queryUrl;
         return paymentUrl;
     }
-
+    
     public int orderReturn(HttpServletRequest request) throws Exception {
         Map<String, String> fields = new HashMap<>();
-        for (Enumeration<String> params = request.getParameterNames(); params.hasMoreElements(); ) {
+        for (Enumeration<String> params = request.getParameterNames(); params.hasMoreElements();) {
             String fieldName = null;
             String fieldValue = null;
             fieldName = URLEncoder.encode(params.nextElement(), StandardCharsets.US_ASCII);
@@ -109,7 +108,7 @@ public class TempService {
                 fields.put(fieldName, fieldValue);
             }
         }
-
+        
         String vnp_SecureHash = request.getParameter("vnp_SecureHash");
         fields.remove("vnp_SecureHashType");
         fields.remove("vnp_SecureHash");
@@ -119,7 +118,7 @@ public class TempService {
                 // Get payment details from request
                 String amount = request.getParameter("vnp_Amount");
                 String txnRef = request.getParameter("vnp_TxnRef");
-
+                
                 // Save payment data
                 savePaymentData(amount);
                 return 1;
@@ -130,29 +129,29 @@ public class TempService {
             return -1;
         }
     }
-
+    
     private void savePaymentData(String amount) {
         try {
-
-            int donationAmount = new BigDecimal(amount).divide(new BigDecimal(100)).intValue(); // Convert from VNPay amount to int
-
-
+            
+            int donationAmount = new BigDecimal(amount).divide(new BigDecimal(100)).intValue(); // Convert from VNPay
+            // amount to int
+            
             FundCommonEntity fund = fundCommonRepository.findById(1)
-                    .orElseThrow(() -> new RuntimeException("Fund not found"));
-
+                                                        .orElseThrow(() -> new RuntimeException("Fund not found"));
+            
             if (fund.getCurrentAmount() == null) {
                 fund.setCurrentAmount(donationAmount);
             } else {
                 fund.setCurrentAmount(fund.getCurrentAmount() + donationAmount);
             }
-
+            
             fundCommonRepository.save(fund);
-
+            
         } catch (Exception e) {
             throw new RuntimeException("Failed to save payment data", e);
         }
     }
-
+    
     public String extractOriginalOrderInfo(String orderInfo) {
         String[] parts = orderInfo.split(";");
         for (String part : parts) {

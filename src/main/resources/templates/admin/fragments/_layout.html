@@ -1,10 +1,15 @@
-<!DOCTYPE html >
-<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html
+    lang="en"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:th="http://www.thymeleaf.org"
+>
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Title</title>
     <div th:insert="~{admin/fragments/_link}"></div>
 </head>
+
 <body id="page-top">
 <div id="wrapper">
     <div th:insert="~{admin/fragments/_navbar}"></div>
@@ -12,9 +17,7 @@
         <div id="content">
             <div th:insert="~{admin/fragments/_headernav}"></div>
             <div class="container-fluid">
-                <div layout:fragment="content">
-
-                </div>
+                <div layout:fragment="content"></div>
             </div>
         </div>
         <div th:insert="~{admin/fragments/_footer}"></div>
@@ -22,5 +25,12 @@
 </div>
 <div th:insert="~{admin/fragments/_lib}"></div>
 
+<!-- Back to top button -->
+<a href="#page-top" class="back-to-top">
+    <i class="ri-arrow-up-fill"></i>
+</a>
+
+<!-- Page-specific scripts -->
+<th:block layout:fragment="scripts"></th:block>
 </body>
 </html>

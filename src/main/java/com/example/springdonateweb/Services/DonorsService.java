@@ -19,17 +19,17 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class DonorsService implements IDonorsService {
-
+    
     private final DonorsRepository donorsRepository;
     private final DonorsMapper donorsMapper;
-
+    
     @Override
     public List<DonorResponseDto> findAll() {
         return donorsRepository.findAll().stream()
-                .map(donorsMapper::toDto)
-                .collect(Collectors.toList());
+                               .map(donorsMapper::toDto)
+                               .collect(Collectors.toList());
     }
-
+    
     @Override
     public Page<DonorResponseDto> findDonorsByPage(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -39,27 +39,27 @@ public class DonorsService implements IDonorsService {
     @Override
     public DonorResponseDto findById(int id) {
         return donorsRepository.findById(id)
-                .map(donorsMapper::toDto)
-                .orElse(null);
+                               .map(donorsMapper::toDto)
+                               .orElse(null);
     }
-
+    
     @Override
     public DonorResponseDto create(DonorCreateDto donorCreateDto) {
         DonorsEntity donorsEntity = donorsMapper.toEntity(donorCreateDto);
         DonorsEntity savedDonor = donorsRepository.save(donorsEntity);
         return donorsMapper.toDto(savedDonor);
     }
-
+    
     @Override
     public DonorResponseDto update(int id, DonorUpdateDto donorUpdateDto) {
         return donorsRepository.findById(id)
-                .map(existingDonor -> {
-                    DonorsEntity updatedDonor = donorsMapper.partialUpdate(donorUpdateDto, existingDonor);
-                    return donorsMapper.toDto(donorsRepository.save(updatedDonor));
-                })
-                .orElse(null);
+                               .map(existingDonor -> {
+                                   DonorsEntity updatedDonor = donorsMapper.partialUpdate(donorUpdateDto, existingDonor);
+                                   return donorsMapper.toDto(donorsRepository.save(updatedDonor));
+                               })
+                               .orElse(null);
     }
-
+    
     @Override
     public void delete(int id) {
         donorsRepository.deleteById(id);

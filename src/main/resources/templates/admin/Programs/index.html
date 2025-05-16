@@ -262,21 +262,6 @@
                   Hiện tại chưa có chương trình nào trong hệ thống.
                   <br />Vui lòng thêm chương trình mới để bắt đầu.
                 </p>
-                <div class="empty-state-actions">
-                  <a
-                      th:href="@{/admin/programs}"
-                      class="btn btn-outline-primary me-2"
-                      th:if="${isSearching}"
-                  >
-                    <i class="fas fa-times-circle me-2"></i>Xóa bộ lọc
-                  </a>
-                  <a
-                      th:href="@{/admin/programs/create}"
-                      class="btn btn-primary"
-                  >
-                    <i class="fas fa-plus me-2"></i>Thêm Chương Trình Mới
-                  </a>
-                </div>
               </div>
             </td>
           </tr>

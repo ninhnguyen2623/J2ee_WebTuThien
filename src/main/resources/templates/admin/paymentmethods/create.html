@@ -1,28 +1,274 @@
 <!DOCTYPE html>
-<html layout:decorate="~{admin/fragments/_layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html
+    layout:decorate="~{admin/fragments/_layout}"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:th="http://www.thymeleaf.org"
+>
 <head>
-  <meta charset="UTF-8">
-  <title>Create Payment Method</title>
+  <meta charset="UTF-8" />
+  <title>Thêm Phương Thức Thanh Toán</title>
+  <style>
+    .method-preview-icon {
+      transition: all 0.3s ease;
+    }
+    .method-preview-icon:hover {
+      transform: scale(1.05);
+    }
+  </style>
 </head>
+
 <body>
-<div layout:fragment="content">
-  <h3>Create Payment Method</h3>
-  <form th:action="@{/admin/paymentmethods/create}" th:object="${paymentMethod}" method="POST">
-    <div class="form-group">
-      <label for="methodName">Method Name</label>
-      <input type="text" id="methodName" class="form-control" th:field="*{methodName}" placeholder="Enter method name" required>
+<div layout:fragment="content" class="container-fluid px-4 py-3">
+  <!-- Page Heading -->
+  <div class="d-sm-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="text-dark mb-0 fw-bold page-title">
+        Thêm Phương Thức Thanh Toán
+      </h3>
     </div>
-    <div class="form-group">
-      <label for="description">Description</label>
-      <textarea id="description" class="form-control" th:field="*{description}" placeholder="Enter description" required></textarea>
+    <a
+        class="btn btn-outline-secondary btn-sm d-sm-inline-block shadow-sm"
+        th:href="@{/admin/paymentmethods}"
+    >
+      <i class="fas fa-arrow-left me-2"></i>Quay Lại Danh Sách
+    </a>
+  </div>
+  
+  <!-- Payment Method Form Card -->
+  <div class="row">
+    <div class="col-xl-8">
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 fw-bold text-primary">
+            <i class="fas fa-credit-card me-2"></i>Thông Tin Phương Thức
+                                                   Thanh Toán
+          </h6>
+        </div>
+        <div class="card-body">
+          <form
+              th:action="@{/admin/paymentmethods/create}"
+              th:object="${paymentMethod}"
+              method="POST"
+              class="needs-validation"
+              novalidate
+          >
+            <div class="row mb-3">
+              <div class="col-md-12">
+                <div class="form-group mb-3">
+                  <label
+                      for="methodName"
+                      class="form-label small fw-bold text-muted required-label"
+                  >Tên phương thức</label
+                  >
+                  <div class="input-group">
+                        <span class="input-group-text bg-light">
+                          <i class="fas fa-tag text-primary"></i>
+                        </span>
+                    <input
+                        type="text"
+                        id="methodName"
+                        class="form-control"
+                        th:field="*{methodName}"
+                        placeholder="Nhập tên phương thức thanh toán"
+                        required
+                    />
+                  </div>
+                  <div class="invalid-feedback">
+                    Vui lòng nhập tên phương thức
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group mb-3">
+              <label
+                  for="description"
+                  class="form-label small fw-bold text-muted required-label"
+              >Mô tả</label
+              >
+              <div class="input-group">
+                    <span class="input-group-text bg-light">
+                      <i class="fas fa-info-circle text-primary"></i>
+                    </span>
+                <textarea
+                    id="description"
+                    class="form-control"
+                    th:field="*{description}"
+                    placeholder="Nhập mô tả chi tiết về phương thức thanh toán"
+                    rows="4"
+                    required
+                ></textarea>
+              </div>
+              <div class="form-text">
+                Mô tả chi tiết về phương thức thanh toán và cách sử dụng
+              </div>
+              <div class="invalid-feedback">Vui lòng nhập mô tả</div>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label class="form-label small fw-bold text-muted"
+                  >Trạng thái</label
+                  >
+                  <div class="form-check form-switch">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="isActive"
+                        th:field="*{isActive}"
+                        th:value="1"
+                        role="switch"
+                    />
+                    <label class="form-check-label" for="isActive"
+                    >Kích hoạt phương thức thanh toán</label
+                    >
+                  </div>
+                  <div class="form-text">
+                    Phương thức thanh toán chỉ hiển thị cho người dùng khi
+                    được kích hoạt
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <hr class="my-4" />
+            
+            <div class="d-flex justify-content-end mt-4">
+              <a
+                  th:href="@{/admin/paymentmethods}"
+                  class="btn btn-outline-secondary me-2"
+              >
+                <i class="fas fa-times me-1"></i>Hủy Bỏ
+              </a>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-1"></i>Lưu Phương Thức
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
-    <div class="form-group form-check">
-      <input type="checkbox" id="isActive" class="form-check-input" th:field="*{isActive}">
-      <label for="isActive" class="form-check-label">Is Active</label>
+    
+    <!-- Help/Instructions Card -->
+    <div class="col-xl-4">
+      <!-- Thông tin phương thức Card -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 fw-bold text-primary">
+            <i class="fas fa-credit-card me-2"></i>Xem Trước
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="text-center mb-4">
+            <div
+                class="avatar-circle-lg bg-primary-light mx-auto mb-3 d-flex align-items-center justify-content-center method-preview-icon"
+            >
+              <i class="fas fa-credit-card text-primary fs-2"></i>
+            </div>
+            <h5 class="fw-bold">Phương thức thanh toán mới</h5>
+            <span class="badge bg-success px-3 py-2 mb-2">
+                  <i class="fas fa-check-circle me-1"></i>
+                  Đang hoạt động
+                </span>
+          </div>
+          
+          <hr />
+          
+          <div class="alert alert-warning d-flex align-items-center">
+            <i class="fas fa-exclamation-triangle me-2 fs-5"></i>
+            <div>
+              Điền đầy đủ thông tin bên trái để tạo phương thức thanh toán
+              mới.
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tips Card -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 fw-bold text-primary">
+            <i class="fas fa-lightbulb me-2"></i>Mẹo & Hướng Dẫn
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-info d-flex align-items-center mb-3">
+            <i class="fas fa-exclamation-circle me-2 fs-5"></i>
+            <div>
+              Các trường có dấu
+              <span class="text-danger fw-bold">*</span> là bắt buộc phải
+              nhập.
+            </div>
+          </div>
+          
+          <h6 class="fw-bold mb-2">Các lưu ý:</h6>
+          <ul class="small text-muted mb-0">
+            <li class="mb-2">
+              Đặt tên phương thức thanh toán ngắn gọn, dễ hiểu.
+            </li>
+            <li class="mb-2">
+              Mô tả chi tiết nên bao gồm thông tin về cách thức hoạt động và
+              các điều khoản quan trọng.
+            </li>
+            <li class="mb-2">
+              Chỉ kích hoạt phương thức thanh toán khi đã sẵn sàng để người
+              dùng sử dụng.
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <button type="submit" class="btn btn-primary mt-3">Create Payment Method</button>
-    <a th:href="@{/admin/paymentmethods}" class="btn btn-secondary mt-3">Cancel</a>
-  </form>
+  </div>
 </div>
+
+<th:block layout:fragment="scripts">
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Form validation
+      var forms = document.querySelectorAll(".needs-validation");
+      Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener(
+          "submit",
+          function (event) {
+            if (!form.checkValidity()) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+            form.classList.add("was-validated");
+          },
+          false
+        );
+      });
+
+      // Preview name change
+      const nameInput = document.getElementById("methodName");
+      const previewName = document.querySelector(".card-body h5.fw-bold");
+      const isActiveCheckbox = document.getElementById("isActive");
+      const statusBadge = document.querySelector(".card-body .badge");
+
+      nameInput.addEventListener("input", function () {
+        if (this.value.trim() !== "") {
+          previewName.textContent = this.value;
+        } else {
+          previewName.textContent = "Phương thức thanh toán mới";
+        }
+      });
+
+      // Status change
+      isActiveCheckbox.addEventListener("change", function () {
+        if (this.checked) {
+          statusBadge.className = "badge bg-success px-3 py-2 mb-2";
+          statusBadge.innerHTML =
+            '<i class="fas fa-check-circle me-1"></i> Đang hoạt động';
+        } else {
+          statusBadge.className = "badge bg-danger px-3 py-2 mb-2";
+          statusBadge.innerHTML =
+            '<i class="fas fa-times-circle me-1"></i> Không hoạt động';
+        }
+      });
+    });
+  </script>
+</th:block>
 </body>
 </html>

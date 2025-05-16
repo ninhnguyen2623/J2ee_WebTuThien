@@ -7,6 +7,7 @@ import com.example.springdonateweb.Models.Entities.CategoriesEntity;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ICategoriesService {
     List<CategoryResponseDto> findAll();
@@ -24,4 +25,11 @@ public interface ICategoriesService {
     Page<CategoryResponseDto> findCategoriesByPage(int page, int size, String keyword, String sortBy, String sortDir);
     
     List<CategoriesEntity> findAll2();
+    
+    /**
+     * Lấy tổng số tiền quyên góp theo từng danh mục
+     *
+     * @return Map với key là tên danh mục và value là tổng số tiền
+     */
+    Map<String, Double> getTotalDonationsByCategory();
 }

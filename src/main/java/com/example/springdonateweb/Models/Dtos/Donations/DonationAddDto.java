@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Data
@@ -19,16 +18,16 @@ import java.time.LocalDateTime;
 public class DonationAddDto {
     @NotNull(message = "User ID is required")
     private Integer userId;
-
+    
     @NotNull(message = "Program ID is required")
     private Integer programId;
-
+    
     @NotNull(message = "Amount is required")
     @DecimalMin(value = "0.0", inclusive = false, message = "Amount must be greater than 0")
     private BigDecimal amount;
-
+    
     @NotBlank(message = "Donor name is required")
     private String donorName;
-
+    
     private LocalDateTime donationDate;
 }

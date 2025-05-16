@@ -23,4 +23,9 @@ public interface CategoriesRepository extends JpaRepository<CategoriesEntity, In
     // Tìm kiếm không phân biệt chữ hoa/thường (tương thích với nhiều cơ sở dữ liệu)
     @Query("SELECT c FROM CategoriesEntity c WHERE LOWER(c.name) LIKE LOWER(concat('%', :name, '%'))")
     Page<CategoriesEntity> findByNameContainingIgnoreCase(@Param("name") String name, Pageable pageable);
+    
+    // Tính tổng số tiền quyên góp theo danh mục
+    @Query("SELECT SUM(d.amount) FROM DonationsEntity d JOIN ProgramsEntity p ON d.programId = p.programId " +
+            "WHERE p.category.categoryId = :categoryId")
+    Double sumDonationsByCategoryId(@Param("categoryId") Integer categoryId);
 }

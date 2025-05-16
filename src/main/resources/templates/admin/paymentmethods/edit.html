@@ -1,28 +1,438 @@
 <!DOCTYPE html>
-<html layout:decorate="~{admin/fragments/_layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html
+    layout:decorate="~{admin/fragments/_layout}"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:th="http://www.thymeleaf.org"
+>
 <head>
-  <meta charset="UTF-8">
-  <title>Edit Payment Method</title>
+  <meta charset="UTF-8" />
+  <title>Chỉnh Sửa Phương Thức Thanh Toán</title>
+  <style>
+    .method-preview-icon {
+      transition: all 0.3s ease;
+    }
+    .method-preview-icon:hover {
+      transform: scale(1.05);
+    }
+    .badge-status {
+      transition: all 0.3s ease;
+    }
+    .badge-status:hover {
+      transform: translateY(-2px);
+    }
+  </style>
 </head>
+
 <body>
-<div layout:fragment="content">
-  <h3>Edit Payment Method</h3>
-  <form th:action="@{/admin/paymentmethods/edit/{id}(id=${paymentMethod.paymentMethodId})}" th:object="${paymentMethod}" method="POST">
-    <div class="form-group">
-      <label for="methodName">Method Name</label>
-      <input type="text" id="methodName" class="form-control" th:field="*{methodName}" placeholder="Enter method name" required>
+<div layout:fragment="content" class="container-fluid px-4 py-3">
+  <!-- Page Heading -->
+  <div class="d-sm-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="text-dark mb-0 fw-bold page-title">
+        Chỉnh Sửa Phương Thức Thanh Toán
+      </h3>
     </div>
-    <div class="form-group">
-      <label for="description">Description</label>
-      <textarea id="description" class="form-control" th:field="*{description}" placeholder="Enter description" required></textarea>
+    <a
+        class="btn btn-outline-secondary btn-sm d-sm-inline-block shadow-sm"
+        th:href="@{/admin/paymentmethods}"
+    >
+      <i class="fas fa-arrow-left me-2"></i>Quay Lại Danh Sách
+    </a>
+  </div>
+  
+  <!-- Layout chính -->
+  <div class="row">
+    <!-- Cột trái: Form chỉnh sửa -->
+    <div class="col-xl-8">
+      <div class="card shadow mb-4">
+        <div
+            class="card-header py-3 d-flex justify-content-between align-items-center"
+        >
+          <h6 class="m-0 fw-bold text-primary">
+            <i class="fas fa-credit-card me-2"></i>Thông Tin Phương Thức
+                                                   Thanh Toán
+          </h6>
+          <span
+              class="badge px-3 py-2 rounded-pill badge-status"
+              th:classappend="${paymentMethod.isActive == 1 ? 'bg-success-light text-success' : 'bg-danger-light text-danger'}"
+          >
+                <i
+                    class="fas me-1"
+                    th:classappend="${paymentMethod.isActive == 1 ? 'fa-check-circle' : 'fa-times-circle'}"
+                ></i>
+                <span th:if="${paymentMethod.isActive == 1}"
+                >Đang hoạt động</span
+                >
+                <span th:if="${paymentMethod.isActive == 0}"
+                >Không hoạt động</span
+                >
+              </span>
+        </div>
+        <div class="card-body">
+          <form
+              th:action="@{/admin/paymentmethods/edit/{id}(id=${paymentMethod.paymentMethodId})}"
+              th:object="${paymentMethod}"
+              method="POST"
+              class="needs-validation"
+              novalidate
+          >
+            <!-- ID phương thức thanh toán (hidden) -->
+            <input type="hidden" th:field="*{paymentMethodId}" />
+            
+            <div class="row mb-3">
+              <div class="col-md-12">
+                <div class="form-group mb-3">
+                  <label
+                      for="methodName"
+                      class="form-label small fw-bold text-muted required-label"
+                  >Tên phương thức</label
+                  >
+                  <div class="input-group">
+                        <span class="input-group-text bg-light">
+                          <i class="fas fa-tag text-primary"></i>
+                        </span>
+                    <input
+                        type="text"
+                        id="methodName"
+                        class="form-control"
+                        th:field="*{methodName}"
+                        placeholder="Nhập tên phương thức thanh toán"
+                        required
+                    />
+                  </div>
+                  <div class="invalid-feedback">
+                    Vui lòng nhập tên phương thức
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group mb-3">
+              <label
+                  for="description"
+                  class="form-label small fw-bold text-muted required-label"
+              >Mô tả</label
+              >
+              <div class="input-group">
+                    <span class="input-group-text bg-light">
+                      <i class="fas fa-info-circle text-primary"></i>
+                    </span>
+                <textarea
+                    id="description"
+                    class="form-control"
+                    th:field="*{description}"
+                    placeholder="Nhập mô tả chi tiết về phương thức thanh toán"
+                    rows="4"
+                    required
+                ></textarea>
+              </div>
+              <div class="form-text">
+                Mô tả chi tiết về phương thức thanh toán và cách sử dụng
+              </div>
+              <div class="invalid-feedback">Vui lòng nhập mô tả</div>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label class="form-label small fw-bold text-muted"
+                  >Trạng thái</label
+                  >
+                  <div class="form-check form-switch">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="isActive"
+                        th:field="*{isActive}"
+                        th:value="1"
+                        role="switch"
+                    />
+                    <label class="form-check-label" for="isActive"
+                    >Kích hoạt phương thức thanh toán</label
+                    >
+                  </div>
+                  <div class="form-text">
+                    Phương thức thanh toán chỉ hiển thị cho người dùng khi
+                    được kích hoạt
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <hr class="my-4" />
+            
+            <div class="d-flex justify-content-end mt-4">
+              <a
+                  th:href="@{/admin/paymentmethods}"
+                  class="btn btn-outline-secondary me-2"
+              >
+                <i class="fas fa-times me-1"></i>Hủy Bỏ
+              </a>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-1"></i>Lưu Thay Đổi
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
-    <div class="form-group form-check">
-      <input type="checkbox" id="isActive" class="form-check-input" th:field="*{isActive}">
-      <label for="isActive" class="form-check-label">Is Active</label>
+    
+    <!-- Cột phải: Thông tin và hướng dẫn -->
+    <div class="col-xl-4">
+      <!-- Thông tin phương thức Card -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 fw-bold text-primary">
+            <i class="fas fa-info-circle me-2"></i>Chi Tiết Phương Thức
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="text-center mb-4">
+            <div
+                class="avatar-circle-lg bg-primary-light mx-auto mb-3 d-flex align-items-center justify-content-center method-preview-icon"
+            >
+              <i class="fas fa-credit-card text-primary fs-2"></i>
+            </div>
+            <h5 class="fw-bold" th:text="${paymentMethod.methodName}">
+              Tên phương thức
+            </h5>
+            <span
+                class="badge px-3 py-2 mb-2 badge-status"
+                th:classappend="${paymentMethod.isActive == 1 ? 'bg-success text-white' : 'bg-danger text-white'}"
+            >
+                  <i
+                      class="fas me-1"
+                      th:classappend="${paymentMethod.isActive == 1 ? 'fa-check-circle' : 'fa-times-circle'}"
+                  ></i>
+                  <span th:if="${paymentMethod.isActive == 1}"
+                  >Đang hoạt động</span
+                  >
+                  <span th:if="${paymentMethod.isActive == 0}"
+                  >Không hoạt động</span
+                  >
+                </span>
+          </div>
+          
+          <hr />
+          
+          <div class="admin-detail-body">
+            <div
+                class="admin-detail-item d-flex align-items-center border-bottom py-3"
+            >
+              <div
+                  class="admin-detail-label text-muted"
+                  style="min-width: 160px; padding-left: 12px"
+              >
+                <i class="fas fa-hashtag me-2 text-primary"></i>
+                Mã phương thức
+              </div>
+              <div class="admin-detail-value flex-grow-1">
+                    <span
+                        class="fw-bold"
+                        th:text="${paymentMethod.paymentMethodId}"
+                    >1</span
+                    >
+              </div>
+            </div>
+            <div
+                class="admin-detail-item d-flex align-items-center border-bottom py-3"
+            >
+              <div
+                  class="admin-detail-label text-muted"
+                  style="min-width: 160px; padding-left: 12px"
+              >
+                <i class="fas fa-tag me-2 text-primary"></i>
+                Tên phương thức
+              </div>
+              <div
+                  class="admin-detail-value flex-grow-1"
+                  th:text="${paymentMethod.methodName}"
+              >
+                Tên phương thức
+              </div>
+            </div>
+            <div class="admin-detail-item d-flex align-items-center py-3">
+              <div
+                  class="admin-detail-label text-muted"
+                  style="min-width: 160px; padding-left: 12px"
+              >
+                <i class="fas fa-toggle-on me-2 text-primary"></i>
+                Trạng thái
+              </div>
+              <div class="admin-detail-value flex-grow-1">
+                    <span
+                        class="admin-status-badge px-3 py-2 rounded-pill"
+                        th:classappend="${paymentMethod.isActive == 1 ? 'success' : 'danger'}"
+                    >
+                      <i
+                          class="fas me-1"
+                          th:classappend="${paymentMethod.isActive == 1 ? 'fa-check-circle' : 'fa-times-circle'}"
+                      ></i>
+                      <span th:if="${paymentMethod.isActive == 1}"
+                      >Hoạt động</span
+                      >
+                      <span th:if="${paymentMethod.isActive == 0}"
+                      >Không hoạt động</span
+                      >
+                    </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tips Card -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 fw-bold text-primary">
+            <i class="fas fa-lightbulb me-2"></i>Mẹo & Hướng Dẫn
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-info d-flex align-items-center mb-3">
+            <i class="fas fa-exclamation-circle me-2 fs-5"></i>
+            <div>
+              Các trường có dấu
+              <span class="text-danger fw-bold">*</span> là bắt buộc.
+            </div>
+          </div>
+          
+          <h6 class="fw-bold mb-2">Các lưu ý:</h6>
+          <ul class="small text-muted mb-0">
+            <li class="mb-2">
+              Đặt tên phương thức thanh toán dễ hiểu và ngắn gọn.
+            </li>
+            <li class="mb-2">
+              Mô tả chi tiết giúp người dùng hiểu rõ cách thức thanh toán.
+            </li>
+            <li class="mb-2">
+              Chỉ kích hoạt phương thức thanh toán khi đã sẵn sàng sử dụng.
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <button type="submit" class="btn btn-primary mt-3">Update Payment Method</button>
-    <a th:href="@{/admin/paymentmethods}" class="btn btn-secondary mt-3">Cancel</a>
-  </form>
+  </div>
 </div>
+
+<th:block layout:fragment="scripts">
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Form validation
+      var forms = document.querySelectorAll(".needs-validation");
+      Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener(
+          "submit",
+          function (event) {
+            if (!form.checkValidity()) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+            form.classList.add("was-validated");
+          },
+          false
+        );
+      });
+
+      // Preview name change
+      const nameInput = document.getElementById("methodName");
+      const previewName = document.querySelector(".card-body h5.fw-bold");
+      const isActiveCheckbox = document.getElementById("isActive");
+      const statusBadges = document.querySelectorAll(".badge-status");
+
+      // Update method name in preview
+      nameInput.addEventListener("input", function () {
+        if (this.value.trim() !== "") {
+          previewName.textContent = this.value;
+        }
+      });
+
+      // Update status badges when checkbox is changed
+      isActiveCheckbox.addEventListener("change", function () {
+        statusBadges.forEach((badge) => {
+          if (this.checked) {
+            badge.className = badge.classList.contains("text-white")
+              ? "badge px-3 py-2 mb-2 badge-status bg-success text-white"
+              : "badge px-3 py-2 rounded-pill badge-status bg-success-light text-success";
+
+            const icon = badge.querySelector("i");
+            if (icon) {
+              icon.className = "fas fa-check-circle me-1";
+            }
+
+            const statusText = badge.querySelector("span:not(.fas)");
+            if (statusText) {
+              statusText.textContent = "Đang hoạt động";
+            }
+          } else {
+            badge.className = badge.classList.contains("text-white")
+              ? "badge px-3 py-2 mb-2 badge-status bg-danger text-white"
+              : "badge px-3 py-2 rounded-pill badge-status bg-danger-light text-danger";
+
+            const icon = badge.querySelector("i");
+            if (icon) {
+              icon.className = "fas fa-times-circle me-1";
+            }
+
+            const statusText = badge.querySelector("span:not(.fas)");
+            if (statusText) {
+              statusText.textContent = "Không hoạt động";
+            }
+          }
+        });
+
+        // Update status badge in detail section
+        const adminStatusBadge = document.querySelector(
+          ".admin-status-badge"
+        );
+        if (adminStatusBadge) {
+          if (this.checked) {
+            adminStatusBadge.className = "admin-status-badge success";
+            adminStatusBadge.querySelector("i").className =
+              "fas fa-check-circle";
+
+            // Handle conditional spans
+            const activeSpan = adminStatusBadge.querySelector(
+              "span[th\\:if*='isActive == 1']"
+            );
+            const inactiveSpan = adminStatusBadge.querySelector(
+              "span[th\\:if*='isActive == 0']"
+            );
+
+            if (activeSpan && inactiveSpan) {
+              activeSpan.style.display = "inline";
+              inactiveSpan.style.display = "none";
+            } else {
+              // Fallback if spans aren't found
+              const span = adminStatusBadge.querySelector("span:not(.fas)");
+              if (span) span.textContent = "Hoạt động";
+            }
+          } else {
+            adminStatusBadge.className = "admin-status-badge danger";
+            adminStatusBadge.querySelector("i").className =
+              "fas fa-times-circle";
+
+            // Handle conditional spans
+            const activeSpan = adminStatusBadge.querySelector(
+              "span[th\\:if*='isActive == 1']"
+            );
+            const inactiveSpan = adminStatusBadge.querySelector(
+              "span[th\\:if*='isActive == 0']"
+            );
+
+            if (activeSpan && inactiveSpan) {
+              activeSpan.style.display = "none";
+              inactiveSpan.style.display = "inline";
+            } else {
+              // Fallback if spans aren't found
+              const span = adminStatusBadge.querySelector("span:not(.fas)");
+              if (span) span.textContent = "Không hoạt động";
+            }
+          }
+        }
+      });
+    });
+  </script>
+</th:block>
 </body>
 </html>

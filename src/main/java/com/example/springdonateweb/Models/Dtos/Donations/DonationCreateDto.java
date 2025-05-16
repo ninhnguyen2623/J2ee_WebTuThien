@@ -7,17 +7,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
-
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
 
 public class DonationCreateDto {
     @NotNull

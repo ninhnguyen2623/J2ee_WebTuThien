@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class FundCommonSerivce implements IFundCommonService {
     private final FundCommonRepository fundCommonRepository;
     private final FundCommonMapper fundCommonMapper;
-
+    
     @Override
     public FundCommonResponseDto findById(int id) {
         return fundCommonRepository.findById(id).map(fundCommonMapper::toDto).orElse(null);

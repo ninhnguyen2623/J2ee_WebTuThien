@@ -9,7 +9,7 @@ import com.example.springdonateweb.Models.Entities.FundCommonEntity;
 public interface FundCommonMapper {
     
     FundCommonResponseDto toDto(FundCommonEntity fundCommonEntity);
+    
     FundCommonEntity toEntity(FundCommonResponseDto fundCommonResponseDto);
-
-
+    
 }

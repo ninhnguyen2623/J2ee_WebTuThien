@@ -5,7 +5,7 @@
 >
 <head>
     <meta charset="UTF-8" />
-    <title>Chi Tiết Quyên Góp</title>
+    <title>Chi Tiết Giao Dịch</title>
 </head>
 
 <body class="detail-page">
@@ -13,11 +13,11 @@
     <!-- Page Heading -->
     <div class="admin-page-header">
         <div>
-            <h3 class="admin-page-title">Chi Tiết Quyên Góp</h3>
+            <h3 class="admin-page-title">Chi Tiết Giao Dịch</h3>
         </div>
         <div class="admin-page-actions">
             <a
-                th:href="@{/admin/donations}"
+                th:href="@{/admin/transactions}"
                 class="btn btn-outline-secondary btn-back"
             >
                 <i class="fas fa-arrow-left me-2"></i>Quay Lại
@@ -27,12 +27,12 @@
     
     <!-- Main Content -->
     <div class="admin-detail-container">
-        <!-- Donation Information Section -->
+        <!-- Transaction Information Section -->
         <div class="admin-detail-section">
             <div class="admin-detail-header">
                 <h6 class="admin-detail-title text-primary">
-                    <i class="fas fa-donate text-orange"></i>
-                    Chi Tiết Quyên Góp
+                    <i class="fas fa-exchange-alt text-orange"></i>
+                    Chi Tiết Giao Dịch
                 </h6>
             </div>
             
@@ -40,11 +40,11 @@
                 <div class="admin-detail-item">
                     <div class="admin-detail-label">
                         <i class="fas fa-id-card"></i>
-                        Mã quyên góp
+                        Mã giao dịch
                     </div>
                     <div
                         class="admin-detail-value fw-medium"
-                        th:text="${donation.donationId}"
+                        th:text="${transaction.id}"
                     >
                         1
                     </div>
@@ -53,12 +53,12 @@
                 <div class="admin-detail-item">
                     <div class="admin-detail-label">
                         <i class="fas fa-money-bill-wave"></i>
-                        Số tiền quyên góp
+                        Số tiền giao dịch
                     </div>
                     <div class="admin-detail-value">
                 <span
                     class="admin-status-badge success"
-                    th:text="${#numbers.formatDecimal(donation.amount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"
+                    th:text="${#numbers.formatDecimal(transaction.amount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"
                 >
                   500,000 VNĐ
                 </span>
@@ -68,16 +68,16 @@
                 <div class="admin-detail-item">
                     <div class="admin-detail-label">
                         <i class="fas fa-calendar-day"></i>
-                        Ngày quyên góp
+                        Ngày giao dịch
                     </div>
                     <div class="admin-detail-value">
                 <span
-                    th:text="${#temporals.format(donation.donationDate, 'dd/MM/yyyy')}"
+                    th:text="${#temporals.format(transaction.createdAt, 'dd/MM/yyyy')}"
                 >01/04/2025</span
                 >
                         <span
                             class="ms-2"
-                            th:text="${#temporals.format(donation.donationDate, 'HH:mm')}"
+                            th:text="${#temporals.format(transaction.createdAt, 'HH:mm')}"
                         >08:30</span
                         >
                     </div>
@@ -89,80 +89,88 @@
                         Trạng thái
                     </div>
                     <div class="admin-detail-value">
-                <span class="admin-status-badge success" data-status="true">
-                  <i class="fas fa-check-circle"></i>
-                  Hoàn thành
+                <span
+                    class="admin-status-badge"
+                    th:classappend="${transaction.status == 'Thành công' ? 'success' : 'danger'}"
+                >
+                  <i
+                      class="fas"
+                      th:classappend="${transaction.status == 'Thành công' ? 'fa-check-circle' : 'fa-times-circle'}"
+                  ></i>
+                  <span th:text="${transaction.status}">Trạng thái</span>
                 </span>
+                    </div>
+                </div>
+                
+                <div
+                    class="admin-detail-item"
+                    th:if="${transaction.description != null}"
+                >
+                    <div class="admin-detail-label">
+                        <i class="fas fa-info-circle"></i>
+                        Mô tả giao dịch
+                    </div>
+                    <div
+                        class="admin-detail-value"
+                        th:text="${transaction.description}"
+                    >
+                        Mô tả giao dịch
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- Donor Information Section -->
+        <!-- Payment Information Section -->
         <div class="admin-detail-section">
             <div class="admin-detail-header">
                 <h6 class="admin-detail-title text-info">
-                    <i class="fas fa-user-circle text-info"></i>
-                    Thông tin người quyên góp
+                    <i class="fas fa-credit-card text-info"></i>
+                    Thông tin thanh toán
                 </h6>
             </div>
             
             <div class="admin-detail-body">
-                <div class="admin-detail-item">
+                <div
+                    class="admin-detail-item"
+                    th:if="${transaction.paymentMethod != null}"
+                >
                     <div class="admin-detail-label">
-                        <i class="fas fa-user"></i>
-                        Tên người quyên góp
+                        <i class="fas fa-money-check"></i>
+                        Phương thức thanh toán
                     </div>
                     <div class="admin-detail-value">
                 <span
                     class="badge bg-info-light text-info"
-                    th:text="${donation.donorName}"
+                    th:text="${transaction.paymentMethod}"
                 >
-                  Bùi Lê Bích Nhung
+                  Momo
                 </span>
                     </div>
                 </div>
                 
-                <div class="admin-detail-item" th:if="${donation.userId}">
-                    <div class="admin-detail-label">
-                        <i class="fas fa-id-badge"></i>
-                        Mã người dùng
-                    </div>
-                    <div class="admin-detail-value" th:text="${donation.userId}">
-                        2
-                    </div>
-                </div>
-                
                 <div
                     class="admin-detail-item"
-                    th:if="${user != null && user.email != null}"
+                    th:if="${transaction.donationId != null}"
                 >
                     <div class="admin-detail-label">
-                        <i class="fas fa-envelope"></i>
-                        Email
+                        <i class="fas fa-donate"></i>
+                        Mã quyên góp
                     </div>
-                    <div class="admin-detail-value" th:text="${user.email}">
-                        email@example.com
-                    </div>
-                </div>
-                
-                <div
-                    class="admin-detail-item"
-                    th:if="${user != null && user.phoneNumber != null}"
-                >
-                    <div class="admin-detail-label">
-                        <i class="fas fa-phone"></i>
-                        Số điện thoại
-                    </div>
-                    <div class="admin-detail-value" th:text="${user.phoneNumber}">
-                        0987654321
+                    <div class="admin-detail-value">
+                        <a
+                            th:href="@{/admin/donations/detail/{id}(id=${transaction.donationId})}"
+                            class="badge bg-primary-light text-primary"
+                            th:text="${transaction.donationId}"
+                        >
+                            2
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
         
         <!-- Program Information Section -->
-        <div class="admin-detail-section">
+        <div class="admin-detail-section" th:if="${program != null}">
             <div class="admin-detail-header">
                 <h6 class="admin-detail-title text-warning">
                     <i class="fas fa-project-diagram text-warning"></i>
@@ -191,15 +199,12 @@
                         <i class="fas fa-hashtag"></i>
                         Mã chương trình
                     </div>
-                    <div
-                        class="admin-detail-value fw-medium"
-                        th:text="${program.programId}"
-                    >
+                    <div class="admin-detail-value fw-medium" th:text="${program.id}">
                         1
                     </div>
                 </div>
                 
-                <div class="admin-detail-item">
+                <div class="admin-detail-item" th:if="${program.category != null}">
                     <div class="admin-detail-label">
                         <i class="fas fa-folder"></i>
                         Danh mục
@@ -214,7 +219,7 @@
                     </div>
                 </div>
                 
-                <div class="admin-detail-item" th:if="${program.status != null}">
+                <div class="admin-detail-item" th:if="${program.active != null}">
                     <div class="admin-detail-label">
                         <i class="fas fa-toggle-on"></i>
                         Trạng thái chương trình
@@ -222,54 +227,10 @@
                     <div class="admin-detail-value">
                 <span
                     class="admin-status-badge"
-                    th:classappend="${program.status ? 'success' : 'danger'}"
-                    th:data-status="${program.status}"
-                    th:text="${program.status ? 'Đang hoạt động' : 'Đã đóng'}"
+                    th:classappend="${program.active ? 'success' : 'danger'}"
+                    th:text="${program.active ? 'Đang hoạt động' : 'Đã đóng'}"
                 >
                   Đang hoạt động
-                </span>
-                    </div>
-                </div>
-                
-                <div
-                    class="admin-detail-item"
-                    th:if="${donation.paymentMethod != null}"
-                >
-                    <div class="admin-detail-label">
-                        <i class="fas fa-credit-card"></i>
-                        Phương thức thanh toán
-                    </div>
-                    <div
-                        class="admin-detail-value"
-                        th:text="${donation.paymentMethod}"
-                    >
-                        Phương thức
-                    </div>
-                </div>
-                
-                <div
-                    class="admin-detail-item"
-                    th:if="${donation.note != null && !donation.note.isEmpty()}"
-                >
-                    <div class="admin-detail-label">
-                        <i class="fas fa-sticky-note"></i>
-                        Ghi chú
-                    </div>
-                    <div class="admin-detail-value" th:text="${donation.note}">
-                        Ghi chú
-                    </div>
-                </div>
-                
-                <div class="admin-detail-item">
-                    <div class="admin-detail-label">
-                        <i class="fas fa-history"></i>
-                        Cập nhật lần cuối
-                    </div>
-                    <div class="admin-detail-value">
-                <span
-                    th:text="${#temporals.format(donation.updateDate != null ? donation.updateDate : donation.donationDate, 'dd/MM/yyyy HH:mm')}"
-                >
-                  01/01/2023 12:00
                 </span>
                     </div>
                 </div>

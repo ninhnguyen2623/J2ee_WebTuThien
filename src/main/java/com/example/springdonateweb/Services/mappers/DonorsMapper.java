@@ -9,9 +9,11 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface DonorsMapper {
     DonorsEntity toEntity(DonorCreateDto donorCreateDto);
+    
     DonorsEntity toEntity(DonorUpdateDto donorUpdateDto);
+    
     DonorResponseDto toDto(DonorsEntity donorsEntity);
-
+    
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     DonorsEntity partialUpdate(DonorUpdateDto donorUpdateDto, @MappingTarget DonorsEntity donorsEntity);
 }

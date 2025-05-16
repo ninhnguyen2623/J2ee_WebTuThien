@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class PaymentRequestDto {
     private int amount;
     private String note;
-    private String userEmail; 
+    private String userEmail;
     private int programId;
 }

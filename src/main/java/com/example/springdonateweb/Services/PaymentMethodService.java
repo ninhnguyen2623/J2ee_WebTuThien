@@ -19,24 +19,24 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PaymentMethodService implements IPaymentMethodService {
-
+    
     private final PaymentMethodRepository paymentMethodRepository;
     private final PaymentMethodMapper paymentMethodMapper;
-
+    
     @Override
     public List<PaymentMethodResponseDto> findAll() {
         return paymentMethodRepository.findAll().stream()
-                .map(paymentMethodMapper::toDto)
-                .collect(Collectors.toList());
+                                      .map(paymentMethodMapper::toDto)
+                                      .collect(Collectors.toList());
     }
-
+    
     @Override
     public PaymentMethodResponseDto findById(int id) {
         return paymentMethodRepository.findById(id)
-                .map(paymentMethodMapper::toDto)
-                .orElse(null);
+                                      .map(paymentMethodMapper::toDto)
+                                      .orElse(null);
     }
-
+    
     @Override
     public PaymentMethodResponseDto create(PaymentMethodCreateDto paymentMethodCreateDto) {
         PaymentmethodsEntity paymentMethodEntity = paymentMethodMapper.toEntity(paymentMethodCreateDto);
@@ -51,13 +51,13 @@ public class PaymentMethodService implements IPaymentMethodService {
     @Override
     public PaymentMethodResponseDto update(int id, PaymentMethodUpdateDto paymentMethodUpdateDto) {
         return paymentMethodRepository.findById(id)
-                .map(existingPaymentMethod -> {
-                    PaymentmethodsEntity updatedPaymentMethod = paymentMethodMapper.partialUpdate(paymentMethodUpdateDto, existingPaymentMethod);
-                    return paymentMethodMapper.toDto(paymentMethodRepository.save(updatedPaymentMethod));
-                })
-                .orElse(null);
+                                      .map(existingPaymentMethod -> {
+                                          PaymentmethodsEntity updatedPaymentMethod = paymentMethodMapper.partialUpdate(paymentMethodUpdateDto, existingPaymentMethod);
+                                          return paymentMethodMapper.toDto(paymentMethodRepository.save(updatedPaymentMethod));
+                                      })
+                                      .orElse(null);
     }
-
+    
     @Override
     public void delete(int id) {
         paymentMethodRepository.deleteById(id);

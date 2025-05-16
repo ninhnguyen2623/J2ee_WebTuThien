@@ -58,7 +58,9 @@ public class UsersService implements IUsersService {
     
     @Override
     public UsersResponseDto findById(int id) {
-        return null;
+        return usersRepository.findById(id)
+                              .map(usersMapper::toResponseDto)
+                              .orElse(null);
     }
     
     private Optional<UsersEntity> findUserByIdAndStatusTrue(int id) {

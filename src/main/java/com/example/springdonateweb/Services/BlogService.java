@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,72 +23,104 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class BlogService implements IBlogService {
-
+    
     private final BlogRepository blogRepository;
     private final BlogMapper blogMapper;
-
+    
     @Override
     public Page<BlogResponseDto> findBlogsByPage(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<BlogEntity> blogEntities = blogRepository.findAll(pageable);
-        return blogEntities.map(blogMapper::toDto);  // Map BlogEntity to BlogResponseDto
+        return blogEntities.map(blogMapper::toDto); // Map BlogEntity to BlogResponseDto
     }
+    
     @Override
     public String uploadImage(MultipartFile image) throws IOException {
         // Kiểm tra xem tệp có trống không
         if (image.isEmpty()) {
             throw new IOException("No image file provided.");
         }
-
+        
         // Đặt đường dẫn lưu tệp hình ảnh
         String fileName = image.getOriginalFilename();
-        String uploadDir = "D:/Git/SpringDonateWeb/src/main/resources/static/uploads/images/"; // Cập nhật đường dẫn cho đúng
+        String uploadDir = "D:/Git/SpringDonateWeb/src/main/resources/static/uploads/images/"; // Cập nhật đường dẫn cho
+        // đúng
         File uploadDirPath = new File(uploadDir);
-
+        
         // Kiểm tra xem thư mục đã tồn tại chưa, nếu không thì tạo
         if (!uploadDirPath.exists()) {
             uploadDirPath.mkdirs();
         }
-
+        
         String imagePath = uploadDir + fileName;
         File file = new File(imagePath);
-
+        
         // Lưu tệp vào thư mục
         image.transferTo(file);
-        return "uploads/images/" + fileName;  // Trả về URL hình ảnh đã lưu
+        return "uploads/images/" + fileName; // Trả về URL hình ảnh đã lưu
     }
-
+    
     @Override
     public BlogResponseDto findById(int id) {
         Optional<BlogEntity> blogEntity = blogRepository.findById(id);
         return blogEntity.map(blogMapper::toDto)
-                .orElseThrow(() -> new RuntimeException("Blog not found"));
+                         .orElseThrow(() -> new RuntimeException("Blog not found"));
     }
-
+    
     @Override
     public BlogResponseDto create(BlogCreateDto blogCreateDto) {
         BlogEntity blogEntity = blogMapper.toEntity(blogCreateDto);
         BlogEntity savedBlog = blogRepository.save(blogEntity);
         return blogMapper.toDto(savedBlog);
     }
-
+    
     @Override
     public BlogResponseDto update(BlogUpdateDto blogUpdateDto) {
         BlogEntity blogEntity = blogRepository.findById(blogUpdateDto.getId())
-                .orElseThrow(() -> new RuntimeException("Blog not found"));
+                                              .orElseThrow(() -> new RuntimeException("Blog not found"));
         blogEntity = blogMapper.partialUpdate(blogUpdateDto, blogEntity);
         blogRepository.save(blogEntity);
         return blogMapper.toDto(blogEntity);
     }
-
+    
     @Override
     public void delete(int id) {
         blogRepository.deleteById(id);
     }
+    
     @Override
     public List<BlogResponseDto> findAll() {
         return blogRepository.findAll().stream()
-                .map(blogMapper::toDto)
-                .toList();
+                             .map(blogMapper::toDto)
+                             .toList();
+    }
+    
+    @Override
+    public Page<BlogResponseDto> findBlogsByPage(int page, int size, String searchTerm, Boolean status) {
+        Pageable pageable = PageRequest.of(page, size);
+        
+        // If no search term or status filter, return all blogs with pagination
+        if ((searchTerm == null || searchTerm.isEmpty()) && status == null) {
+            return findBlogsByPage(page, size);
+        }
+        
+        // Create a specification for dynamic filtering
+        Specification<BlogEntity> spec = Specification.where(null);
+        
+        // Add title search filter if searchTerm is provided
+        if (searchTerm != null && !searchTerm.isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.like(
+                    criteriaBuilder.lower(root.get("title")),
+                    "%" + searchTerm.toLowerCase() + "%"));
+        }
+        
+        // Add status filter if status is provided
+        if (status != null) {
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("status"), status));
+        }
+        
+        // Execute the query with the specification
+        Page<BlogEntity> blogEntities = blogRepository.findAll(spec, pageable);
+        return blogEntities.map(blogMapper::toDto);
     }
 }

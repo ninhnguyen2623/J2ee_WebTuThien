@@ -4,14 +4,23 @@ import com.example.springdonateweb.Models.Dtos.Comments.CommentCreateDto;
 import com.example.springdonateweb.Models.Dtos.Comments.CommentResponseDto;
 import com.example.springdonateweb.Models.Dtos.Comments.CommentUpdateDto;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface ICommentsService {
     List<CommentResponseDto> findAll();
+    
     CommentResponseDto findById(int id);
+    
     CommentResponseDto create(CommentCreateDto commentCreateDto);
+    
     CommentResponseDto update(int id, CommentUpdateDto commentUpdateDto);
+    
     void delete(int id);
+    
     Page<CommentResponseDto> findCommentsByPage(int page, int size);
+    
+    // Phương thức hỗ trợ sắp xếp với Pageable
+    Page<CommentResponseDto> findCommentsByPage(Pageable pageable);
 }

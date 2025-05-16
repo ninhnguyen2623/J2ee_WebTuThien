@@ -15,7 +15,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -63,7 +65,41 @@ public class CategoriesService implements ICategoriesService {
     
     @Override
     public List<CategoriesEntity> findAll2() {
-        return categoriesRepository.findAll(); // Trả về danh sách CategoriesEntity trực tiếp
+        return categoriesRepository.findAll();
+    }
+    
+    @Override
+    public Map<String, Double> getTotalDonationsByCategory() {
+        try {
+            // Create a map to store category name and donation amount
+            Map<String, Double> result = new HashMap<>();
+            
+            // Get all categories
+            List<CategoryResponseDto> categories = findAll();
+            
+            // For each category, sum the donations from programs in that category
+            for (CategoryResponseDto category : categories) {
+                // Get the total donations for this category from programs in this category
+                Double totalAmount = categoriesRepository.sumDonationsByCategoryId(category.getCategoryId());
+                
+                // If there are donations for this category, add to the result
+                if (totalAmount != null && totalAmount > 0) {
+                    result.put(category.getName(), totalAmount);
+                } else {
+                    // If no donations, put 0
+                    result.put(category.getName(), 0.0);
+                }
+            }
+            
+            return result;
+        } catch (Exception e) {
+            // Log the error
+            System.err.println("Error getting donations by category: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Return empty map in case of error
+            return new HashMap<>();
+        }
     }
     
     @Override

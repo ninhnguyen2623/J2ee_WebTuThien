@@ -1,419 +1,494 @@
 <!DOCTYPE html>
-<html layout:decorate="~{admin/fragments/_layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html
+    layout:decorate="~{admin/fragments/_layout}"
+    xmlns:th="http://www.thymeleaf.org"
+>
 <head>
-    <title>Trang Chủ</title>
+    <meta charset="UTF-8" />
+    <title>Dashboard - Hệ Thống Quản Lý</title>
 </head>
+
 <body>
-<div layout:fragment="content">
-    <div
-            class="d-sm-flex justify-content-between align-items-center mb-4"
-    >
-        <h3 class="text-dark mb-0">Dashboard</h3>
-        <a
-                class="btn btn-primary btn-sm d-none d-sm-inline-block"
-                href="#"
-                role="button"
-        ><i class="fas fa-download fa-sm text-white-50"></i>&nbsp;Excel
-            Report</a
-        >
+<div layout:fragment="content" class="container-fluid px-4 py-3">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h3 class="text-primary fw-bold mb-0">
+            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+        </h3>
     </div>
-    <div class="row">
-        <div class="col-md-6 col-xl-3 mb-4">
-            <div class="card shadow border-start-primary py-2">
+    
+    <!-- Thống kê tổng quan -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div
+                class="card border-left-primary shadow h-100 py-2 statistic-card"
+            >
                 <div class="card-body">
-                    <div class="row g-0 align-items-center">
-                        <div class="col me-2">
+                    <div class="row align-items-center g-0">
+                        <div class="col-8">
                             <div
-                                    class="text-uppercase text-primary fw-bold text-xs mb-1"
+                                class="text-xs font-weight-bold text-primary text-uppercase mb-1"
                             >
-                                <span>Earnings (monthly)</span>
+                                Chương Trình Đang Hoạt Động
                             </div>
-                            <div class="text-dark fw-bold h5 mb-0">
-                                <span>$40,000</span>
+                            <div
+                                class="h5 mb-0 font-weight-bold text-gray-800"
+                                th:text="${totalActivePrograms}"
+                            >
+                                0
                             </div>
+                            <span class="text-success small">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>3 chương trình mới</span>
+                  </span>
                         </div>
-                        <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        <div class="col-4 text-end">
+                            <i class="fas fa-award fa-3x text-primary-lighter"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6 col-xl-3 mb-4">
-            <div class="card shadow border-start-success py-2">
+        
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div
+                class="card border-left-success shadow h-100 py-2 statistic-card"
+            >
                 <div class="card-body">
-                    <div class="row g-0 align-items-center">
-                        <div class="col me-2">
+                    <div class="row align-items-center g-0">
+                        <div class="col-8">
                             <div
-                                    class="text-uppercase text-success fw-bold text-xs mb-1"
+                                class="text-xs font-weight-bold text-success text-uppercase mb-1"
                             >
-                                <span>Earnings (annual)</span>
+                                Tổng Số Nhà Hảo Tâm
                             </div>
-                            <div class="text-dark fw-bold h5 mb-0">
-                                <span>$215,000</span>
+                            <div
+                                class="h5 mb-0 font-weight-bold text-gray-800"
+                                th:text="${totalDonors}"
+                            >
+                                0
                             </div>
+                            <span class="text-success small">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>5% so với tháng trước</span>
+                  </span>
                         </div>
-                        <div class="col-auto">
-                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        <div class="col-4 text-end">
+                            <i class="fas fa-users fa-3x text-success-lighter"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6 col-xl-3 mb-4">
-            <div class="card shadow border-start-info py-2">
+        
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2 statistic-card">
                 <div class="card-body">
-                    <div class="row g-0 align-items-center">
-                        <div class="col me-2">
+                    <div class="row align-items-center g-0">
+                        <div class="col-8">
                             <div
-                                    class="text-uppercase text-info fw-bold text-xs mb-1"
+                                class="text-xs font-weight-bold text-info text-uppercase mb-1"
                             >
-                                <span>Tasks</span>
+                                Tổng Số Tiền Quyên Góp
                             </div>
-                            <div class="row g-0 align-items-center">
-                                <div class="col-auto">
-                                    <div class="text-dark fw-bold h5 mb-0 me-3">
-                                        <span>50%</span>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="progress progress-sm">
-                                        <div
-                                                aria-valuemax="100"
-                                                aria-valuemin="0"
-                                                aria-valuenow="50"
-                                                class="progress-bar bg-info"
-                                                style="width: 50%"
-                                        >
-                                            <span class="visually-hidden">50%</span>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div
+                                class="h5 mb-0 font-weight-bold text-gray-800"
+                                th:text="${#numbers.formatDecimal(totalDonationAmount, 0, 'POINT', 0, 'POINT')} + ' VNĐ'"
+                            >
+                                0
                             </div>
+                            <span class="text-success small">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>12% so với tháng trước</span>
+                  </span>
                         </div>
-                        <div class="col-auto">
+                        <div class="col-4 text-end">
                             <i
-                                    class="fas fa-clipboard-list fa-2x text-gray-300"
+                                class="fas fa-hand-holding-heart fa-3x text-info-lighter"
                             ></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6 col-xl-3 mb-4">
-            <div class="card shadow border-start-warning py-2">
+        
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div
+                class="card border-left-warning shadow h-100 py-2 statistic-card"
+            >
                 <div class="card-body">
-                    <div class="row g-0 align-items-center">
-                        <div class="col me-2">
+                    <div class="row align-items-center g-0">
+                        <div class="col-8">
                             <div
-                                    class="text-uppercase text-warning fw-bold text-xs mb-1"
+                                class="text-xs font-weight-bold text-warning text-uppercase mb-1"
                             >
-                                <span>Pending Requests</span>
+                                Tỷ Lệ Thành Công
                             </div>
-                            <div class="text-dark fw-bold h5 mb-0">
-                                <span>18</span>
-                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">87%</div>
+                            <span class="text-success small">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>3% so với tháng trước</span>
+                  </span>
                         </div>
-                        <div class="col-auto">
-                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                        <div class="col-4 text-end">
+                            <i class="fas fa-chart-pie fa-3x text-warning-lighter"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Start: Chart -->
+    
+    <!-- Hàng 3: Dữ liệu gần đây và quỹ chung -->
     <div class="row">
-        <div class="col-lg-7 col-xl-8">
-            <div class="card shadow mb-4">
+        <!-- Quyên góp gần đây -->
+        <div class="col-lg-6 col-xl-4 mb-4">
+            <div class="card shadow h-100">
                 <div
-                        class="card-header d-flex justify-content-between align-items-center"
+                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
                 >
-                    <h6 class="text-primary fw-bold m-0">Earnings Overview</h6>
-                    <div class="dropdown no-arrow">
-                        <button
-                                aria-expanded="false"
-                                class="btn btn-link btn-sm dropdown-toggle"
-                                data-bs-toggle="dropdown"
-                                type="button"
-                        >
-                            <i class="fas fa-ellipsis-v text-gray-400"></i>
-                        </button>
-                        <div
-                                class="dropdown-menu shadow dropdown-menu-end animated--fade-in"
-                        >
-                            <p class="text-center dropdown-header">
-                                dropdown header:
-                            </p>
-                            <a class="dropdown-item" href="#">&nbsp;Action</a
-                            ><a class="dropdown-item" href="#"
-                        >&nbsp;Another action</a
-                        >
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#"
-                            >&nbsp;Something else here</a
-                            >
-                        </div>
-                    </div>
+                    <h6 class="m-0 fw-bold text-primary">
+                        <i class="fas fa-donate me-1"></i>Quyên Góp Gần Đây
+                    </h6>
+                    <a href="/admin/donations" class="btn btn-sm btn-primary">
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas
-                                data-bss-chart='{"type":"line","data":{"labels":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"],"datasets":[{"label":"Earnings","fill":true,"data":["0","10000","5000","15000","10000","20000","15000","25000"],"backgroundColor":"rgba(78, 115, 223, 0.05)","borderColor":"rgba(78, 115, 223, 1)"}]},"options":{"maintainAspectRatio":false,"legend":{"display":false,"labels":{"fontStyle":"normal"}},"title":{"fontStyle":"normal"},"scales":{"xAxes":[{"gridLines":{"color":"rgb(234, 236, 244)","zeroLineColor":"rgb(234, 236, 244)","drawBorder":false,"drawTicks":false,"borderDash":["2"],"zeroLineBorderDash":["2"],"drawOnChartArea":false},"ticks":{"fontColor":"#858796","fontStyle":"normal","padding":20}}],"yAxes":[{"gridLines":{"color":"rgb(234, 236, 244)","zeroLineColor":"rgb(234, 236, 244)","drawBorder":false,"drawTicks":false,"borderDash":["2"],"zeroLineBorderDash":["2"]},"ticks":{"fontColor":"#858796","fontStyle":"normal","padding":20}}]}}}'
-                        ></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-5 col-xl-4">
-            <div class="card shadow mb-4">
-                <div
-                        class="card-header d-flex justify-content-between align-items-center"
-                >
-                    <h6 class="text-primary fw-bold m-0">Revenue Sources</h6>
-                    <div class="dropdown no-arrow">
-                        <button
-                                aria-expanded="false"
-                                class="btn btn-link btn-sm dropdown-toggle"
-                                data-bs-toggle="dropdown"
-                                type="button"
-                        >
-                            <i class="fas fa-ellipsis-v text-gray-400"></i>
-                        </button>
-                        <div
-                                class="dropdown-menu shadow dropdown-menu-end animated--fade-in"
-                        >
-                            <p class="text-center dropdown-header">
-                                dropdown header:
-                            </p>
-                            <a class="dropdown-item" href="#">&nbsp;Action</a
-                            ><a class="dropdown-item" href="#"
-                        >&nbsp;Another action</a
-                        >
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#"
-                            >&nbsp;Something else here</a
-                            >
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas
-                                data-bss-chart='{"type":"doughnut","data":{"labels":["Direct","Social","Referral"],"datasets":[{"label":"","backgroundColor":["#4e73df","#1cc88a","#36b9cc"],"borderColor":["#ffffff","#ffffff","#ffffff"],"data":["50","30","15"]}]},"options":{"maintainAspectRatio":false,"legend":{"display":false,"labels":{"fontStyle":"normal"}},"title":{"fontStyle":"normal"}}}'
-                        ></canvas>
-                    </div>
-                    <div class="text-center small mt-4">
-                      <span class="me-2"
-                      ><i class="fas fa-circle text-primary"></i
-                      >&nbsp;Direct</span
-                      ><span class="me-2"
-                    ><i class="fas fa-circle text-success"></i
-                    >&nbsp;Social</span
-                    ><span class="me-2"
-                    ><i class="fas fa-circle text-info"></i
-                    >&nbsp;Refferal</span
+                <div class="card-body card-recent">
+                    <div
+                        th:if="${recentDonations != null && !recentDonations.isEmpty()}"
                     >
+                        <div
+                            th:each="donation : ${recentDonations}"
+                            class="d-flex align-items-center mb-3 pb-2 border-bottom"
+                        >
+                            <div class="flex-shrink-0">
+                                <div class="icon-circle bg-primary">
+                                    <i class="fas fa-user text-white"></i>
+                                </div>
+                            </div>
+                            <div class="ms-3 flex-grow-1">
+                                <div
+                                    class="small text-gray-500"
+                                    th:text="${#temporals.format(donation.donationDate, 'dd/MM/yyyy HH:mm')}"
+                                >
+                                    01/01/2023
+                                </div>
+                                <div class="fw-bold" th:text="${donation.donorName}">
+                                    Nguyễn Văn A
+                                </div>
+                                <div
+                                    class="text-success fw-bold"
+                                    th:text="${#numbers.formatDecimal(donation.amount, 0, 'POINT', 0, 'POINT')} + ' VNĐ'"
+                                >
+                                    1,000,000 VNĐ
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        th:if="${recentDonations == null || recentDonations.isEmpty()}"
+                        class="text-center py-5"
+                    >
+                        <i class="fas fa-donate fa-3x text-gray-300 mb-3"></i>
+                        <p class="text-gray-500 mb-0">Chưa có quyên góp nào</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bình luận gần đây -->
+        <div class="col-lg-6 col-xl-4 mb-4">
+            <div class="card shadow h-100">
+                <div
+                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+                >
+                    <h6 class="m-0 fw-bold text-primary">
+                        <i class="fas fa-comments me-1"></i>Bình Luận Gần Đây
+                    </h6>
+                    <a href="/admin/comments" class="btn btn-sm btn-primary">
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="card-body card-recent">
+                    <div
+                        th:if="${recentComments != null && !recentComments.isEmpty()}"
+                    >
+                        <div
+                            th:each="comment : ${recentComments}"
+                            class="d-flex mb-3 pb-2 border-bottom"
+                        >
+                            <div class="flex-shrink-0">
+                                <div class="icon-circle bg-info">
+                                    <i class="fas fa-comment text-white"></i>
+                                </div>
+                            </div>
+                            <div class="ms-3 flex-grow-1">
+                                <div
+                                    class="small text-gray-500"
+                                    th:text="${#temporals.format(comment.createdAt, 'dd/MM/yyyy HH:mm')}"
+                                >
+                                    01/01/2023
+                                </div>
+                                <div class="fw-bold" th:text="${comment.userName}">
+                                    Nguyễn Văn A
+                                </div>
+                                <p
+                                    class="small text-gray-800"
+                                    th:text="${#strings.abbreviate(comment.content, 50)}"
+                                >
+                                    Nội dung bình luận...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        th:if="${recentComments == null || recentComments.isEmpty()}"
+                        class="text-center py-5"
+                    >
+                        <i class="fas fa-comments fa-3x text-gray-300 mb-3"></i>
+                        <p class="text-gray-500 mb-0">Chưa có bình luận nào</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chương trình mới -->
+        <div class="col-lg-6 col-xl-4 mb-4">
+            <div class="card shadow h-100">
+                <div
+                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+                >
+                    <h6 class="m-0 fw-bold text-primary">
+                        <i class="fas fa-project-diagram me-1"></i>Chương Trình Mới
+                    </h6>
+                    <a href="/admin/programs" class="btn btn-sm btn-primary">
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="card-body card-recent">
+                    <div
+                        th:if="${recentPrograms != null && !recentPrograms.isEmpty()}"
+                    >
+                        <div
+                            th:each="program : ${recentPrograms}"
+                            class="mb-3 pb-2 border-bottom"
+                        >
+                            <h6 class="fw-bold" th:text="${program.name}">
+                                Tên chương trình
+                            </h6>
+                            <p
+                                class="small mb-2"
+                                th:text="${#strings.abbreviate(program.description, 100)}"
+                            >
+                                Mô tả chương trình...
+                            </p>
+                            <div
+                                class="d-flex justify-content-between align-items-center"
+                            >
+                                <div class="small text-gray-500">
+                                    Mục tiêu:
+                                    <span
+                                        class="text-primary"
+                                        th:text="${#numbers.formatDecimal(program.goalAmount, 0, 'POINT', 0, 'POINT')} + ' VNĐ'"
+                                    >1,000,000 VNĐ</span
+                                    >
+                                </div>
+                                <div class="badge bg-success" th:if="${program.status}">
+                                    Đang hoạt động
+                                </div>
+                                <div
+                                    class="badge bg-secondary"
+                                    th:unless="${program.status}"
+                                >
+                                    Đã kết thúc
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        th:if="${recentPrograms == null || recentPrograms.isEmpty()}"
+                        class="text-center py-5"
+                    >
+                        <i class="fas fa-project-diagram fa-3x text-gray-300 mb-3"></i>
+                        <p class="text-gray-500 mb-0">Chưa có chương trình nào</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- End: Chart -->
+    
+    <!-- Hàng 4: Các quỹ từ thiện chung và chức năng quản lý nhanh -->
     <div class="row">
-        <div class="col-lg-6 mb-4">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="text-primary fw-bold m-0">Projects</h6>
+        <!-- Thông tin quỹ chung -->
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow">
+                <div
+                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+                >
+                    <h6 class="m-0 fw-bold text-primary">
+                        <i class="fas fa-hands-helping me-1"></i>Tình Hình Các Quỹ
+                    </h6>
+                    <a href="/admin/programs" class="btn btn-sm btn-primary">
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
                 <div class="card-body">
-                    <h4 class="small fw-bold">
-                        Server migration<span class="float-end">20%</span>
-                    </h4>
-                    <div class="progress mb-4">
-                        <div
-                                aria-valuemax="100"
-                                aria-valuemin="0"
-                                aria-valuenow="20"
-                                class="progress-bar bg-danger"
-                                style="width: 20%"
-                        >
-                            <span class="visually-hidden">20%</span>
+                    <div th:if="${allPrograms != null && !allPrograms.isEmpty()}">
+                        <div th:each="program : ${allPrograms}" class="mb-4">
+                            <div
+                                class="d-flex justify-content-between align-items-center mb-1"
+                            >
+                                <h6 class="fw-bold mb-0" th:text="${program.name}">
+                                    Tên chương trình
+                                </h6>
+                                <div
+                                    class="text-sm"
+                                    th:if="${program.currentAmount != null && program.goalAmount != null}"
+                                >
+                      <span
+                          class="fw-bold"
+                          th:text="${#numbers.formatDecimal(program.currentAmount, 0, 'POINT', 0, 'POINT')}"
+                      >0</span
+                      >
+                                    /
+                                    <span
+                                        class="text-gray-500"
+                                        th:text="${#numbers.formatDecimal(program.goalAmount, 0, 'POINT', 0, 'POINT')}"
+                                    >1,000,000</span
+                                    >
+                                    VNĐ
+                                </div>
+                            </div>
+                            <div
+                                class="progress fund-progress mb-2"
+                                th:if="${program.currentAmount != null && program.goalAmount != null}"
+                            >
+                                <div
+                                    class="progress-bar bg-success"
+                                    role="progressbar"
+                                    th:style="'width:' + ${program.goalAmount > 0 ? (program.currentAmount * 100 / program.goalAmount) : 0} + '%'"
+                                    th:aria-valuenow="${program.currentAmount}"
+                                    aria-valuemin="0"
+                                    th:aria-valuemax="${program.goalAmount}"
+                                ></div>
+                            </div>
+                            <div class="small text-gray-500">
+                    <span
+                        th:if="${program.donationCount != null}"
+                        th:text="${program.donationCount}"
+                    >0</span
+                    >
+                                lượt quyên góp
+                            </div>
                         </div>
                     </div>
-                    <h4 class="small fw-bold">
-                        Sales tracking<span class="float-end">40%</span>
-                    </h4>
-                    <div class="progress mb-4">
-                        <div
-                                aria-valuemax="100"
-                                aria-valuemin="0"
-                                aria-valuenow="40"
-                                class="progress-bar bg-warning"
-                                style="width: 40%"
-                        >
-                            <span class="visually-hidden">40%</span>
-                        </div>
-                    </div>
-                    <h4 class="small fw-bold">
-                        Customer Database<span class="float-end">60%</span>
-                    </h4>
-                    <div class="progress mb-4">
-                        <div
-                                aria-valuemax="100"
-                                aria-valuemin="0"
-                                aria-valuenow="60"
-                                class="progress-bar bg-primary"
-                                style="width: 60%"
-                        >
-                            <span class="visually-hidden">60%</span>
-                        </div>
-                    </div>
-                    <h4 class="small fw-bold">
-                        Payout Details<span class="float-end">80%</span>
-                    </h4>
-                    <div class="progress mb-4">
-                        <div
-                                aria-valuemax="100"
-                                aria-valuemin="0"
-                                aria-valuenow="80"
-                                class="progress-bar bg-info"
-                                style="width: 80%"
-                        >
-                            <span class="visually-hidden">80%</span>
-                        </div>
-                    </div>
-                    <h4 class="small fw-bold">
-                        Account setup<span class="float-end">Complete!</span>
-                    </h4>
-                    <div class="progress mb-4">
-                        <div
-                                aria-valuemax="100"
-                                aria-valuemin="0"
-                                aria-valuenow="100"
-                                class="progress-bar bg-success"
-                                style="width: 100%"
-                        >
-                            <span class="visually-hidden">100%</span>
-                        </div>
+                    <div
+                        th:if="${allPrograms == null || allPrograms.isEmpty()}"
+                        class="text-center py-5"
+                    >
+                        <i class="fas fa-hands-helping fa-3x text-gray-300 mb-3"></i>
+                        <p class="text-gray-500 mb-0">Chưa có quỹ nào được tạo</p>
                     </div>
                 </div>
-            </div>
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="text-primary fw-bold m-0">Todo List</h6>
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="row g-0 align-items-center">
-                            <div class="col me-2">
-                                <h6 class="mb-0"><strong>Lunch meeting</strong></h6>
-                                <span class="text-xs">10:30 AM</span>
-                            </div>
-                            <div class="col-auto">
-                                <div class="form-check">
-                                    <input
-                                            class="form-check-input"
-                                            id="formCheck-1"
-                                            type="checkbox"
-                                    /><label
-                                        class="form-check-label"
-                                        for="formCheck-1"
-                                ></label>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="row g-0 align-items-center">
-                            <div class="col me-2">
-                                <h6 class="mb-0"><strong>Lunch meeting</strong></h6>
-                                <span class="text-xs">11:30 AM</span>
-                            </div>
-                            <div class="col-auto">
-                                <div class="form-check">
-                                    <input
-                                            class="form-check-input"
-                                            id="formCheck-2"
-                                            type="checkbox"
-                                    /><label
-                                        class="form-check-label"
-                                        for="formCheck-2"
-                                ></label>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="row g-0 align-items-center">
-                            <div class="col me-2">
-                                <h6 class="mb-0"><strong>Lunch meeting</strong></h6>
-                                <span class="text-xs">12:30 AM</span>
-                            </div>
-                            <div class="col-auto">
-                                <div class="form-check">
-                                    <input
-                                            class="form-check-input"
-                                            id="formCheck-3"
-                                            type="checkbox"
-                                    /><label
-                                        class="form-check-label"
-                                        for="formCheck-3"
-                                ></label>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
             </div>
         </div>
-        <div class="col">
-            <div class="row">
-                <div class="col-lg-6 mb-4">
-                    <div class="card text-white bg-primary shadow">
-                        <div class="card-body">
-                            <p class="m-0">Primary</p>
-                            <p class="text-white-50 small m-0">#4e73df</p>
+        
+        <!-- Chức năng quản lý nhanh -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 fw-bold text-primary">
+                        <i class="fas fa-tasks me-1"></i>Quản Lý Nhanh
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <a
+                                href="/admin/programs/create"
+                                class="card bg-primary text-white shadow text-center py-3 h-100 quick-action"
+                            >
+                                <div class="card-body">
+                                    <i class="fas fa-plus-circle fa-2x mb-2"></i>
+                                    <h6 class="mb-0">Tạo Chương Trình</h6>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a
+                                href="/admin/comments"
+                                class="card bg-success text-white shadow text-center py-3 h-100 quick-action"
+                            >
+                                <div class="card-body">
+                                    <i class="fas fa-comments fa-2x mb-2"></i>
+                                    <h6 class="mb-0">Duyệt Bình Luận</h6>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a
+                                href="/admin/users"
+                                class="card bg-info text-white shadow text-center py-3 h-100 quick-action"
+                            >
+                                <div class="card-body">
+                                    <i class="fas fa-user fa-2x mb-2"></i>
+                                    <h6 class="mb-0">Quản Lý User</h6>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a
+                                href="/admin/charts"
+                                class="card bg-warning text-white shadow text-center py-3 h-100 quick-action"
+                            >
+                                <div class="card-body">
+                                    <i class="fas fa-chart-bar fa-2x mb-2"></i>
+                                    <h6 class="mb-0">Xem Thống Kê</h6>
+                                </div>
+                            </a>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card text-white bg-success shadow">
-                        <div class="card-body">
-                            <p class="m-0">Success</p>
-                            <p class="text-white-50 small m-0">#1cc88a</p>
-                        </div>
-                    </div>
+            </div>
+            
+            <!-- Top Donors -->
+            <div class="card shadow mt-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 fw-bold text-primary">
+                        <i class="fas fa-trophy me-1"></i>Top Nhà Hảo Tâm
+                    </h6>
                 </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card text-white bg-info shadow">
-                        <div class="card-body">
-                            <p class="m-0">Info</p>
-                            <p class="text-white-50 small m-0">#36b9cc</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card text-white bg-warning shadow">
-                        <div class="card-body">
-                            <p class="m-0">Warning</p>
-                            <p class="text-white-50 small m-0">#f6c23e</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card text-white bg-danger shadow">
-                        <div class="card-body">
-                            <p class="m-0">Danger</p>
-                            <p class="text-white-50 small m-0">#e74a3b</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card text-white bg-secondary shadow">
-                        <div class="card-body">
-                            <p class="m-0">Secondary</p>
-                            <p class="text-white-50 small m-0">#858796</p>
+                <div class="card-body">
+                    <div th:if="${topDonors != null && !topDonors.isEmpty()}">
+                        <div
+                            th:each="donor,iterStat : ${topDonors}"
+                            class="d-flex align-items-center mb-2"
+                        >
+                            <div class="me-3 text-center" style="width: 30px">
+                    <span
+                        th:if="${iterStat.index == 0}"
+                        class="badge bg-warning text-dark"
+                    >
+                      <i class="fas fa-trophy"></i>
+                    </span>
+                                <span
+                                    th:unless="${iterStat.index == 0}"
+                                    th:text="${iterStat.count}"
+                                    class="fw-bold"
+                                ></span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold" th:text="${donor.donorName}">
+                                    Nguyễn Văn A
+                                </div>
+                            </div>
+                            <div
+                                class="text-success fw-bold"
+                                th:text="${#numbers.formatDecimal(donor.totalAmount, 0, 'POINT', 0, 'POINT')} + ' VNĐ'"
+                            >
+                                100,000 VNĐ
+                            </div>
                         </div>
                     </div>
                 </div>

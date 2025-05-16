@@ -3,9 +3,11 @@ package com.example.springdonateweb.Services;
 import com.example.springdonateweb.Models.Dtos.Donations.DonationCreateDto;
 import com.example.springdonateweb.Models.Dtos.Donations.DonationResponseDto;
 import com.example.springdonateweb.Models.Dtos.Donations.DonationUpdateDto;
+import com.example.springdonateweb.Models.Dtos.Programs.ProgramsResponseDto;
 import com.example.springdonateweb.Models.Entities.DonationsEntity;
 import com.example.springdonateweb.Repositories.DonationsRepository;
 import com.example.springdonateweb.Services.interfaces.IDonationsService;
+import com.example.springdonateweb.Services.interfaces.IProgramsService;
 import com.example.springdonateweb.Services.mappers.DonationsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,8 +18,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +28,7 @@ public class DonationsService implements IDonationsService {
     
     private final DonationsRepository donationsRepository;
     private final DonationsMapper donationsMapper;
+    private final IProgramsService programsService;
     
     public Map<Integer, BigDecimal> getTotalDonationsByProgram() {
         // Lấy tất cả các khoản quyên góp
@@ -44,10 +47,6 @@ public class DonationsService implements IDonationsService {
                                                                   .collect(Collectors.groupingBy(
                                                                           DonationResponseDto::getProgramId,
                                                                           Collectors.reducing(BigDecimal.ZERO, DonationResponseDto::getAmount, BigDecimal::add)));
-        
-        System.out.println("Total Donations by Program: " + programTotalDonations); // Log để kiểm tra dữ liệu
-        System.out.println("Donations Data: " + donations);
-        System.out.println("Total Donations by Program: " + programTotalDonations);
         return programTotalDonations;
     }
     
@@ -75,6 +74,12 @@ public class DonationsService implements IDonationsService {
     @Override
     public Page<DonationResponseDto> findDonationsByPage(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
+        Page<DonationsEntity> donationPage = donationsRepository.findAll(pageable);
+        return donationPage.map(donationsMapper::toDto);
+    }
+    
+    @Override
+    public Page<DonationResponseDto> findDonationsByPage(Pageable pageable) {
         Page<DonationsEntity> donationPage = donationsRepository.findAll(pageable);
         return donationPage.map(donationsMapper::toDto);
     }
@@ -171,5 +176,86 @@ public class DonationsService implements IDonationsService {
         
         // Chuyển đổi sang DTO
         return donations.map(donationsMapper::toDto);
+    }
+    
+    @Override
+    public Map<String, Double> getTotalDonationByProgram() {
+        try {
+            // Get program names
+            Map<Integer, String> programNames = programsService.findAll().stream()
+                                                               .collect(Collectors.toMap(ProgramsResponseDto::getProgramId, ProgramsResponseDto::getName));
+            
+            // Get donation totals by program ID from repository
+            List<Object[]> results = donationsRepository.sumDonationsByProgram();
+            
+            // Create a map of program names to donation amounts
+            Map<String, Double> donationsByProgram = new LinkedHashMap<>();
+            
+            // Process results
+            for (Object[] result : results) {
+                Integer programId = (Integer) result[0];
+                BigDecimal amount = (BigDecimal) result[1];
+                
+                String programName = programNames.getOrDefault(programId, "Chương trình #" + programId);
+                donationsByProgram.put(programName, amount.doubleValue());
+            }
+            
+            return donationsByProgram;
+        } catch (Exception e) {
+            // Log the error
+            System.err.println("Error getting donation by program: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Return empty map in case of error
+            return new HashMap<>();
+        }
+    }
+    
+    @Override
+    public Map<String, Integer> getDonationCountsByMonth(int months) {
+        try {
+            // Get current date and calculate start date
+            LocalDate now = LocalDate.now();
+            LocalDate startDate = now.minusMonths(months - 1).withDayOfMonth(1);
+            
+            // Create a map to store donation counts by month
+            Map<String, Integer> donationCounts = new LinkedHashMap<>();
+            
+            // Generate month labels for the last X months
+            DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MM/yyyy");
+            for (int i = 0; i < months; i++) {
+                LocalDate date = startDate.plusMonths(i);
+                String monthYear = date.format(monthFormatter);
+                donationCounts.put("Tháng " + monthYear, 0);
+            }
+            
+            // Query donations data for the specified period
+            List<Object[]> results = donationsRepository.countDonationsByMonth(
+                    startDate.atStartOfDay(),
+                    now.plusDays(1).atStartOfDay());
+            
+            // Process results
+            for (Object[] result : results) {
+                Integer year = (Integer) result[0];
+                Integer month = (Integer) result[1];
+                Long count = (Long) result[2];
+                
+                String monthStr = String.format("%02d", month);
+                String key = "Tháng " + monthStr + "/" + year;
+                
+                if (donationCounts.containsKey(key)) {
+                    donationCounts.put(key, count.intValue());
+                }
+            }
+            
+            return donationCounts;
+        } catch (Exception e) {
+            // Log the error
+            System.err.println("Error getting donations by month: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Return empty map in case of error
+            return new LinkedHashMap<>();
+        }
     }
 }

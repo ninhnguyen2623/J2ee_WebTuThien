@@ -13,16 +13,17 @@ import java.time.format.DateTimeFormatter;
 @Mapper(componentModel = "spring")
 public interface DonationsMapper {
     DonationsMapper INSTANCE = Mappers.getMapper(DonationsMapper.class);
-
+    
     @Mapping(target = "donationDate", source = "donationDate", qualifiedByName = "stringToLocalDateTime")
     DonationsEntity toEntity(DonationCreateDto donationCreateDto);
-
+    
     DonationsEntity toEntity(DonationUpdateDto donationUpdateDto);
+    
     DonationResponseDto toDto(DonationsEntity donationsEntity);
-
+    
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     DonationsEntity partialUpdate(DonationUpdateDto donationUpdateDto, @MappingTarget DonationsEntity donationsEntity);
-
+    
     @Named("stringToLocalDateTime")
     default LocalDateTime map(String donationDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");

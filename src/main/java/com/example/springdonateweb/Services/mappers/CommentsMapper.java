@@ -9,9 +9,11 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface CommentsMapper {
     CommentsEntity toEntity(CommentCreateDto commentCreateDto);
+    
     CommentsEntity toEntity(CommentUpdateDto commentUpdateDto);
+    
     CommentResponseDto toDto(CommentsEntity commentsEntity);
-
+    
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     CommentsEntity partialUpdate(CommentUpdateDto commentUpdateDto, @MappingTarget CommentsEntity commentsEntity);
 }

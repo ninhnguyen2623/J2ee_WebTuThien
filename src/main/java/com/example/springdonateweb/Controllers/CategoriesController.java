@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class CategoriesController {
     
     private final ICategoriesService categoriesService;
-    private static final int PAGE_SIZE = 10; // Fixed page size
+    private static final int PAGE_SIZE = 8; // Fixed page size
     
     @GetMapping("")
     public String index(
@@ -28,7 +28,7 @@ public class CategoriesController {
         
         // Xử lý trường hợp sortBy có hậu tố _desc
         if (sortBy.endsWith("_desc")) {
-            sortBy = sortBy.substring(0, sortBy.length() - 5); // Bỏ hậu tố "_desc"
+            sortBy = sortBy.substring(0, sortBy.length() - 5);
             sortDir = "desc"; // Thiết lập sortDir thành "desc"
         }
         

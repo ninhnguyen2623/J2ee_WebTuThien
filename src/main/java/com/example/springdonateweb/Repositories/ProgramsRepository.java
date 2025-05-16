@@ -43,7 +43,8 @@ public interface ProgramsRepository extends JpaRepository<ProgramsEntity, Intege
     
     // Tìm kiếm kết hợp: danh mục + trạng thái
     @Query("SELECT p FROM ProgramsEntity p WHERE p.category.categoryId = :categoryId AND p.status = :status")
-    Page<ProgramsEntity> findByCategoryAndStatus(@Param("categoryId") int categoryId, @Param("status") boolean status,
+    Page<ProgramsEntity> findByCategoryAndStatus(@Param("categoryId") int categoryId,
+                                                 @Param("status") boolean status,
                                                  Pageable pageable);
     
     // Tìm kiếm kết hợp: tên + danh mục + trạng thái

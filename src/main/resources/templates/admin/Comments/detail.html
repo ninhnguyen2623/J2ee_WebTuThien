@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html
+    layout:decorate="~{admin/fragments/_layout}"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+<head>
+    <meta charset="UTF-8" />
+    <title>Chi Tiết Bình Luận</title>
+</head>
+
+<body class="detail-page">
+<div layout:fragment="content" class="admin-page-container">
+    <!-- Page Heading -->
+    <div class="admin-page-header">
+        <div>
+            <h3 class="admin-page-title">Chi Tiết Bình Luận</h3>
+        </div>
+        <div class="admin-page-actions">
+            <a
+                th:href="@{/admin/comments}"
+                class="btn btn-outline-secondary btn-back"
+            >
+                <i class="fas fa-arrow-left me-2"></i>Quay Lại
+            </a>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="admin-detail-container">
+        <!-- Comment Information Section -->
+        <div class="admin-detail-section">
+            <div class="admin-detail-header">
+                <h6 class="admin-detail-title text-primary">
+                    <i class="fas fa-comments text-orange"></i>
+                    Chi Tiết Bình Luận
+                </h6>
+            </div>
+            
+            <div class="admin-detail-body">
+                <div class="admin-detail-item">
+                    <div class="admin-detail-label">
+                        <i class="fas fa-id-card"></i>
+                        Mã bình luận
+                    </div>
+                    <div
+                        class="admin-detail-value fw-medium"
+                        th:text="${comment.commentId}"
+                    >
+                        1
+                    </div>
+                </div>
+                
+                <div class="admin-detail-item">
+                    <div class="admin-detail-label">
+                        <i class="fas fa-user"></i>
+                        Người dùng
+                    </div>
+                    <div class="admin-detail-value">
+                <span class="admin-status-badge primary">
+                  <span th:text="${comment.userName}">Tên người dùng</span>
+                  <small
+                      class="ms-2 text-muted"
+                      th:text="'(ID: ' + ${comment.userId} + ')'"
+                  >ID</small
+                  >
+                </span>
+                    </div>
+                </div>
+                
+                <div class="admin-detail-item">
+                    <div class="admin-detail-label">
+                        <i class="fas fa-project-diagram"></i>
+                        Chương trình
+                    </div>
+                    <div class="admin-detail-value">
+                <span class="admin-status-badge info">
+                  <span th:text="${comment.programName}">Tên chương trình</span>
+                  <small
+                      class="ms-2 text-muted"
+                      th:text="'(ID: ' + ${comment.programId} + ')'"
+                  >ID</small
+                  >
+                </span>
+                    </div>
+                </div>
+                
+                <div class="admin-detail-item">
+                    <div class="admin-detail-label">
+                        <i class="fas fa-calendar-day"></i>
+                        Thời gian bình luận
+                    </div>
+                    <div class="admin-detail-value">
+                <span
+                    th:text="${#temporals.format(comment.createdAt, 'dd/MM/yyyy')}"
+                >01/04/2025</span
+                >
+                        <span
+                            class="ms-2"
+                            th:text="${#temporals.format(comment.createdAt, 'HH:mm')}"
+                        >08:30</span
+                        >
+                    </div>
+                </div>
+                
+                <div class="admin-detail-item">
+                    <div class="admin-detail-label">
+                        <i class="fas fa-comment"></i>
+                        Nội dung
+                    </div>
+                    <div class="admin-detail-value">
+                        <div class="comment-content-box p-3 bg-light rounded">
+                            <p class="mb-0" th:text="${comment.content}">
+                                Comment content goes here...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Actions Section -->
+        <div class="admin-detail-actions mt-4">
+            <a
+                th:href="@{/admin/comments/delete/{id}(id=${comment.commentId})}"
+                class="btn btn-danger"
+                onclick="return confirm('Bạn có chắc chắn muốn xóa bình luận này?');"
+            >
+                <i class="fas fa-trash-alt me-2"></i>Xóa Bình Luận
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

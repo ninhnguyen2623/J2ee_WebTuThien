@@ -10,4 +10,8 @@ public class CommentResponseDto {
     private Integer programId;
     private String content;
     private LocalDateTime createdAt;
+    
+    // Added fields for user and program names
+    private String userName;
+    private String programName;
 }

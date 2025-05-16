@@ -9,9 +9,12 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface CategoriesMapper {
     CategoriesEntity toEntity(CategoryCreateDto categoryCreateDto);
+    
     CategoriesEntity toEntity(CategoryUpdateDto categoryUpdateDto);
+    
     CategoryResponseDto toDto(CategoriesEntity categoriesEntity);
-
+    
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    CategoriesEntity partialUpdate(CategoryUpdateDto categoryUpdateDto, @MappingTarget CategoriesEntity categoriesEntity);
+    CategoriesEntity partialUpdate(CategoryUpdateDto categoryUpdateDto,
+                                   @MappingTarget CategoriesEntity categoriesEntity);
 }
