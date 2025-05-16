@@ -111,7 +111,7 @@
                                     <p class="card-text lead mb-4" th:text="${program.description}">Program Description</p>
     
                                     <!-- Progress Section -->
-                                    <div class="bg-light rounded-3 mb-3">
+                                    <div class=" rounded-3 mb-3">
                                         <div class="d-flex  align-items-center justify-content-between pb-2">
                                             <h4 class="mb-0">
                                                 <span th:text="${@amountFormatter.formatAmount(program.currentAmount)}">6,699,367</span>
@@ -121,7 +121,7 @@
                                             <h4 class="text-primary mb-0" style="border: 1px solid orange; border-radius: 10px; padding: 5px;" th:text="${program.percentageAchieved} + '%'">3%</h4>
                                         </div>
     
-                                        <div class="progress pb-2" style="height: 25px">
+                                        <div class="progress " style="height: 25px">
                                             <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" th:style="'width:' + ${program.percentageAchieved} + '%'" th:aria-valuenow="${program.percentageAchieved}" aria-valuemin="0" aria-valuemax="100"></div>
                                         </div>
                                     </div>
