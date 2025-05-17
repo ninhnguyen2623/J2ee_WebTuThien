@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,95 +8,226 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <title>Thanh toán thành công</title>
     <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         .success-container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 30px;
+            max-width: 700px;
+            width: 90%;
+            margin: 20px auto;
+            padding: 40px;
             background: #fff;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .success-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #28a745, #20c997);
         }
 
         .success-icon {
-            font-size: 60px;
+            font-size: 80px;
             color: #28a745;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            0% {
+                transform: scale(0);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         .success-heading {
-            color: #28a745;
-            font-weight: 600;
+            color: #2c3e50;
+            font-weight: 700;
             margin-bottom: 30px;
+            font-size: 2.5rem;
+            animation: fadeInDown 0.5s ease-out;
         }
 
-        .order-details {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
 
-        .order-table {
-            margin-top: 20px;
-        }
-
-        .order-table td {
-            padding: 15px;
-            vertical-align: middle;
-        }
-
-        .btn-home {
-            background: #28a745;
-            color: white;
-            padding: 12px 30px;
-            border-radius: 25px;
-            border: none;
-            transition: all 0.3s ease;
-        }
-
-        .btn-home:hover {
-            background: #218838;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .success-message {
             color: #6c757d;
+            font-size: 1.2rem;
+            margin: 25px 0;
+            line-height: 1.6;
+            animation: fadeIn 0.5s ease-out 0.3s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .order-details {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            animation: slideUp 0.5s ease-out 0.5s both;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .order-details h4 {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+        }
+
+        .order-table {
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .order-table td {
+            padding: 20px;
+            vertical-align: middle;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .order-table td:first-child {
+            color: #6c757d;
+            font-weight: 500;
+            width: 40%;
+        }
+
+        .order-table td:last-child {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .btn-home {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 600;
             font-size: 1.1rem;
-            margin: 20px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            animation: fadeIn 0.5s ease-out 0.7s both;
+        }
+
+        .btn-home:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-home:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-home i {
+            margin-right: 10px;
+        }
+
+        @media (max-width: 576px) {
+            .success-container {
+                padding: 20px;
+            }
+
+            .success-heading {
+                font-size: 2rem;
+            }
+
+            .order-details {
+                padding: 20px;
+            }
+
+            .btn-home {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 
-<body class="bg-light">
+<body>
     <div class="container">
         <div class="success-container text-center">
             <i class="fas fa-check-circle success-icon"></i>
             <h1 class="success-heading">Thanh toán thành công</h1>
-            
+
             <p class="success-message">
-                Cảm ơn bạn, giao dịch của bạn đã được hoàn tất thành công.
+                Cảm ơn bạn đã tin tưởng và ủng hộ chúng tôi. Giao dịch của bạn đã được hoàn tất thành công.
             </p>
 
             <div class="order-details">
-                <h4 class="mb-3">Chi tiết đơn hàng</h4>
+                <h4>Chi tiết đơn hàng</h4>
                 <table class="table order-table">
                     <tbody>
                         <tr>
-                            <td class="text-muted">Thông tin đơn hàng:</td>
-                            <td class="font-weight-bold" th:text="${orderId}">[order ID]</td>
+                            <td>Mã đơn hàng</td>
+                            <td th:text="${orderId}">[order ID]</td>
                         </tr>
                         <tr>
-                            <td class="text-muted">Tổng tiền:</td>
-                            <td class="font-weight-bold" th:text="${totalPrice}">[total price]</td>
+                            <td>Tổng tiền</td>
+                            <td th:text="${totalPrice}">[total price]</td>
                         </tr>
                         <tr>
-                            <td class="text-muted">Thời gian thanh toán:</td>
-                            <td class="font-weight-bold" th:text="${paymentTime}">[payment time]</td>
+                            <td>Thời gian thanh toán</td>
+                            <td th:text="${paymentTime}">[payment time]</td>
                         </tr>
                         <tr>
-                            <td class="text-muted">Mã giao dịch:</td>
-                            <td class="font-weight-bold" th:text="${transactionId}">[transaction ID]</td>
+                            <td>Mã giao dịch</td>
+                            <td th:text="${transactionId}">[transaction ID]</td>
                         </tr>
                     </tbody>
                 </table>
@@ -103,7 +235,7 @@
 
             <div class="mt-4">
                 <a href="/" class="btn btn-home">
-                    <i class="fas fa-home mr-2"></i>Về trang chủ
+                    <i class="fas fa-home"></i>Về trang chủ
                 </a>
             </div>
         </div>
@@ -113,4 +245,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
+
 </html>

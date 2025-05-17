@@ -1,33 +1,26 @@
 <!-- Navbar Start -->
 <div class="container-fluid fixed-top px-0 wow fadeIn" data-wow-delay="0.1s">
 
-  <div
-    class="top-bar text-black bg-third row gx-0 align-items-center d-none d-lg-flex">
+  <div class="top-bar text-black bg-third row gx-0 align-items-center d-none d-lg-flex">
     <div class="col l-4 p-lg-2 text-center text-black">
       <small class="ms-4"><i class="fa fa-map-marker-alt me-2"></i>273 An Dương Vương, Phường
         3,
         Quận 5, Hồ Chí Minh</small>
-      <small class="ms-4"><i
-          class="fa fa-envelope me-2"></i>wecarenet@gmail.com</small>
+      <small class="ms-4"><i class="fa fa-envelope me-2"></i>wecarenet@gmail.com</small>
 
       <small class="ms-4"><i class="fa fa-phone-alt me-2"></i>+84 123 4567 89</small>
       <small class="ms-4"><i class="fa fa-clock me-2"></i>Thứ 2 - Thứ 7, 8:00
         - 17:00</small>
     </div>
 
-    <nav
-      class="navbar navbar-expand-lg navbar-dark bg-light py-lg-2 px-lg-5 wow fadeIn shadow-header"
+    <nav class="navbar navbar-expand-lg navbar-dark bg-light py-lg-2 px-lg-5 wow fadeIn shadow-header"
       data-wow-delay="0.1s">
       <a th:href="@{/}" class="navbar-brand ms-4 ms-lg-0">
         <h1 class="fw-bold text-dark m-0">
           CARE<span class="text-primary">Net</span>
         </h1>
       </a>
-      <button
-        type="button"
-        class="navbar-toggler me-4"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarCollapse">
+      <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -37,12 +30,9 @@
             thiện</a>
           <a th:href="@{/program}" class="nav-item nav-link">Chiến dịch</a>
           <div class="nav-item dropdown">
-            <a href="#" class="nav-link dropdown-toggle"
-              data-bs-toggle="dropdown">Hoàn cảnh quyên góp</a>
+            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Hoàn cảnh quyên góp</a>
             <div class="dropdown-menu m-0">
-              <a
-                th:each="item : ${category}"
-                th:href="@{/category/{id}(id=${item.categoryId})}"
+              <a th:each="item : ${category}" th:href="@{/category/{id}(id=${item.categoryId})}"
                 class="dropdown-item">[[${item.name}]]</a>
             </div>
           </div>
@@ -51,48 +41,57 @@
         <div class="d-none d-lg-flex ms-2">
 
           <div class="nav-item dropdown" sec:authorize="isAuthenticated()">
-            <button
-              class="btn btn-outline-primary py-2 px-3 dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false">
-              <i class="fa fa-user"></i>
+            <button class="btn btn-outline-primary py-2 px-3 dropdown-toggle d-flex align-items-center" type="button"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fa fa-user me-2"></i>
+              <span sec:authentication="name" class="d-none d-md-inline">Username</span>
             </button>
-            <ul class="dropdown-menu dropdown-menu-end text-dark" style="right: -45px;">
-                <li>
-                <a class="dropdown-item text-center" th:href="@{/user-detail}">
-               <span sec:authentication="name">Username</span>
+            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3"
+              style="min-width: 250px; margin-top: 10px;">
+              <li class="px-3 py-2 border-bottom">
+                <div class="d-flex align-items-center">
+                  <div class="flex-shrink-0">
+                    <div class="avatar-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                      style="width: 40px; height: 40px; border-radius: 50%;">
+                      <i class="fas fa-user"></i>
+                    </div>
+                  </div>
+                  <div class="flex-grow-1 ms-3">
+                    <h6 class="mb-0" sec:authentication="name">Username</h6>
+                    <small class="text-muted">Tài khoản của bạn</small>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <a class="dropdown-item py-2 px-3 d-flex align-items-center" th:href="@{/user-detail}">
+                  <i class="fas fa-user-circle me-3 text-primary"></i>
+                  <span>Tài khoản của tôi</span>
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" th:href="@{/user-detail}">
-                  <i class="fas fa-user-circle me-2"></i>Tài khoản của tôi
+                <a class="dropdown-item py-2 px-3 d-flex align-items-center" th:href="@{/my-donations}">
+                  <i class="fas fa-heart me-3 text-danger"></i>
+                  <span>Lịch sử quyên góp</span>
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" th:href="@{/my-donations}">
-                  <i class="fas fa-heart me-2"></i>Lịch sử quyên góp
-                </a>
+                <hr class="dropdown-divider my-2" />
               </li>
-              <li><hr class="dropdown-divider" /></li>
               <li>
-                <form th:action="@{/logout}" method="post"
-                  class="dropdown-item">
-                  <button type="submit" class="btn btn-link text-danger p-0">
-                    <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                <form th:action="@{/logout}" method="post" class="dropdown-item p-0">
+                  <button type="submit"
+                    class="btn btn-link text-danger py-2 px-3 w-100 text-start d-flex align-items-center">
+                    <i class="fas fa-sign-out-alt me-3"></i>
+                    <span>Đăng xuất</span>
                   </button>
                 </form>
               </li>
             </ul>
           </div>
 
-          <a
-            class="btn btn-outline-primary py-2 px-3"
-            th:href="@{/login}"
-            sec:authorize="!isAuthenticated()">
+          <a class="btn btn-outline-primary py-2 px-3" th:href="@{/login}" sec:authorize="!isAuthenticated()">
             Quyên góp ngay
-            <div
-              class="d-inline-flex btn-sm-square bg-white text-primary rounded-circle ms-2">
+            <div class="d-inline-flex btn-sm-square bg-white text-primary rounded-circle ms-2">
               <i class="fa fa-arrow-right"></i>
             </div>
           </a>
@@ -101,4 +100,3 @@
     </nav>
   </div>
 </div>
-
