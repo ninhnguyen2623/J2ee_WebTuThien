@@ -85,29 +85,35 @@ public class ProgramsController {
             BindingResult result,
             RedirectAttributes redirectAttributes) {
         
-        // Kiểm tra các lỗi validation
         if (result.hasErrors()) {
-            // Nếu có lỗi, trả về trang tạo chương trình với lỗi hiển thị
             return "admin/Programs/create";
         }
         
-        // Xử lý upload ảnh
-        MultipartFile file = programCreateDto.getImage();
-        if (!file.isEmpty()) {
-            try {
+        try {
+            // Xử lý upload ảnh
+            MultipartFile file = programCreateDto.getImage();
+            if (file != null && !file.isEmpty()) {
+                // Đảm bảo thư mục tồn tại
+                Path uploadDir = Paths.get(UPLOAD_DIR);
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                }
+                
                 byte[] bytes = file.getBytes();
                 Path path = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
                 Files.write(path, bytes);
-                programCreateDto.setImage(file);
-            } catch (IOException e) {
-                e.printStackTrace();
+                // Không gán file trở lại vào DTO, mapper sẽ lấy tên file
             }
+            
+            // Lưu chương trình vào cơ sở dữ liệu
+            ProgramsResponseDto createdProgram = programsService.create(programCreateDto);
+            redirectAttributes.addFlashAttribute("success", "Program created successfully");
+            return "redirect:/admin/programs";
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Lỗi khi tạo mới: " + e.getMessage());
+            return "redirect:/admin/programs/create";
         }
-        
-        // Lưu chương trình vào cơ sở dữ liệu
-        programsService.create(programCreateDto);
-        redirectAttributes.addFlashAttribute("success", "Program created successfully");
-        return "redirect:/admin/programs";
     }
     
     // Trang chỉnh sửa chương trình
@@ -140,27 +146,43 @@ public class ProgramsController {
             BindingResult result,
             @RequestParam(value = "image", required = false) MultipartFile file,
             RedirectAttributes redirectAttributes) {
+        
         if (result.hasErrors()) {
             return "admin/Programs/edit";
         }
         
-        // Xử lý upload ảnh nếu có
-        if (file != null && !file.isEmpty()) {
-            try {
+        try {
+            // Xử lý upload ảnh nếu có
+            if (file != null && !file.isEmpty()) {
+                // Đảm bảo thư mục tồn tại
+                Path uploadDir = Paths.get(UPLOAD_DIR);
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                }
+                
                 byte[] bytes = file.getBytes();
                 String fileName = file.getOriginalFilename();
                 Path path = Paths.get(UPLOAD_DIR + fileName);
                 Files.write(path, bytes);
                 programUpdateDto.setImage(fileName);
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+            
+            programUpdateDto.setProgramId(id); // Đảm bảo ID được cập nhật đúng
+            ProgramsResponseDto updatedProgram = programsService.update(programUpdateDto);
+            
+            if (updatedProgram != null) {
+                redirectAttributes.addFlashAttribute("success", "Program updated successfully");
+            } else {
+                redirectAttributes.addFlashAttribute("error",
+                                                     "Không thể cập nhật chương trình, không tìm thấy ID: " + id);
+            }
+            
+            return "redirect:/admin/programs";
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Lỗi khi cập nhật: " + e.getMessage());
+            return "redirect:/admin/programs/edit/" + id;
         }
-        
-        programUpdateDto.setProgramId(id); // Đảm bảo ID được cập nhật đúng
-        programsService.update(programUpdateDto);
-        redirectAttributes.addFlashAttribute("success", "Program updated successfully");
-        return "redirect:/admin/programs";
     }
     
     // Xóa chương trình

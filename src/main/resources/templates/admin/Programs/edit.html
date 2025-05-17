@@ -6,8 +6,6 @@
 <head>
   <meta charset="UTF-8" />
   <title>Chỉnh Sửa Chương Trình</title>
-  <!-- CKEditor 5 -->
-  <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
 </head>
 
 <body>
@@ -219,9 +217,11 @@
                         class="image-preview"
                         th:src="@{'/img/program/' + ${program.image}}"
                         alt="Preview"
-                        onerror="this.onerror=null; this.src='/img/no-image.png'; this.nextElementSibling.textContent='Hình ảnh không tồn tại'"
+                        onerror="this.onerror=null; this.outerHTML='<div class=\'no-image-icon\'><i class=\'fas fa-file-image text-warning fa-3x\'></i></div>'; document.querySelector('.image-preview-container').classList.add('image-error'); document.querySelector('.image-preview-container .mt-2 .text-muted').innerHTML='<i class=\'fas fa-exclamation-triangle text-warning me-1\'></i>Hình ảnh gốc bị lỗi hoặc không tồn tại'"
                     />
-                    <span class="text-muted ms-2">Hình hiện tại</span>
+                    <div class="mt-2">
+                      <span class="text-muted">Hình hiện tại</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -242,18 +242,16 @@
               <label for="description" class="form-label fw-bold"
               >Mô Tả <span class="text-danger">*</span></label
               >
-              <div class="ckeditor-container border rounded">
-                    <textarea
-                        id="description"
-                        name="description"
-                        th:field="*{description}"
-                        class="ckeditor form-control"
-                        placeholder="Nhập mô tả chương trình"
-                        required
-                        rows="5"
-                        style="min-height: 150px"
-                    ></textarea>
-              </div>
+              <textarea
+                  id="description"
+                  name="description"
+                  th:field="*{description}"
+                  class="form-control"
+                  placeholder="Nhập mô tả chương trình"
+                  required
+                  rows="5"
+                  style="min-height: 150px; resize: vertical"
+              ></textarea>
               <div class="form-text mt-2">
                 Mô tả chi tiết giúp người dùng hiểu rõ hơn về chương trình
                 này
