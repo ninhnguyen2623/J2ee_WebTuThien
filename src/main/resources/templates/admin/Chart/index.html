@@ -6,6 +6,90 @@
     <title>Statistics Dashboard</title>
     <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
     <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+    <style>
+        .dashboard-container {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .dashboard-header {
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+
+        .dashboard-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-subtitle {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        .chart-section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-title {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .chart-container {
+            height: 400px;
+            width: 100%;
+        }
+
+        .donors-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .donors-table th {
+            background-color: #f8f9fa;
+            color: #2c3e50;
+            font-weight: 600;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .donors-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .donors-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .rank-badge {
+            background-color: #e9ecef;
+            color: #2c3e50;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-weight: 600;
+        }
+
+        .amount-cell {
+            font-weight: 600;
+            color: #28a745;
+        }
+    </style>
     <script type="text/javascript">
         window.onload = function () {
             // Chart 1: Total Donations by Program
@@ -13,21 +97,29 @@
             var programChart = new CanvasJS.Chart("chartContainerProgram", {
                 animationEnabled: true,
                 zoomEnabled: true,
+                theme: "light2",
                 title: {
-                    text: "Total Donations by Program"
+                    text: "Total Donations by Program",
+                    fontFamily: "Arial",
+                    fontSize: 20,
+                    fontWeight: "bold"
                 },
                 axisX: {
                     title: "Program",
-                    interval: 1
+                    interval: 1,
+                    labelFontSize: 12
                 },
                 axisY: {
-                    title: "Total Donations (in USD)"
+                    title: "Total Donations (in VND)",
+                    labelFontSize: 12,
+                    prefix: "₫"
                 },
                 data: [{
                     type: "column",
                     xValueFormatString: "Program #",
-                    yValueFormatString: "$#,##0.00",
-                    dataPoints: programDataPoints
+                    yValueFormatString: "₫#,##0",
+                    dataPoints: programDataPoints,
+                    color: "#3498db"
                 }]
             });
 
@@ -50,23 +142,59 @@
             var dayChart = new CanvasJS.Chart("chartContainerDay", {
                 animationEnabled: true,
                 zoomEnabled: true,
+                theme: "light2",
                 title: {
-                    text: "Total Donations by Day"
+                    text: "Total Donations by Day",
+                    fontFamily: "Arial",
+                    fontSize: 20,
+                    fontWeight: "bold"
                 },
                 axisX: {
                     title: "Date",
-                    valueFormatString: "YYYY-MM-DD",
-                    labelAngle: -45
+                    valueFormatString: "DD/MM/YYYY",
+                    labelAngle: -45,
+                    labelFontSize: 12,
+                    gridThickness: 1,
+                    gridColor: "#e0e0e0"
                 },
                 axisY: {
-                    title: "Total Donations (in USD)"
+                    title: "Total Donations (in VND)",
+                    labelFontSize: 12,
+                    prefix: "₫",
+                    gridThickness: 1,
+                    gridColor: "#e0e0e0",
+                    includeZero: true
+                },
+                toolTip: {
+                    shared: true,
+                    content: function (e) {
+                        var date = new Date(e.entries[0].dataPoint.x);
+                        var formattedDate = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+                        var content = "<strong>Date: " + formattedDate + "</strong><br/>";
+                        content += "Amount: ₫" + e.entries[0].dataPoint.y.toLocaleString('vi-VN');
+                        return content;
+                    }
                 },
                 data: [{
-                    type: "line",
+                    type: "area",
                     xValueType: "dateTime",
-                    xValueFormatString: "YYYY-MM-DD",
-                    yValueFormatString: "$#,##0.00",
-                    dataPoints: dayDataPoints
+                    xValueFormatString: "DD/MM/YYYY",
+                    yValueFormatString: "₫#,##0",
+                    dataPoints: dayDataPoints,
+                    color: "#2ecc71",
+                    fillOpacity: 0.3,
+                    lineColor: "#27ae60",
+                    lineThickness: 3,
+                    markerType: "circle",
+                    markerSize: 6,
+                    markerColor: "#27ae60",
+                    markerBorderColor: "#fff",
+                    markerBorderThickness: 2,
+                    showInLegend: false,
+                    indexLabelFontSize: 12,
+                    indexLabelPlacement: "outside",
+                    indexLabelOrientation: "horizontal",
+                    indexLabel: "{y}"
                 }]
             });
 
@@ -87,9 +215,9 @@
                 var tableBody = $("#topDonorsTable tbody");
                 $.each(data, function (index, donor) {
                     tableBody.append("<tr>" +
-                        "<td>" + (index + 1) + "</td>" +
+                        "<td><span class='rank-badge'>#" + (index + 1) + "</span></td>" +
                         "<td>" + donor.donorName + "</td>" +
-                        "<td>$" + parseFloat(donor.totalAmount).toFixed(2) + "</td>" +
+                        "<td class='amount-cell'>₫" + parseFloat(donor.totalAmount).toLocaleString('vi-VN') + "</td>" +
                         "</tr>");
                 });
             }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -100,27 +228,38 @@
 </head>
 
 <body layout:fragment="content">
-<h1>Statistics Dashboard</h1>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Statistics Dashboard</h1>
+            <p class="dashboard-subtitle">Monitor and analyze donation patterns and trends</p>
+        </div>
 
-<h2>1. Total Donations by Program</h2>
-<div id="chartContainerProgram" style="height: 370px; width: 100%; margin-bottom: 50px;"></div>
+        <div class="chart-section">
+            <h2 class="chart-title">Total Donations by Program</h2>
+            <div id="chartContainerProgram" class="chart-container"></div>
+        </div>
 
-<h2>2. Total Donations by Day</h2>
-<div id="chartContainerDay" style="height: 370px; width: 100%; margin-bottom: 50px;"></div>
+        <div class="chart-section">
+            <h2 class="chart-title">Total Donations by Day</h2>
+            <div id="chartContainerDay" class="chart-container"></div>
+        </div>
 
-<h2>3. Top Donors</h2>
-<table id="topDonorsTable" border="1" style="width: 100%; text-align: left; border-collapse: collapse; margin-bottom: 50px;">
-    <thead>
-    <tr>
-        <th>Rank</th>
-        <th>Donor Name</th>
-        <th>Total Amount</th>
-    </tr>
-    </thead>
-    <tbody>
-    <!-- Data will be dynamically added here -->
-    </tbody>
-</table>
+        <div class="chart-section">
+            <h2 class="chart-title">Top Donors</h2>
+            <table id="topDonorsTable" class="donors-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Donor Name</th>
+                        <th>Total Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
 </body>
 
 </html>

@@ -1,25 +1,80 @@
 <!DOCTYPE html>
 <html layout:decorate="~{admin/fragments/_layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Create Category</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+  <meta charset="UTF-8" />
+  <title>Tạo Danh Mục Mới</title>
 </head>
+
 <body>
-<div layout:fragment="content" class="container mt-5">
-  <h3>Create Category</h3>
-  <form th:action="@{/admin/categories/create}" th:object="${category}" method="POST">
-    <div class="form-group mb-3">
-      <label for="name">Name</label>
-      <input type="text" id="name" class="form-control" th:field="*{name}" required>
+<div layout:fragment="content" class="container-fluid px-4 py-3">
+  <!-- Page Heading -->
+  <div class="d-sm-flex justify-content-between align-items-center mb-4">
+    <h3 class="text-dark mb-0 fw-bold page-title">Tạo Danh Mục Mới</h3>
+    <a class="btn btn-outline-primary btn-sm d-sm-inline-block shadow-sm" th:href="@{/admin/categories}">
+      <i class="fas fa-arrow-left me-2"></i>Quay Lại Danh Sách
+    </a>
+  </div>
+  
+  <!-- Create Category Form Card -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 fw-bold text-primary">Thông Tin Danh Mục</h6>
     </div>
-    <div class="form-group mb-3">
-      <label for="description">Description</label>
-      <textarea id="description" class="form-control" th:field="*{description}" required></textarea>
+    <div class="card-body">
+      <form th:action="@{/admin/categories/create}" th:object="${category}" method="POST" id="categoryForm">
+        <div class="row mb-4">
+          <div class="col-md-12 mb-4">
+            <div class="form-outline">
+              <label class="form-label fw-bold" for="name">Tên Danh Mục <span class="text-danger">*</span></label>
+              <input type="text" id="name" th:field="*{name}" class="form-control" required
+                     placeholder="Nhập tên danh mục (tối đa 100 ký tự)" maxlength="100" />
+              <div class="form-text">Tên danh mục sẽ được hiển thị trong các chiến dịch từ thiện.</div>
+              <div class="invalid-feedback">Vui lòng nhập tên danh mục.</div>
+            </div>
+          </div>
+          
+          <div class="col-md-12">
+            <div class="form-outline">
+              <label class="form-label fw-bold" for="description">Mô Tả <span class="text-danger">*</span></label>
+              <textarea id="description" th:field="*{description}" rows="4" class="form-control" required
+                        placeholder="Nhập mô tả chi tiết về danh mục này"></textarea>
+              <div class="form-text">Mô tả chi tiết về danh mục giúp người dùng hiểu rõ hơn về loại chiến dịch thuộc
+                                     danh mục này.</div>
+              <div class="invalid-feedback">Vui lòng nhập mô tả cho danh mục.</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-actions d-flex justify-content-between">
+          <a th:href="@{/admin/categories}" class="btn btn-outline-secondary">
+            <i class="fas fa-times me-2"></i>Hủy
+          </a>
+          <div>
+            <button type="reset" class="btn btn-outline-secondary me-2">
+              <i class="fas fa-redo me-2"></i>Đặt Lại
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save me-2"></i>Lưu Danh Mục
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
-    <button type="submit" class="btn btn-primary mt-3">Create Category</button>
-    <a th:href="@{/admin/categories}" class="btn btn-secondary mt-3">Cancel</a>
-  </form>
+  </div>
+  
+  <!-- Tips Card -->
+  <div class="card bg-light border-0 shadow-sm">
+    <div class="card-body">
+      <h6 class="fw-bold"><i class="fas fa-lightbulb text-warning me-2"></i>Mẹo:</h6>
+      <ul class="mb-0">
+        <li>Tạo tên danh mục rõ ràng và dễ hiểu để người dùng dễ dàng tìm kiếm.</li>
+        <li>Thêm mô tả chi tiết để giải thích rõ loại chiến dịch thuộc danh mục này.</li>
+        <li>Các danh mục sẽ được hiển thị trong trang tìm kiếm và bộ lọc chiến dịch từ thiện.</li>
+      </ul>
+    </div>
+  </div>
 </div>
 </body>
+
 </html>

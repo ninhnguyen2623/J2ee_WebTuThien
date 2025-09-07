@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html
+    layout:decorate="~{admin/fragments/_layout}"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+<head>
+    <meta charset="UTF-8" />
+    <title>Quản Lý Người Dùng</title>
+</head>
+
+<body>
+<div layout:fragment="content" class="container-fluid px-4 py-3">
+    <!-- Page Heading -->
+    <div class="d-sm-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="text-dark mb-0 fw-bold page-title">Quản Lý Người Dùng</h3>
+        </div>
+        <a
+            class="btn btn-primary btn-sm d-sm-inline-block shadow-sm"
+            th:href="@{/admin/users/create}"
+        >
+            <i class="fas fa-user-plus me-2"></i>Thêm Người Dùng
+        </a>
+    </div>
+    
+    <!-- Filters and Search -->
+    <div class="card shadow mb-4">
+        <div
+            class="card-header py-3 d-flex justify-content-between align-items-center"
+        >
+            <h6 class="m-0 fw-bold text-primary">
+                <i class="fas fa-filter me-2"></i>Tìm Kiếm & Lọc
+            </h6>
+            <div class="card-tools">
+                <a
+                    th:href="@{/admin/users}"
+                    class="btn btn-sm btn-outline-primary reset"
+                    id="clearFilters"
+                >
+                    <i class="fas fa-sync-alt me-1"></i>Làm Mới
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <form
+                id="filterForm"
+                class="row g-3"
+                method="GET"
+                th:action="@{/admin/users}"
+            >
+                <input type="hidden" name="page" id="pageInput" value="0" />
+                <div class="col-md-4">
+                    <label
+                        for="searchTerm"
+                        class="form-label small fw-bold text-muted"
+                    >Tìm kiếm theo tên/email</label
+                    >
+                    <div class="input-group">
+                <span class="input-group-text bg-light">
+                  <i class="fas fa-user text-primary"></i>
+                </span>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="searchTerm"
+                            name="searchTerm"
+                            placeholder="Nhập tên hoặc email người dùng..."
+                            th:value="${searchTerm}"
+                        />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="roleId" class="form-label small fw-bold text-muted"
+                    >Vai trò</label
+                    >
+                    <div class="input-group">
+                <span class="input-group-text bg-light">
+                  <i class="fas fa-user-shield text-primary"></i>
+                </span>
+                        <select class="form-select" id="roleId" name="roleId">
+                            <option value="">Tất cả vai trò</option>
+                            <option value="1" th:selected="${roleId == 1}">Admin</option>
+                            <option value="2" th:selected="${roleId == 2}">User</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="status" class="form-label small fw-bold text-muted"
+                    >Trạng thái</label
+                    >
+                    <div class="input-group">
+                <span class="input-group-text bg-light">
+                  <i class="fas fa-toggle-on text-primary"></i>
+                </span>
+                        <select class="form-select" id="status" name="status">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="true" th:selected="${status == true}">
+                                Hoạt động
+                            </option>
+                            <option value="false" th:selected="${status == false}">
+                                Không hoạt động
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search me-2"></i>Tìm kiếm
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Users Table -->
+    <div class="card shadow mb-4">
+        <div
+            class="card-header py-3 d-flex justify-content-between align-items-center"
+        >
+            <h6 class="m-0 fw-bold text-primary">
+                <i class="fas fa-users me-2"></i>Danh Sách Người Dùng
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table data-table" id="usersTable">
+                    <thead>
+                    <tr>
+                        <th class="text-center" style="width: 60px">
+                            <span class="text-uppercase text-primary fw-bold">ID</span>
+                        </th>
+                        <th style="width: 25%">
+                    <span class="text-uppercase text-primary fw-bold"
+                    >Tên Người Dùng</span
+                    >
+                        </th>
+                        <th style="width: 25%">
+                    <span class="text-uppercase text-primary fw-bold"
+                    >Email</span
+                    >
+                        </th>
+                        <th class="text-center" style="width: 15%">
+                    <span class="text-uppercase text-primary fw-bold"
+                    >Vai Trò</span
+                    >
+                        </th>
+                        <th class="text-center" style="width: 15%">
+                    <span class="text-uppercase text-primary fw-bold"
+                    >Trạng Thái</span
+                    >
+                        </th>
+                        <th class="text-center" style="width: 120px">
+                    <span class="text-uppercase text-primary fw-bold"
+                    >Thao Tác</span
+                    >
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr
+                        th:each="user : ${list}"
+                        class="user-row"
+                        th:data-id="${user.id}"
+                    >
+                        <td th:text="${user.id}" class="text-center fw-bold">ID</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar me-3">
+                                    <div class="avatar-img rounded-circle bg-light">
+                                        <i class="fas fa-user text-primary"></i>
+                                    </div>
+                                </div>
+                                <div>
+                        <span
+                            class="fw-bold donation-info"
+                            th:text="${user.name}"
+                        >Tên người dùng</span
+                        >
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div>
+                        <span class="donation-info" th:text="${user.email}"
+                        >Email</span
+                        >
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <div
+                                class="d-flex align-items-center justify-content-center"
+                            >
+                      <span
+                          th:if="${user.roleId == 1}"
+                          class="badge bg-primary px-3 py-2 rounded-pill"
+                      >
+                        <i class="fas fa-shield-alt me-1"></i>
+                        Admin
+                      </span>
+                                <span
+                                    th:if="${user.roleId == 2}"
+                                    class="badge bg-info px-3 py-2 rounded-pill"
+                                >
+                        <i class="fas fa-user me-1"></i>
+                        User
+                      </span>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <div
+                                class="d-flex align-items-center justify-content-center"
+                            >
+                      <span
+                          th:if="${user.status == true}"
+                          class="badge bg-success-light text-success px-3 py-2"
+                      >
+                        <i
+                            class="fas fa-circle me-1 text-success status-indicator"
+                        ></i>
+                        Hoạt động
+                      </span>
+                                <span
+                                    th:if="${user.status == false}"
+                                    class="badge bg-danger-light text-danger px-3 py-2"
+                                >
+                        <i
+                            class="fas fa-circle me-1 text-danger status-indicator"
+                        ></i>
+                        Không hoạt động
+                      </span>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <a
+                                    th:href="@{/admin/users/edit/{id}(id=${user.id})}"
+                                    class="btn btn-sm btn-warning action-btn"
+                                    title="Chỉnh sửa"
+                                >
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a
+                                    th:href="@{/admin/users/delete/{id}(id=${user.id})}"
+                                    class="btn btn-sm btn-danger action-btn btn-delete"
+                                    title="Xóa"
+                                >
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(list)}">
+                        <td colspan="6" class="text-center py-5">
+                            <div class="empty-state">
+                                <div
+                                    class="empty-state-icon"
+                                    th:classappend="${searchTerm != null || roleId != null || status != null ? 'search-icon' : ''}"
+                                >
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <h5 class="empty-state-title">
+                                    Không tìm thấy người dùng
+                                </h5>
+                                <p class="empty-state-message">
+                        <span
+                            th:if="${searchTerm != null || roleId != null || status != null}"
+                        >
+                          Không có kết quả nào phù hợp với bộ lọc. Vui lòng thử
+                          lại với các tiêu chí khác.
+                        </span>
+                                    <span
+                                        th:unless="${searchTerm != null || roleId != null || status != null}"
+                                    >
+                          Hiện chưa có người dùng nào trong hệ thống. Hãy thêm
+                          người dùng mới.
+                        </span>
+                                </p>
+                                <div class="empty-state-actions">
+                                    <a
+                                        th:href="@{/admin/users}"
+                                        class="btn btn-outline-primary"
+                                    >
+                                        <i class="fas fa-sync-alt me-1"></i>Làm mới
+                                    </a>
+                                    <a
+                                        th:href="@{/admin/users/create}"
+                                        class="btn btn-primary"
+                                    >
+                                        <i class="fas fa-user-plus me-1"></i>Thêm người dùng
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pagination -->
+    <div th:if="${totalPages > 0}" class="card shadow mb-4">
+        <div class="card-body py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="text-muted">
+                    <i class="fas fa-user-friends me-1"></i> Hiển thị
+                    <span
+                        th:text="${#lists.size(list) > 0 ? (currentPage * 10) + 1 : 0}"
+                    ></span>
+                                                             -
+                    <span
+                        th:text="${#lists.size(list) > 0 ? (currentPage * 10) + #lists.size(list) : 0}"
+                    ></span>
+                                                             của <span th:text="${totalElements}"></span> người dùng
+                </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination mb-0">
+                        <li
+                            class="page-item"
+                            th:classappend="${currentPage == 0 ? 'disabled' : ''}"
+                        >
+                            <a
+                                class="page-link"
+                                th:href="@{/admin/users(page=${currentPage - 1}, searchTerm=${searchTerm}, roleId=${roleId}, status=${status})}"
+                                aria-label="Previous"
+                            >
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li
+                            class="page-item"
+                            th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:classappend="${currentPage == i ? 'active' : ''}"
+                            th:if="${totalPages <= 5 || (i >= currentPage - 1 && i <= currentPage + 1) || i == 0 || i == totalPages - 1}"
+                        >
+                            <a
+                                class="page-link"
+                                th:href="@{/admin/users(page=${i}, searchTerm=${searchTerm}, roleId=${roleId}, status=${status})}"
+                                th:text="${i + 1}"
+                            ></a>
+                        </li>
+                        <li
+                            class="page-item"
+                            th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}"
+                        >
+                            <a
+                                class="page-link"
+                                th:href="@{/admin/users(page=${currentPage + 1}, searchTerm=${searchTerm}, roleId=${roleId}, status=${status})}"
+                                aria-label="Next"
+                            >
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom scripts for users page -->
+<th:block layout:fragment="scripts">
+    <script src="/js/admin.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          // Initialize tooltips if any
+          if (typeof initTooltips === "function") {
+            initTooltips();
+          }
+
+          // Initialize DataTable for users
+          if ($.fn.DataTable && !$.fn.DataTable.isDataTable("#usersTable")) {
+            $("#usersTable").DataTable({
+              paging: false, // We use custom pagination
+              ordering: true,
+              info: false,
+              searching: false, // We use custom search
+              language: {
+                zeroRecords: "Không tìm thấy kết quả phù hợp",
+                emptyTable: "Không có dữ liệu",
+              },
+            });
+          }
+
+          // Handle page changes for search
+          document
+            .querySelectorAll(".pagination .page-link")
+            .forEach((link) => {
+              link.addEventListener("click", function (e) {
+                // Already has href with proper parameters, no need for additional handling
+              });
+            });
+
+          // Reset page on filter change
+          document
+            .getElementById("searchTerm")
+            .addEventListener("input", function () {
+              document.getElementById("pageInput").value = 0;
+            });
+
+          document
+            .getElementById("roleId")
+            .addEventListener("change", function () {
+              document.getElementById("pageInput").value = 0;
+            });
+
+          document
+            .getElementById("status")
+            .addEventListener("change", function () {
+              document.getElementById("pageInput").value = 0;
+            });
+
+          // Confirm delete action
+          const deleteButtons = document.querySelectorAll(".btn-delete");
+          if (deleteButtons.length > 0) {
+            deleteButtons.forEach((button) => {
+              button.addEventListener("click", function (e) {
+                if (!confirm("Bạn có chắc chắn muốn xóa người dùng này?")) {
+                  e.preventDefault();
+                }
+              });
+            });
+          }
+
+          // Handle "Làm Mới" (reset) button
+          document
+            .getElementById("clearFilters")
+            .addEventListener("click", function (e) {
+              e.preventDefault();
+              resetFilters();
+            });
+        });
+
+        // Function to reset filters
+        function resetFilters() {
+          document.getElementById("searchTerm").value = "";
+          document.getElementById("roleId").value = "";
+          document.getElementById("status").value = "";
+          document.getElementById("pageInput").value = 0;
+          document.getElementById("filterForm").submit();
+        }
+    </script>
+    <style>
+        .status-indicator {
+          font-size: 8px;
+          vertical-align: middle;
+          margin-top: -2px;
+        }
+
+        .avatar {
+          width: 36px;
+          height: 36px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .avatar-img {
+          width: 36px;
+          height: 36px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .avatar-img i {
+          font-size: 16px;
+        }
+    </style>
+</th:block>
+</body>
+</html>

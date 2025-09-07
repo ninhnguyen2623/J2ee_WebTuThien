@@ -36,14 +36,14 @@
     
     // Back to top button
     $(window).scroll(function () {
-        if ($(this).scrollTop() > 300) {
-            $('.back-to-top').fadeIn('slow');
+        if ($(this).scrollTop() > 1000) {
+            $('.back-to-top').fadeIn('fast');
         } else {
-            $('.back-to-top').fadeOut('slow');
+            $('.back-to-top').fadeOut('fast');
         }
     });
     $('.back-to-top').click(function () {
-        $('html, body').animate({scrollTop: 0}, 1500, 'easeInOutExpo');
+        $('html, body').animate({scrollTop: 0}, 500, 'linear');
         return false;
     });
 
@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
         form.classList.add('was-validated');
     });
 });
-document.getElementById('sendOtpBtn').addEventListener('click', function() {
+/* document.getElementById('sendOtpBtn').addEventListener('click', function() {
     const newEmail = document.getElementById('newEmail').value;
     if (newEmail) {
         fetch('/send-otp', {
@@ -163,7 +163,7 @@ document.getElementById('sendOtpBtn').addEventListener('click', function() {
     } else {
         alert('Please enter a new email address.');
     }
-});
+}); */
 
 // Show toast 
 document.addEventListener('DOMContentLoaded', function () {
@@ -172,4 +172,10 @@ document.addEventListener('DOMContentLoaded', function () {
         return new bootstrap.Toast(toastEl)
     })
     toastList.forEach(toast => toast.show())
+});
+
+$(document).ready(function () {
+    $('#header-carousel').carousel({
+        interval: 3000
+    });
 });

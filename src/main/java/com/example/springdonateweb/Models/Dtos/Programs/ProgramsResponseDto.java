@@ -5,14 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class ProgramsResponseDto {
-
+    
     private int programId;
     private String name;
     private String description;
@@ -24,7 +22,8 @@ public class ProgramsResponseDto {
     private Integer goalAmount;
     private Integer currentAmount;
     private String category;
-
+    private Integer categoryId;
+    
     private int percentageAchieved;
     private long remainingDays;
 }

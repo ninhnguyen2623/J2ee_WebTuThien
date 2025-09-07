@@ -22,26 +22,25 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ProgramsService implements IProgramsService {
-
+    
     private final ProgramsRepository programsRepository;
     private final CategoriesRepository categoriesRepository;
     private final ProgramsMapper programsMapper;
-
+    
     @Override
     public List<ProgramsResponseDto> findAll() {
         return programsRepository.findAll().stream()
-                .map(programsMapper::toDto)
-                .collect(Collectors.toList());
+                                 .map(programsMapper::toDto)
+                                 .collect(Collectors.toList());
     }
-
+    
     @Override
     public ProgramsResponseDto findById(int id) {
         return programsRepository.findById(id)
-                .map(programsMapper::toDto)
-                .orElse(null);
+                                 .map(programsMapper::toDto)
+                                 .orElse(null);
     }
-
-
+    
     @Override
     public ProgramsResponseDto create(ProgramCreateDto programCreateDto) {
         ProgramsEntity programsEntity = programsMapper.toEntity(programCreateDto);
@@ -50,29 +49,37 @@ public class ProgramsService implements IProgramsService {
         programsEntity.setStatus(true);
         Optional<CategoriesEntity> category = categoriesRepository.findById(programCreateDto.getCategoryId());
         category.ifPresent(programsEntity::setCategory);
-
+        
         ProgramsEntity savedProgram = programsRepository.save(programsEntity);
         return programsMapper.toDto(savedProgram);
     }
-
-
+    
     @Override
     public ProgramsResponseDto update(ProgramUpdateDto programUpdateDto) {
         Optional<ProgramsEntity> program = programsRepository.findById(programUpdateDto.getProgramId());
         if (program.isPresent()) {
-            ProgramsEntity updatedProgram = programsMapper.partialUpdate(programUpdateDto, program.get());
-            Optional<CategoriesEntity> category = categoriesRepository.findById(programUpdateDto.getCategoryId());
-            category.ifPresent(updatedProgram::setCategory);
-            return programsMapper.toDto(programsRepository.save(updatedProgram));
+            try {
+                ProgramsEntity updatedProgram = programsMapper.partialUpdate(programUpdateDto, program.get());
+                Optional<CategoriesEntity> category = categoriesRepository.findById(programUpdateDto.getCategoryId());
+                category.ifPresent(updatedProgram::setCategory);
+                
+                ProgramsEntity savedEntity = programsRepository.save(updatedProgram);
+                return programsMapper.toDto(savedEntity);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw e;
+            }
+        } else {
+            return null;
         }
-        return null;
     }
+    
     public Page<ProgramsResponseDto> findProgramsByPage(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<ProgramsEntity> programPage = programsRepository.findAll(pageable);
         return programPage.map(programsMapper::toDto);
     }
-
+    
     @Override
     public void delete(int id) {
         // set status = false
@@ -81,31 +88,79 @@ public class ProgramsService implements IProgramsService {
             programsEntity.setStatus(false);
             programsRepository.save(programsEntity);
         });
-
+        
     }
-
+    
     @Override
     public List<ProgramsResponseDto> findByStatusTrue() {
         Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE); // Adjust the page size as needed
         return programsRepository.findByStatusTrue(pageable).stream()
-                .map(programsMapper::toDto)
-                .collect(Collectors.toList());
+                                 .map(programsMapper::toDto)
+                                 .collect(Collectors.toList());
     }
+    
     @Override
     public List<ProgramsResponseDto> findByCategory_CategoryId(int categoryId) {
         return programsRepository.findByCategory_CategoryId(categoryId).stream()
-                .map(programsMapper::toDto)
-                .collect(Collectors.toList());
+                                 .map(programsMapper::toDto)
+                                 .collect(Collectors.toList());
     }
+    
     @Override
     public Page<ProgramsResponseDto> findProgramsByPageAndStatusTrue(int page, int size) {
         Page<ProgramsEntity> programsPage = programsRepository.findByStatusTrue(PageRequest.of(page, size));
         return programsPage.map(programsMapper::toDto);
     }
+    
     @Override
     public ProgramsResponseDto findByProgramIdAndStatusTrue(int id) {
         return programsRepository.findByProgramIdAndStatusTrue(id)
-                .map(programsMapper::toDto)
-                .orElse(null);
+                                 .map(programsMapper::toDto)
+                                 .orElse(null);
+    }
+    
+    @Override
+    public Page<ProgramsResponseDto> searchPrograms(String search, Integer categoryId, Boolean status, int page,
+                                                    int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProgramsEntity> result;
+        
+        // If all search parameters are empty, return all programs
+        if ((search == null || search.isEmpty()) && categoryId == null && status == null) {
+            result = programsRepository.findAll(pageable);
+        }
+        // If only name is provided
+        else if ((search != null && !search.isEmpty()) && categoryId == null && status == null) {
+            result = programsRepository.findByNameContainingIgnoreCase(search, pageable);
+        }
+        // If only category is provided
+        else if ((search == null || search.isEmpty()) && categoryId != null && status == null) {
+            result = programsRepository.findByCategory_CategoryId(categoryId.intValue(), pageable);
+        }
+        // If only status is provided
+        else if ((search == null || search.isEmpty()) && categoryId == null && status != null) {
+            result = status ? programsRepository.findByStatusTrue(pageable)
+                    : programsRepository.findByStatusFalse(pageable);
+        }
+        // If name and category are provided
+        else if ((search != null && !search.isEmpty()) && categoryId != null && status == null) {
+            result = programsRepository.findByNameContainingIgnoreCaseAndCategory(search, categoryId.intValue(),
+                                                                                  pageable);
+        }
+        // If name and status are provided
+        else if ((search != null && !search.isEmpty()) && categoryId == null && status != null) {
+            result = programsRepository.findByNameContainingIgnoreCaseAndStatus(search, status, pageable);
+        }
+        // If category and status are provided
+        else if ((search == null || search.isEmpty()) && categoryId != null && status != null) {
+            result = programsRepository.findByCategoryAndStatus(categoryId.intValue(), status, pageable);
+        }
+        // If all parameters are provided
+        else {
+            result = programsRepository.findByNameContainingIgnoreCaseAndCategoryAndStatus(
+                    search, categoryId.intValue(), status, pageable);
+        }
+        
+        return result.map(programsMapper::toDto);
     }
 }

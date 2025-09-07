@@ -21,6 +21,4 @@ public class UsersResponseDto implements Serializable {
     public String address;
     public String phoneNumber;
     public boolean status;
-
-
 }
